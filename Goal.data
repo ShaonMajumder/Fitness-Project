@@ -1,0 +1,34 @@
+; Goal.data
+[GOAL]
+goal = Lean_Bulking
+
+[CALORIE]
+protein_per_body_weight_g = 1
+change_protein_per_body_pound = no
+
+[PHYSIQUE]
+age = 22yrs
+bodyweight = 58kgs
+height = 5ft4in
+
+[ROUTINE]
+mealnumber = 4
+; Activity level choices Input[0-8] -
+; Choices-
+; 0) Basal Metabolic Rate
+; 1)Little/No exercise
+; 2) 3 times/week
+; 3) 4 times/week
+; 4) 5 times/week
+; 5) Daily
+; 6) 5 times/week(Intense)
+; 7) Daily(Intense) or Twice Daily
+; 8) Daily exercise + Physical Job
+activity_level=4
+; get a system to determine workout day
+workout_day = 5 
+
+
+[Exercise]
+legday = 5
+absday = 2
