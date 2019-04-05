@@ -14,11 +14,27 @@ def inch_to_cm(inch):
 	return unit_inch_to_centimeters*inch
 
 
-def bmr(weight_in_kg,height_in_cm,age_in_years):
-	BMR = (10 * weight_in_kg) + (6.25 * height_in_cm) - (5 * age_in_years) + 5
+def bmr(gender,weight_in_kg,height_in_cm,age_in_years):
+	if gender == 'male':
+		BMR = (10 * weight_in_kg) + (6.25 * height_in_cm) - (5 * age_in_years) + 5
+	elif gender == 'female':
+		BMR = (10 * weight_in_kg) + (6.25 * height_in_cm) - (5 * age_in_years) - 161
+
 	return BMR
 	
-def Calories_Per_Day(BMR,activity_level):
+def Maintenance_Calories_Per_Day(BMR,activity_level):
+	"""
+	Estimating Calories for Weight Loss
+	After calculating the BMR, exercise is factored in. Depending on the exercise level chosen, the BMR will be multiplied by anything from 1.2 to 1.9.
+
+	This provides us with maintenance calories – the amount of calories you could consume each day and neither lose or gain weight.
+
+	To get the fat loss figure – 20% of calories is subtracted.
+
+	The extreme fat loss figure has 40% subtracted. However – there is a “rock bottom” figure that equates to 8 calories per pound of body weight – the extreme fat loss will never be less than this amount. This has been put into the calculator as a failsafe to prevent users from embarking on highly-restricted diets. Such diets need medical care, advice, and monitoring.
+
+	It is also not advised to drastically reduce calories, but rather do so gradually or by a maximum of 500 calories per day.
+	"""
 	"""
 	1,1.2,1.375,1.55,1.725,1.9
 	First method:: Following now
@@ -170,6 +186,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputsource", choices=['file', 'cli'], help="file - For take input saved from file.\ncli - for take inputs from argument or prompt. If not specified it takes from file.",type=str)
 parser.add_argument("--bodyweight", help="Your bodyweight in kgs/lbs. Example: 60kgs or 60lbs",type=str)
 parser.add_argument("--age", help="Your age in years. Example: 20yrs",type=str)
+parser.add_argument("--gender", choices=['male', 'female'], help="Your gender. Example: male/female",type=str)
 parser.add_argument("--height", help="Your height in feet-inch. Example: 5ft7in",type=str)
 parser.add_argument("--goal", choices=['maintain','Lean_Bulking', 'gain', 'loose'], help="'Lean Bulking' for gaining muscle and cutting body fat at the same time. maintain' for maintaining your current body mass/'loose' for loosing body fat/'gain' for gaining muscle")
 parser.add_argument("--mealnumber",help="Number of meals you can take a day. Ex: 4-8 is a good number with proper quantity of food.",type=str)
@@ -185,6 +202,7 @@ if not args.inputsource:
 
 if args.inputsource == 'file':
 	bodyweight = config['PHYSIQUE']['bodyweight']
+	gender = config['PHYSIQUE']['gender']
 	age = config['PHYSIQUE']['age']
 	height = config['PHYSIQUE']['height']
 	fitness_goal = config['GOAL']['goal']
@@ -204,12 +222,16 @@ elif args.inputsource == 'cli':
 		args.age = input("Your age in years. Example- 21yrs <::")
 	age = args.age
 
+	if not args.gender:
+		args.gender = input("Your Gender. Choices- male/female <::")
+	gender = args.gender
+
 	if not args.height:
 		args.height = input("Your height in feet-inch. Example: 5ft7in . <::")
 	height = args.height
 
 	if not args.goal:
-		args.goal = input("Your goal. Options - maintain/loose/gain <::")
+		args.goal = input("Your goal. Options - maintain/loose/gain/Lean_Bulking <::")
 	fitness_goal = args.goal
 
 	if not args.mealnumber:
@@ -226,6 +248,10 @@ elif args.inputsource == 'cli':
 else:
 	raise ValueError('Invalid choice.')
 
+if gender == 'male' or gender == 'female':
+	pass
+else:
+	raise ValueError(gender+" is invalid gender. Sex can be 'male' or 'female'.")
 body_weight_digit,body_weight_unit = filter_bodyweight(bodyweight)
 #calorie_intake_digit,calorie_unit = filter_calorie(calorie_intake)
 age_yrs,age_unit = filter_age(age)
@@ -244,13 +270,17 @@ if args.change_protein_per_body_pound == 'yes':
 protein_per_body_weight_g = float(protein_per_body_weight_g)
 #change_protein_per_body_pound = args.change_protein_per_body_pound
 
+activity_level_sentences = ['Basal Metabolic Rate','Little/No exercise','3 times/week','4 times/week','5 times/week','Daily','5 times/week(Intense)','Daily(Intense) or Twice Daily','Daily exercise + Physical Job']
+
 print("\nGiven,")
 print("	Your Goal: "+fitness_goal)
+print("	Your Gender: "+gender)
 print("	Your Age: "+str(age_yrs)+" years")
 print("	Your Height: "+str(feet_digit)+" feet "+str(inch_digit)+" inch")
 print("	Your Bodyweight = "+str(body_weight_digit) + " " + body_weight_unit)
 print("	Your Mealnumber: "+str(mealnumber))
-#print("	Your Daily CALORIE intake: "+str(calorie_intake_digit)+"Kcal")
+print("	Your Activity Level: "+activity_level_sentences[activity_level])
+
 print("	Your Daily Protein requirement per bodyweight according to goal: "+str(protein_per_body_weight_g)+"g")
 
 if body_weight_unit == 'kgs':
@@ -258,9 +288,9 @@ if body_weight_unit == 'kgs':
 	body_weight_unit = 'lbs'
 
 bodyweight_kgs = lbs_to_kgs(body_weight_digit)
-BMR = bmr(bodyweight_kgs,height_cm,age_yrs)
+BMR = bmr(gender,bodyweight_kgs,height_cm,age_yrs)
 
-maintenance_calorie_intake = Calories_Per_Day(BMR,activity_level)
+maintenance_calorie_intake = Maintenance_Calories_Per_Day(BMR,activity_level)
 lean_gaining_calorie_intake = int(maintenance_calorie_intake + maintenance_calorie_intake*(10/100))
 gaining_calorie_intake = int(maintenance_calorie_intake + maintenance_calorie_intake*(20/100))
 cutting_calorie_intake = int(maintenance_calorie_intake - maintenance_calorie_intake*(20/100))

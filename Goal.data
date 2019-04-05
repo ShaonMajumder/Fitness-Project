@@ -7,6 +7,7 @@ protein_per_body_weight_g = 1
 change_protein_per_body_pound = no
 
 [PHYSIQUE]
+gender = male
 age = 22yrs
 bodyweight = 58kgs
 height = 5ft4in
