@@ -1,0 +1,16 @@
+; FIT_Language.dic
+
+[NUTRIENTS]
+macros = PROTEIN,FAT,CARBOHYDRATE
+micros = SODIUM,MAGNESIUM,POTASSIUM,VITAMIN-A,VITAMIN-B,VITAMIN-B6,VITAMIN-C
+
+[ACTION_N_STATE]
+action = INCREASE,DECREASE,CUT
+progress_keywords = ING
+
+[Bodystate]
+body_state_sign = <>
+body_states = FAT,BULK,LEAN,CALORIEDEFICIT #For progress check last 3 letter containing ING
+
+[CONDITIONAL]
+coditionals = IF,ELSE,ELSEIF,THEN,WHEN,AND,BUT,OR,EQUAL,WITH #WITH is simmilar to AND

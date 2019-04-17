@@ -1,17 +1,71 @@
+### Calorie Calculator - https://www.freedieting.com/calorie-calculator
+### Katch-McArdle Formula: Enter Body Fat % 
+### Body Fat Calculator - https://www.freedieting.com/body-fat-calculator
+### Find food requirement based on Body fat percentage, learn how to measure body fat percentage
+### Muscle Tape - https://www.daraz.com.bd/products/te-1-pc-simple-cnvenient-body-tape-measure-for-measuring-waist-diet-weight-loss-i103024775-s1017430360.html?spm=a2a0e.searchlist.list.7.77282e39nkmCcz&search=1
+### Fat Caliper - https://www.daraz.com.bd/catalog/?q=fat+caliper
+### bmr activity multiplier for weight lifters
+### Body fat% for 6 pack calculation - https://www.youtube.com/watch?v=j4zOuCYYCcs
+
 import argparse
 import configparser
 import codecs
+import tkinter
 
 unit_kg_to_pounds = 2.20462
 unit_feet_to_centimeters = 30.48
 unit_feet_to_inches = 12
 unit_inch_to_centimeters = 2.54
 
+def One_Rep_Max(Regular_Rep,Regular_Weight):
+	return Regular_Weight/0.75
+
+def One_Rep_Max(Regular_Rep,Regular_Weight):
+	Volume = Regular_Rep * Regular_Weight 
+	Rep_Max = Regular_Weight + (Volume * .033)
+	return Rep_Max
+
 def feet_to_cm(feet):
 	return unit_feet_to_centimeters*feet
 
 def inch_to_cm(inch):
 	return unit_inch_to_centimeters*inch
+
+def estimate_body_fat(height_in_cm,weight_in_kg,gender):
+	"""
+	Based on - https://www.youtube.com/watch?v=6QKPMtib6Ko
+	result 2-3% tolerance
+	"""
+	if gender == 'male':
+		ideal_body_weight = height_in_cm - 100
+		over_or_under_weight = weight_in_kg - ideal_body_weight
+		if over_or_under_weight > 0:
+			over_or_under_weight_flag = 'over_weight'
+		else:
+			over_or_under_weight_flag = 'under_weight'
+			if int(over_or_under_weight) > 10:
+				ValueError("More than 10 kilo under weight extremely ectomorph - skinny, long with more fat. So we can not estimate your body weight.")
+		#For male, Ideal fat% = 15%
+		fat_percentage = 15+int(over_or_under_weight)
+
+	elif gender == 'female':
+		ideal_body_weight = height_in_cm - 105
+		over_or_under_weight = weight_in_kg - ideal_body_weight
+		if over_or_under_weight > 0:
+			over_or_under_weight_flag = 'over_weight'
+		else:
+			over_or_under_weight_flag = 'under_weight'
+			if int(over_or_under_weight) > 10:
+				ValueError("More than 10 kilo under weight extremely ectomorph - skinny, long with more fat. So we can not estimate your body weight.")
+		#For female, Ideal fat% = 20%
+		fat_percentage = 20+int(over_or_under_weight)
+
+	return fat_percentage
+	
+	
+
+
+
 
 
 def bmr(gender,weight_in_kg,height_in_cm,age_in_years):
@@ -195,6 +249,28 @@ parser.add_argument("--change_protein_per_body_pound",help="change_protein_per_b
 
 args = parser.parse_args()
 
+run_mode = input("gui/cli <<:")
+if run_mode == 'cli':
+	pass
+elif run_mode == 'gui':
+	import tkinter
+
+	def take_new_url():
+		resource_url = E1.get()
+
+	top = tkinter.Tk()
+	top.title("Fitness-Project")
+	top.geometry("500x500")
+
+	L1 = tkinter.Label(top, text = "Resource Url")
+	E1 = tkinter.Entry(top, bd = 5,width=30)
+	B1 = tkinter.Button(top,text="Enter Url",command = take_new_url,width = 20)
+
+	L1.grid(row=0, column=1)
+	E1.grid(row=0, column=2)
+	B1.grid(row=1, column=1)
+
+	top.mainloop()
 
 
 if not args.inputsource:
