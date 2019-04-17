@@ -43,7 +43,7 @@ db=config['DATABASE']['db']
 charset=config['DATABASE']['charset']
 cursorclass=config['DATABASE']['cursorclass']
 
-mydb = mysql.mysql_db(host, user, password, db, charset, cursorclass)
+mydb = mysql_db(host, user, password, db, charset, cursorclass)
 
 Get_utube_title_choice = u_config['GETTING_UTUBE_VIDEO_TITLE']['GET_TITLE']
 Get_utube_video_title_Input_File_Name = u_config['GETTING_UTUBE_VIDEO_TITLE']['Input_File_Name']
@@ -237,7 +237,7 @@ def get_site_title(url):
 
 
 def list_utbube_title(lines):
-	#lines = util.read_file(filename)
+	#lines = read_file(filename)
 	return [get_site_title(url) + utube_title_seperating_flag + url for url in lines]	
 
 def find_tag_in_list(target_li,tag):
@@ -245,7 +245,7 @@ def find_tag_in_list(target_li,tag):
 
 
 def sort_utube_urls_by_tag(filename,tag_list):
-	titles = util.read_file(filename)
+	titles = read_file(filename)
 	sorted_li_1 = []
 	sorted_li_2 = []
 	sorted_li = []
@@ -271,7 +271,7 @@ def umain():
 			print(title_urls)
 			
 		title_urls = '\n'.join(title_urls)
-		util.write_file(Sorting_Output_File_Name, title_urls,mode="w")
+		write_file(Sorting_Output_File_Name, title_urls,mode="w")
 		
 
 	
@@ -285,7 +285,7 @@ def umain():
 		if(Sorting_Show_Output == 'Yes'):
 			print(sorted_title_urls)
 		sorted_title_urls ='\n'.join(sorted_title_urls)
-		util.write_file(Sorting_Output_File_Name, sorted_title_urls,mode="w")
+		write_file(Sorting_Output_File_Name, sorted_title_urls,mode="w")
 
 def add_category(category):
 	#query = "SELECT `value` FROM `constants` where `name` = 'Resource_Categories'"
@@ -332,10 +332,10 @@ def take_new_url():
 	
 
 def repair_data_file():
-	lines = util.read_file(Get_utube_video_title_Input_File_Name)
+	lines = read_file(Get_utube_video_title_Input_File_Name)
 	lines = [line for line in lines if line != '']
 	stri = '\n'.join(lines)
-	util.write_file(Get_utube_video_title_Input_File_Name, stri, mode )
+	write_file(Get_utube_video_title_Input_File_Name, stri, mode )
 	messagebox.showinfo( "Hello Python", "Data File repaired.")
 
 
@@ -351,7 +351,7 @@ def New_Exercise_Entry_Form():
 	#query = "Select * From `human_anatomy`"
 	result = mydb.select('*',"","human_anatomy")
 	list_ = [line['body_part_name'] + " - " + line['part_synonyms'] for line in result]
-	New_Exercise_Target_Entry = util.AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30)
+	New_Exercise_Target_Entry = AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30)
 	New_Exercise_Target_Entry.pack(padx=5)
 	## Solution for multiple target:
 	## Place A ListBox and Button("Add to Target List") to show Entered multiple Target Muscle
@@ -360,13 +360,13 @@ def New_Exercise_Entry_Form():
 	## All the entered muscle group will be in ListBox, take all the muscle group name from listbox and add them with ',' into a string. This will be the final target of that exercise.
 	New_Exercise_Type_Label = tkinter.Label(New_Exercise_Form, text="Type-")
 	New_Exercise_Type_Label.pack()
-	New_Exercise_Type_Entry = util.AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15)
+	New_Exercise_Type_Entry = AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15)
 	New_Exercise_Type_Entry.pack(padx=5)
 	New_Exercise_Instrument_Label = tkinter.Label(New_Exercise_Form, text="Instrument-")
 	New_Exercise_Instrument_Label.pack()
 	#query = "Select * From `exercise_instruments`"
 	result = mydb.select("*","","exercise_instruments")
-	New_Exercise_Instrument_Entry = util.AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15)
+	New_Exercise_Instrument_Entry = AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15)
 	New_Exercise_Instrument_Entry.pack(padx=5)
 	New_Exercise_Comment_Label = tkinter.Label(New_Exercise_Form, text="Comment")
 	New_Exercise_Comment_Label.pack()
@@ -768,7 +768,7 @@ def Record_Todays_Exercise_Form():
 
 	list_ = [line['name'] for line in result]
 	Exercise_Name_entryText = StringVar()
-	Exercise_Name_Entry =  util.AutocompleteEntry(list_, Todays_Exercise_Record_Form, bd = 2, width=30)
+	Exercise_Name_Entry =  AutocompleteEntry(list_, Todays_Exercise_Record_Form, bd = 2, width=30)
 	Exercise_Name_Entry.pack(padx=5)
 	
 
