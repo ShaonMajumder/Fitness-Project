@@ -861,10 +861,16 @@ Day_Planning_Section_Frame_Important_Label = tkinter.Label(Day_Planning_Section_
 Day_Planning_Section_Frame_Not_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Not Important")
 Day_Planning_Section_Frame_Now_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Now")
 Day_Planning_Section_Frame_Later_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Later")
-Day_Planning_Section_First_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
-Day_Planning_Section_Second_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
-Day_Planning_Section_Third_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
-Day_Planning_Section_Fourth_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
+Day_Planning_Section_First_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+Day_Planning_Section_Second_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+Day_Planning_Section_Third_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+Day_Planning_Section_Fourth_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+
+
+
+#TKScrollTXT.insert(1.0, 'sdsi')
+
+
 
 Social_Section_Frame = tkinter.Frame(top_frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
 Social_Section_Frame_Label = tkinter.Label(Social_Section_Frame, text = "Social Section")
@@ -875,10 +881,12 @@ Goal_Section_Frame_Label.grid(sticky="w",row=1,column=1)
 
 Day_Planning_Section_Frame.grid(sticky="w",row=1,column=2)
 Day_Planning_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+
 Day_Planning_Section_First_Grid.grid(sticky="w",row=3,column=2)
 Day_Planning_Section_Second_Grid.grid(sticky="w",row=3,column=3)
 Day_Planning_Section_Third_Grid.grid(sticky="w",row=4,column=2)
 Day_Planning_Section_Fourth_Grid.grid(sticky="w",row=4,column=3)
+
 Day_Planning_Section_Frame_Important_Label.grid(sticky="w",row=3,column=1)
 Day_Planning_Section_Frame_Not_Important_Label.grid(sticky="w",row=4,column=1)
 Day_Planning_Section_Frame_Now_Important_Label.grid(sticky="w",row=2,column=2)

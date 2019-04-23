@@ -18,3 +18,4 @@ import shutil
 import string
 import configparser
 import tkinter
+import tkinter.scrolledtext as tkscrolled
