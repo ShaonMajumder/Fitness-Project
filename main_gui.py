@@ -475,12 +475,6 @@ L1 = tkinter.Label(content_frame, text = "Resource Url")
 L2 = tkinter.Label(content_frame, text = "Category")
 E1 = tkinter.Entry(content_frame, bd = 5,width=30)
 D1_category = tkinter.StringVar(content_frame)
-
-
-
-
-
-
 D1_category.set(OPTIONS[0]) # default value
 
 def select_category_action(*args):
@@ -860,16 +854,36 @@ Grooming_Section_Frame_Label = tkinter.Label(Grooming_Section_Frame, text = "Gro
 
 Goal_Section_Frame = tkinter.Frame(top_frame, bg = 'orange', relief=tkinter.RAISED, borderwidth=1)
 Goal_Section_Frame_Label = tkinter.Label(Goal_Section_Frame, text = "Goal Section")
+
 Day_Planning_Section_Frame = tkinter.Frame(top_frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
 Day_Planning_Section_Frame_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Day Planning Section")
+Day_Planning_Section_Frame_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Important")
+Day_Planning_Section_Frame_Not_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Not Important")
+Day_Planning_Section_Frame_Now_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Now")
+Day_Planning_Section_Frame_Later_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Later")
+Day_Planning_Section_First_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
+Day_Planning_Section_Second_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
+Day_Planning_Section_Third_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
+Day_Planning_Section_Fourth_Grid = tkinter.Text(Day_Planning_Section_Frame, height=2, width=30)
+
 Social_Section_Frame = tkinter.Frame(top_frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
 Social_Section_Frame_Label = tkinter.Label(Social_Section_Frame, text = "Social Section")
 
 
 Goal_Section_Frame.grid(sticky="w",row=0,column=2)
 Goal_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+
 Day_Planning_Section_Frame.grid(sticky="w",row=1,column=2)
 Day_Planning_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+Day_Planning_Section_First_Grid.grid(sticky="w",row=3,column=2)
+Day_Planning_Section_Second_Grid.grid(sticky="w",row=3,column=3)
+Day_Planning_Section_Third_Grid.grid(sticky="w",row=4,column=2)
+Day_Planning_Section_Fourth_Grid.grid(sticky="w",row=4,column=3)
+Day_Planning_Section_Frame_Important_Label.grid(sticky="w",row=3,column=1)
+Day_Planning_Section_Frame_Not_Important_Label.grid(sticky="w",row=4,column=1)
+Day_Planning_Section_Frame_Now_Important_Label.grid(sticky="w",row=2,column=2)
+Day_Planning_Section_Frame_Later_Important_Label.grid(sticky="w",row=2,column=3)
+
 Social_Section_Frame.grid(sticky="w",row=2,column=2)
 Social_Section_Frame_Label.grid(sticky="w",row=1,column=1)
 
