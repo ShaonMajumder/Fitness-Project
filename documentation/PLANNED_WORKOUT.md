@@ -81,6 +81,8 @@ ______________________________________________________________________
 ## My Section
 ### Use Deloading for Max Trial
 ### Use Uploading for give body change to adapt to upcoming Heavy weight
+Close eyes and concentrate on muscle part
+Drink water only after group of exercise and in immergency
 
 ## Routines
  1. Bro split -> Following Now
