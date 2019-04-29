@@ -1,5 +1,5 @@
 # Fitness Project
-	## That's why you need to invest your time for exercising -
+## That's why you need to invest your time for exercising -
 		### Mind State
 			As it boosts your confidence by increasing your inteligence, response and performance;
 			So, you become more healthy and joyful.
