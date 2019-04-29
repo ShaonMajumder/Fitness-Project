@@ -7,6 +7,7 @@ Examples :
 #result = mydb.select(['name', 'value', 'id'],"`name` = 'mean_required_sleep_time'","constants")
 #mydb.edit(['name','value'],['n1','v1'],"`id` = 5","constants")
 #mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
+#mydb.delete_table('nutrition_values')
 """
 
 class mysql_db():
@@ -24,6 +25,9 @@ class mysql_db():
     def create_table(self,column_names,database):
         stri = " VARCHAR(100), ".join(column_names) + " VARCHAR(100)"
         query = "CREATE TABLE "+database+ " ( "+stri+" )"
+        return self.execute(query)
+    def delete_table(self,table):
+        query = "DROP TABLE "+table
         return self.execute(query)
 
     def import_from_xlsx(self,xlsx_filename,database):

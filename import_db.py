@@ -13,5 +13,5 @@ charset=config['DATABASE']['charset']
 cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
-
+#mydb.delete_table('nutrition_values')
 mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
