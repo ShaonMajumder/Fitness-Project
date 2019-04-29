@@ -47,11 +47,11 @@
 			But, apparatus exercises are dangerous if not accomplished in correct form.
 
 
-	## Features
-		### Sleep Module
-		### Nutrition Module
-		### Exercise Module
-		
-		### Coming
-		Daily Nutrition deficit calculator with macro and micro, and give food list recommendation to recover from deficit by eating
+## Features
+	### Sleep Module
+	### Nutrition Module
+	### Exercise Module
+	
+	### Coming
+	Daily Nutrition deficit calculator with macro and micro, and give food list recommendation to recover from deficit by eating
 
