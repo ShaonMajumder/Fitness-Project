@@ -15,3 +15,5 @@ bs4
 tkinter
 pandas
 xlrd
+optparse
+inspect

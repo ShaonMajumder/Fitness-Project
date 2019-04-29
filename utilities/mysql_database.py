@@ -21,7 +21,9 @@ class mysql_db():
             self.cursorclass = eval(cursorclass)
         else:
             self.cursorclass = cursorclass
-    
+    def help(self):
+        custom_methods = [dir_name for dir_name in dir(mysql_db) if not '__' in dir_name]
+        print("Class Methods -> " + str(custom_methods))
     def create_table(self,column_names,table):
         stri = " VARCHAR(100), ".join(column_names) + " VARCHAR(100)"
         query = "CREATE TABLE "+table+ " ( "+stri+" )"
