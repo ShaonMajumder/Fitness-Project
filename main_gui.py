@@ -661,22 +661,26 @@ def This_Week_Exercise_Form():
 		import datetime
 		Day_Exercises = Day_Exercises_Planning_Exercises_Entry.get()
 		Day_Choice = week_opvar.get()
+		results = mydb.select(['workout_id'],"`name`='"+Day_Exercises+"'","workout_moves_data")
+		result = results[0]
+		exercise_id = result['workout_id']
 
 		#todays_day = datetime.datetime.now()
 		#todays_day = todays_day.strftime("%a")
 		
-		results = mydb.select(['day_exercises'],"`day`='"+Day_Choice+"'","day_exercise_planning")
+		results = mydb.select(['day_exercises_ids'],"`day`='"+Day_Choice+"'","day_exercise_planning")
 		if results == ():
-			mydb.insert(['day','day_exercises'],[Day_Choice,Day_Exercises],'day_exercise_planning')
+			mydb.insert(['day','day_exercises_ids'],[Day_Choice,exercise_id],'day_exercise_planning')
 		else:
 			result = results[0]
-			day_exercises = result['day_exercises']
+			day_exercises = result['day_exercises_ids']
 			day_exercises_li = day_exercises.split(',')
-			if Day_Exercises in day_exercises_li:
+			if exercise_id in day_exercises_li:
 				pass
 			else:
-				day_exercises = day_exercises + "," + Day_Exercises
-				mydb.edit(['day_exercises'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
+				print(Day_Exercises)
+				day_exercises = day_exercises + "," + exercise_id
+				mydb.edit(['day_exercises_ids'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
 
 
 	This_Week_Exercise_Form = tkinter.Toplevel(Exercise_Section_Frame)
