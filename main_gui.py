@@ -66,16 +66,10 @@ utube_title_seperating_flag = utube_title_seperating_flag.replace('\'','')
 time_units = ['years','months','days','hours','minutes','seconds']
 time_quan = {'seconds':60, 'minutes':60, 'hours':24, 'days':30, 'months':12, 'years':1}
 
-
-
-
-
 def get_site_title(url):
 	page = get_html(url)
 	YouTube_title = page.title.text.replace(" - YouTube","")
 	return YouTube_title
-
-
 
 def list_utbube_title(lines):
 	#lines = read_file(filename)
@@ -707,8 +701,7 @@ def nutrition_form():
 				if result['unit'] == unit:
 					number = str(float(result['number'])+float(number))
 					mydb.edit(['number'],[number],"`id`="+str(result['id']),'nutrition_record')
-				
-			
+
 
 			if(add_new):
 				Record_Unplanned_Meal_Form.destroy()
@@ -885,4 +878,3 @@ Nail_Cut_Label.grid(sticky="W", row = 10, column = 1)
 
 
 top_frame.mainloop()
-
