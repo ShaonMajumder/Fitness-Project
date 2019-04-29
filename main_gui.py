@@ -33,7 +33,7 @@ datetime_ = datetime.now().strftime("%d/%m/%y")
 
 
 config = configparser.ConfigParser()
-config.readfp(codecs.open("config.ini", "r", "utf8"))
+config.readfp(codecs.open("safe_directory/config.ini", "r", "utf8"))
 
 u_config = configparser.ConfigParser()
 u_config.readfp(codecs.open("youtube_config.ini", "r", "utf8"))
@@ -727,7 +727,7 @@ def nutrition_form():
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Consumed Quantity", bg="white")
 		
 		OptionsVar_Food_Unit = tkinter.StringVar(Record_Unplanned_Meal_Form)
-		OPTIONS_Food_Unit = ['piece','spoon','palm','bowl','gram']
+		OPTIONS_Food_Unit = ['piece','spoon','palm','bowl','gram','litre']
 		OptionsVar_Food_Unit.set(OPTIONS_Food_Unit[0])
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Option = tkinter.OptionMenu(Record_Unplanned_Meal_Form, OptionsVar_Food_Unit, *OPTIONS_Food_Unit, command = select_category_action)
 		
