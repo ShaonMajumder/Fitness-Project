@@ -675,8 +675,20 @@ def nutrition_form():
 			food_name = Record_Unplanned_Meal_Food_Name_Entry.get()
 			number = Record_Unplanned_Meal_Food_Consumed_Quantity_Number.get()
 			unit= OptionsVar_Food_Unit.get()
-			mydb.insert(['date','food_name','number','unit'],[today,food_name,number,unit],'nutrition_record')
 			
+			#add previous
+			result = mydb.select(['id','food_name','number','unit'],"`date` = '"+str(today)+"' and `food_name`='"+food_name+"'",'nutrition_record')
+			print(result)
+			if result == ():
+				mydb.insert(['date','food_name','number','unit'],[today,food_name,number,unit],'nutrition_record')
+			else:
+				result = result[0]
+				if result['unit'] == unit:
+					number = str(float(result['number'])+float(number))
+					mydb.edit(['number'],[number],"`id`="+str(result['id']),'nutrition_record')
+				
+			
+
 			if(add_new):
 				Record_Unplanned_Meal_Form.destroy()
 			else:

@@ -73,6 +73,7 @@ class mysql_db():
         
         key_val_str = key_val_str[:-1]
         query = "UPDATE `"+table+"` SET "+key_val_str+" where "+condition
+        print(query)
         return self.execute(query)
 
     def execute(self,query):
