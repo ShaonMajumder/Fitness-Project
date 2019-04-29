@@ -110,7 +110,7 @@ Abs -
 	Exercises:
 	1. Roman Situps - 3setsx10reps
 	2. Twisting Situps | Twisting Abs Crunches - 3setsx10reps
-	3. Lying Situps(Weighted) - 3setsx10reps
+	3. Lying Situps(Weighted) | ground abs crunches - 3setsx10reps
 	4. Bench Lying Leg Raise - 3setsx10reps
 	5. Windsheild wiper | Obliques Leg Twist - 3setsx10reps
 	6. Hollow Body Hold - 3setsx10reps
@@ -136,11 +136,35 @@ Legs -
 	Exercises:
 	1. Leg Extension - Try 5 b[Don't push 4 bar untill you are comfortable]
 	2. Hack Squat - [Don't push 65kg max untill you are comfortable for 2 week and use belt]
-	3. Leg Press - 3 set x 10 Reps => 85kg,95kg,105kg (10 Repmax 200 kg) [use belt]
+	3. Leg Press - 3 set x 10 Reps => 85kg,95kg,105kg (10 Repmax 210 kg) [use belt]
 	4. Hill Press - 3 set x 25reps
 	5. Hyper Extension - 1set x 10reps
 	6. Skipping - 1000
 
+exercises = [\
+	['roman situps','','3','10','','','upper abs'],\
+	['twisting roman situps','','3','10','','','obliques'],\
+	['ground abs crunches','lying situps','3','10','5kg','','upper abs'],\
+	['lying leg raise','','3','10','','','lower abs'],\
+	['windsheild wiper','obliques leg twist', '3', '10', '', '','obliques'],\
+	['hollow body hold','','3','10','','25seconds','full abs'],\
+	['plank walk pushup','','3','10','','',''],\
+	['wood chooper','obliques pull','3','10','','',''],\
+	#['hyper extension','','1','10','','','lower back'],\
+	['paralel bar hanging push down','','3','6','','','triceps'],\
+	['back angle bar pushup','','3','8','','','triceps'],\
+	['close grip bar pushup','','3','10','','','triceps'],\
+	['tricep overhead extension','','3','10','5kg,7.5kg,10kg','','triceps'],\
+	['cable stress overhead extension','','3','10','3bar','','triceps'],\
+	['skull crusher','','3','6','5kg','','triceps'],\
+	['seated dumbell kickback','','3','10','5kg','','triceps'],\
+	['leg extension','','3','10','4bar','','legs'],\
+	['hack squat','','3','10','40kg,55kg,65kg','','legs'],\
+	['leg press','','3','10','85kg,95kg,105kg','','legs'],\
+	['hill press','metatarsal press','3','25','','','foot'],\
+	['hyper extension','','2','10','','','lower back'],\
+	['skipping','','1','1000','','','legs']
+]
 
 ##### Split 2
 Sunday|Tuesday|Thursday
