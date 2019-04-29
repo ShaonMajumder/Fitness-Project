@@ -4,6 +4,7 @@ from tkinter import messagebox
 from datetime import datetime,timedelta,date
 from utilities.utility import *
 from utilities.mysql_database import *
+from tkinter import font
 
 import os
 import re
@@ -19,3 +20,4 @@ import string
 import configparser
 import tkinter
 import tkinter.scrolledtext as tkscrolled
+import tkinter as tk

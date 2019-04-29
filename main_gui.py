@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #https://www.freedieting.com/calorie-calculator
 # (Routine Consistency & Soldier & Monk Mind)
 # Goal - & Work & Stress planning
@@ -23,6 +24,7 @@ Hygene_Section_Frame       Grooming_Section_Frame
 Social_Section_Frame
 
 """
+
 
 Muscles = ['Deltoids','Triceps','Biceps','Forearm','Trapezius','Middle Back','Latissimus Dorsi','Lower Back','Quadriceps','Calves','Hamstring','Upper Abs','Lower Abs','Obliques']
 
@@ -268,6 +270,7 @@ OPTIONS = [line['value'] for line in search_result][0].split(',')
 OPTIONS.append('NEW')
 
 top_frame = tkinter.Tk()
+top_frame.tk.call('encoding', 'system', 'utf-8')
 top_frame.title("Project-Super-Human")
 top_frame.geometry("1000x800")
 
@@ -712,7 +715,7 @@ def nutrition_form():
 				Record_Unplanned_Meal_Form.destroy()
 
 
-		result= mydb.select(['Name'],"","nutrition_values")
+		result= mydb.select(['Name','Bangla_Name'],"","nutrition_values")
 		Food_list = [line['Name'] for line in result]
 
 		Record_Unplanned_Meal_Form = tkinter.Toplevel(top_frame)
@@ -720,14 +723,20 @@ def nutrition_form():
 		Record_Unplanned_Meal_Form.title("Record Unplanned Meal")
 		Record_Unplanned_Meal_Food_Date_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Date - "+str(date.today()), bg="white")
 		Record_Unplanned_Meal_Food_Name_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Food Name", bg="white")
-		Record_Unplanned_Meal_Food_Name_Entry = AutocompleteEntry(Food_list, Record_Unplanned_Meal_Form, bd = 2, width=30)		
+		Record_Unplanned_Meal_Food_Name_Entry = AutocompleteEntry(Food_list, Record_Unplanned_Meal_Form, bd = 2, width=30)	
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Consumed Quantity", bg="white")
 		
 		OptionsVar_Food_Unit = tkinter.StringVar(Record_Unplanned_Meal_Form)
-		OPTIONS_Food_Unit = ['piece','spoon','palm','gram']
+		OPTIONS_Food_Unit = ['piece','spoon','palm','bowl','gram']
 		OptionsVar_Food_Unit.set(OPTIONS_Food_Unit[0])
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Option = tkinter.OptionMenu(Record_Unplanned_Meal_Form, OptionsVar_Food_Unit, *OPTIONS_Food_Unit, command = select_category_action)
-		Record_Unplanned_Meal_Food_Consumed_Quantity_Number = tkinter.Entry(Record_Unplanned_Meal_Form,width=12)
+		
+
+
+		#appHighlightFont = font.Font(family='Helvetica', size=12, weight='bold')
+		#print(font.families())
+
+		Record_Unplanned_Meal_Food_Consumed_Quantity_Number = tkinter.Entry(Record_Unplanned_Meal_Form,width=12,exportselection=0)
 		Record_Unplanned_Meal_Food_Submit_Button = tkinter.Button(Record_Unplanned_Meal_Form, text = "Submit", bg='white', command=record_unplanned_meal_submit)
 		Record_Unplanned_Meal_Food_Submit_And_Add_New_Button = tkinter.Button(Record_Unplanned_Meal_Form, text = "Submit and Add New", bg='white', command=record_unplanned_meal_submit_add_new)
 		
