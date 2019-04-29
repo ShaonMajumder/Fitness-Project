@@ -668,25 +668,49 @@ def nutrition_form():
 	#mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
 	
 	def record_unplanned_meal_form():
+		def record_unplanned_meal_submit_add_new():
+			record_unplanned_meal_submit(True)
+		def record_unplanned_meal_submit(add_new=False):
+			today = date.today()#Highlight in form
+			food_name = Record_Unplanned_Meal_Food_Name_Entry.get()
+			number = Record_Unplanned_Meal_Food_Consumed_Quantity_Number.get()
+			unit= OptionsVar_Food_Unit.get()
+			mydb.insert(['date','food_name','number','unit'],[today,food_name,number,unit],'nutrition_record')
+			
+			if(add_new):
+				Record_Unplanned_Meal_Form.destroy()
+			else:
+				#record_unplanned_meal_form()
+				Record_Unplanned_Meal_Form.destroy()
+
+
 		result= mydb.select(['Name'],"","nutrition_values")
 		Food_list = [line['Name'] for line in result]
 
 		Record_Unplanned_Meal_Form = tkinter.Toplevel(top_frame)
 		Record_Unplanned_Meal_Form.geometry("600x400")
 		Record_Unplanned_Meal_Form.title("Record Unplanned Meal")
+		Record_Unplanned_Meal_Food_Date_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Date - "+str(date.today()), bg="white")
 		Record_Unplanned_Meal_Food_Name_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Food Name", bg="white")
-		Record_Unplanned_Meal_Food_Name_Label.grid(sticky="w",row=1,column=1)
-		Record_Unplanned_Meal_Food_Name_Entry = AutocompleteEntry(Food_list, Record_Unplanned_Meal_Form, bd = 2, width=30)
-		Record_Unplanned_Meal_Food_Name_Entry.grid(sticky="w",row=1,column=2)
+		Record_Unplanned_Meal_Food_Name_Entry = AutocompleteEntry(Food_list, Record_Unplanned_Meal_Form, bd = 2, width=30)		
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Label = tkinter.Label(Record_Unplanned_Meal_Form, text="Consumed Quantity", bg="white")
-		Record_Unplanned_Meal_Food_Consumed_Quantity_Label.grid(sticky="w",row=1,column=3)
-		OptionsVar = tkinter.StringVar(Record_Unplanned_Meal_Form)
+		
+		OptionsVar_Food_Unit = tkinter.StringVar(Record_Unplanned_Meal_Form)
 		OPTIONS_Food_Unit = ['piece','spoon','palm','gram']
-		OptionsVar.set(OPTIONS_Food_Unit[0])
-		Record_Unplanned_Meal_Food_Consumed_Quantity_Option = tkinter.OptionMenu(Record_Unplanned_Meal_Form, OptionsVar, *OPTIONS_Food_Unit, command = select_category_action)
+		OptionsVar_Food_Unit.set(OPTIONS_Food_Unit[0])
+		Record_Unplanned_Meal_Food_Consumed_Quantity_Option = tkinter.OptionMenu(Record_Unplanned_Meal_Form, OptionsVar_Food_Unit, *OPTIONS_Food_Unit, command = select_category_action)
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Number = tkinter.Entry(Record_Unplanned_Meal_Form,width=12)
+		Record_Unplanned_Meal_Food_Submit_Button = tkinter.Button(Record_Unplanned_Meal_Form, text = "Submit", bg='white', command=record_unplanned_meal_submit)
+		Record_Unplanned_Meal_Food_Submit_And_Add_New_Button = tkinter.Button(Record_Unplanned_Meal_Form, text = "Submit and Add New", bg='white', command=record_unplanned_meal_submit_add_new)
+		
+		Record_Unplanned_Meal_Food_Date_Label.grid(sticky="w",row=0,column=1)
+		Record_Unplanned_Meal_Food_Name_Label.grid(sticky="w",row=1,column=1)
+		Record_Unplanned_Meal_Food_Name_Entry.grid(sticky="w",row=1,column=2)
+		Record_Unplanned_Meal_Food_Consumed_Quantity_Label.grid(sticky="w",row=1,column=3)		
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Number.grid(sticky="w",row=1,column=4)
 		Record_Unplanned_Meal_Food_Consumed_Quantity_Option.grid(sticky="w",row=1,column=5)
+		Record_Unplanned_Meal_Food_Submit_Button.grid(sticky="w",row=2,column=1)
+		Record_Unplanned_Meal_Food_Submit_And_Add_New_Button.grid(sticky="w",row=2,column=2)
 
 	Nutrition_Registry_Form = tkinter.Toplevel(top_frame)
 	Nutrition_Registry_Form.geometry("400x400")

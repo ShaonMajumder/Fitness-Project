@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from requests.exceptions import ConnectTimeout,ReadTimeout,ConnectionError
 from tkinter import messagebox
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,date
 from utilities.utility import *
 from utilities.mysql_database import *
 
