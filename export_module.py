@@ -18,11 +18,13 @@ else: fasting_time = "No" # try not print if fasting is not needed
 bath = "Soap/Water Only/Shampoo/Soap and Shampoo"
 
 #Name, sets, reps, weight
-exercises = [['Roman Situps','3','10',''],\
-['Twisting Situps','3','10',''],\
-['Lying Situps','3','10','5kg'],\
-['Cable Stress Overhead Extension','3','10','3bar'],\
-['skipping','1','1000','']]
+exercises = [\
+	['Roman Situps','3','10',''],\
+	['Twisting Situps','3','10',''],\
+	['Lying Situps','3','10','5kg'],\
+	['Cable Stress Overhead Extension','3','10','3bar'],\
+	['skipping','1','1000','']\
+]
 
 
 #if day == "" , import from saved plan
@@ -35,7 +37,7 @@ for exercise in exercises:
 	ex_strings = ex_strings + ex_string + "\n"
 
 
-stri = """*** Print after Night Sleep
+stri = f"""*** Print after Night Sleep, Right with blue pen
 activity_id: {activity_id}
 print_number: {print_number}
 Date: {date}
@@ -66,5 +68,6 @@ Tooth_Brush:
 Hygene Instructions: 
 
 """
-print(stri.format(**locals()))
+#print(stri.format(**locals()))
+print(stri)
 ##save the text file after print
