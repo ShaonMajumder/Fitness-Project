@@ -1,10 +1,12 @@
 import pymysql
+import pandas as pd
 
 """
 Examples :
 #mydb.insert(['title','resource_url'],['v1','v2'],'data')
 #result = mydb.select(['name', 'value', 'id'],"`name` = 'mean_required_sleep_time'","constants")
 #mydb.edit(['name','value'],['n1','v1'],"`id` = 5","constants")
+#mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
 """
 
 class mysql_db():
@@ -18,6 +20,26 @@ class mysql_db():
             self.cursorclass = eval(cursorclass)
         else:
             self.cursorclass = cursorclass
+    
+    def create_table(self,column_names,database):
+        stri = " VARCHAR(100), ".join(column_names) + " VARCHAR(100)"
+        query = "CREATE TABLE "+database+ " ( "+stri+" )"
+        return self.execute(query)
+
+    def import_from_xlsx(self,xlsx_filename,database):
+        db = pd.read_excel(xlsx_filename, encoding='utf-8')
+        rows = db.shape[0]
+        columns = list(db.columns)
+        self.create_table(columns,database)
+        data2d = []
+        for row in db.iterrows():
+            index, data = row
+            data2d.append(data.tolist())
+
+        for row_li in data2d:
+            self.insert(columns,row_li,database)
+
+
     def insert(self,keys,values,database):
         key_str = '`' + '`,`'.join(keys) + '`'
         value_str = "'" + "','".join(str(v) for v in values) + "'"
