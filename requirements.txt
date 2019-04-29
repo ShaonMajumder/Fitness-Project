@@ -13,3 +13,5 @@ configparser
 requests
 bs4
 tkinter
+pandas
+xlrd

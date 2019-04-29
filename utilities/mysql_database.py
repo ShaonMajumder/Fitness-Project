@@ -20,7 +20,8 @@ class mysql_db():
             self.cursorclass = cursorclass
     def insert(self,keys,values,database):
         key_str = '`' + '`,`'.join(keys) + '`'
-        value_str = "'" + "','".join(values) + "'"
+        value_str = "'" + "','".join(str(v) for v in values) + "'"
+        
         query = "INSERT INTO `"+database+"` ("+key_str+") VALUES ("+value_str+")"
         return self.execute(query)
 
