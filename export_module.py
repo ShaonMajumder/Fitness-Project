@@ -126,12 +126,13 @@ Hygene Instructions:
 """
 #print(stri.format(**locals()))
 print(stri)
-##save the text file after print
+
 
 
 
 
 write_file('TestFile.txt', stri,mode="w")
 
+##save the text file after print
 import os
 os.startfile("TestFile.txt", "print")
