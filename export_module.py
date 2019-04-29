@@ -22,7 +22,7 @@ activity_id = "324jkhs2"
 #count total cost of ink used by printer
 print_number = str(1)
 date = "29/04/2019"
-day = "Monday"
+day = "saturday"
 time = "6:00AM"
 person_name = "Shaon Majumder"
 weight = "59kg"
@@ -38,7 +38,7 @@ ex_days = ['cardio','legs','triceps','abs','lower back','biceps','shoulders','fo
 #unique Id will help in case of name change
 
 columns = mydb.get_columns('workout_moves_data')
-
+print(columns)
 #if day == "" , import from saved plan
 #all exercise should be in lower case
 ex_strings = ""
@@ -46,7 +46,22 @@ count = 0
 results = mydb.select('*',"","workout_moves_data")
 
 
-for result in results:
+
+#results = mydb.select('*',"`day`='"+day+"'","workout_moves_data")
+results = mydb.select(['day_exercises_ids'],"`day`='"+day+"'","day_exercise_planning")
+result = results[0]
+exercise_ids = result['day_exercises_ids']
+exercise_ids_li = exercise_ids.split(',')
+
+results_ = []
+for exercise_id in exercise_ids_li:
+	results = mydb.select('*',"`workout_id`='"+exercise_id+"'","workout_moves_data")
+	result = results[0]
+	results_.append(result)
+
+
+
+for result in results_:
 	count = count + 1
 	
 	id_=result['id']
