@@ -9,6 +9,7 @@ Examples :
 #mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
 #mydb.delete_table('nutrition_values')
 #mydb.help()
+#columns = mydb.get_columns('workout_moves_data')
 """
 
 class mysql_db():
