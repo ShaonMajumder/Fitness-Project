@@ -666,7 +666,23 @@ def nutrition_form():
 	# Main - f0f0f0
 	#mydb.delete_table('nutrition_values')
 	#mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
-	
+
+	def plan_meal_form():
+		Plan_Meal_Form = tkinter.Toplevel(Nutrition_Registry_Form)
+		Plan_Meal_Form.geometry("600x400")
+		Plan_Meal_Form.title("Plan Meal")
+
+		Meal_Number_Label = tkinter.Label(Plan_Meal_Form, text = "Meal Number")
+		Fasting_Day_Label = tkinter.Label(Plan_Meal_Form, text = "Fasting Day")
+		Food_Name_Label = tkinter.Label(Plan_Meal_Form, text = "Food Name-")
+		Food_Quantity_Label = tkinter.Label(Plan_Meal_Form, text = "Quantity-")
+
+		Meal_Number_Label.grid(sticky="W", row=1, column=1)
+		Fasting_Day_Label.grid(sticky="W", row=2, column=1)
+		Food_Name_Label.grid(sticky="W", row=3, column=1)
+		Food_Quantity_Label.grid(sticky="W", row=3, column=2)
+
+
 	def record_unplanned_meal_form():
 		def record_unplanned_meal_submit_add_new():
 			record_unplanned_meal_submit(True)
@@ -730,7 +746,7 @@ def nutrition_form():
 	Nutrition_Section_Form_Label = tkinter.Label(Nutrition_Registry_Form, text = "Nutrition Section", bg="white")
 	Nutrition_Form_Label_Color = 'white'
 	Nutrition_Section_Record_Unplanned_Meal_Label = tkinter.Button(Nutrition_Registry_Form, text = "Record Unplanned Meal", bg=Nutrition_Form_Label_Color, command=record_unplanned_meal_form)
-	Nutrition_Section_Plan_Meal_Label = tkinter.Button(Nutrition_Registry_Form, text = "Plan Meal", bg=Nutrition_Form_Label_Color)
+	Nutrition_Section_Plan_Meal_Label = tkinter.Button(Nutrition_Registry_Form, text = "Plan Meal", bg=Nutrition_Form_Label_Color, command=plan_meal_form)
 	Nutrition_Section_Manage_Inventory_Label = tkinter.Button(Nutrition_Registry_Form, text = "Manage Inventory", bg=Nutrition_Form_Label_Color)
 	Nutrition_Section_Add_New_Food_Label = tkinter.Button(Nutrition_Registry_Form, text = "Record New Food", bg=Nutrition_Form_Label_Color)
 
@@ -746,13 +762,6 @@ def nutrition_form():
 Nutrition_Section_Frame = tkinter.Frame(Life_Frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
 Nutrition_Section_Frame_Label = tkinter.Label(Nutrition_Section_Frame, text = "Nutrition Section")
 Nutrition_Section_Open_Button = tkinter.Button(Nutrition_Section_Frame, text = "Open", command=nutrition_form)
-Meal_Number_Label = tkinter.Label(Nutrition_Section_Frame, text = "Meal Number")
-Fasting_Day_Label = tkinter.Label(Nutrition_Section_Frame, text = "Fasting Day")
-Food_Inventory_Section_Frame = tkinter.Frame(Nutrition_Section_Frame, bg = 'red', relief=tkinter.RAISED, borderwidth=1)
-Food_Name_Label = tkinter.Label(Food_Inventory_Section_Frame, text = "Food Name-")
-Food_Quantity_Label = tkinter.Label(Food_Inventory_Section_Frame, text = "Quantity-")
-
-
 
 
 
@@ -846,11 +855,6 @@ Exercise_Add_New_Exercise_Button.grid(sticky="W", row = 1, column = 3)
 Nutrition_Section_Frame.grid(sticky="W", row = 2, column = 2)
 Nutrition_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
 Nutrition_Section_Open_Button.grid(sticky="W", row = 1, column = 2)
-Meal_Number_Label.grid(sticky="W", row=2, column=1)
-Fasting_Day_Label.grid(sticky="W", row=3, column=1)
-Food_Inventory_Section_Frame.grid(sticky="W", row=4, column=1)
-Food_Name_Label.grid(sticky="W", row=1, column=1)
-Food_Quantity_Label.grid(sticky="W", row=1, column=2)
 
 
 Grooming_Section_Frame.grid(sticky="W", row = 3, column = 2)
