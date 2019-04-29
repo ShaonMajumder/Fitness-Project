@@ -8,6 +8,7 @@ Examples :
 #mydb.edit(['name','value'],['n1','v1'],"`id` = 5","constants")
 #mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
 #mydb.delete_table('nutrition_values')
+#mydb.help()
 """
 
 class mysql_db():
@@ -29,6 +30,7 @@ class mysql_db():
         query = "CREATE TABLE "+table+ " ( "+stri+" )"
         return self.execute(query)
     def delete_table(self,table):
+        #check if exist then drop table
         query = "DROP TABLE "+table
         return self.execute(query)
 
