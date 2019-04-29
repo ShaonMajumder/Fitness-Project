@@ -109,24 +109,28 @@ Hygene Instructions:
 print(stri)
 ##save the text file after print
 
+def This_Week_Exercise_Form():
+	This_Week_Exercise_Form = tkinter.Toplevel(Exercise_Section_Frame)
+	This_Week_Exercise_Form.geometry("600x400")
+	This_Week_Exercise_Form.title("Plan Meal")
 
-ex_results = mydb.select(['name'],"","workout_moves_data")
-ex_list_ = [result['name'] for result in ex_results]
-week_opvar = tkinter.StringVar()
-week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
-week_opvar.set(week_days[0])
+	ex_results = mydb.select(['name'],"","workout_moves_data")
+	ex_list_ = [result['name'] for result in ex_results]
+	week_opvar = tkinter.StringVar()
+	week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
+	week_opvar.set(week_days[0])
 
-Day_Exercises_Planning_Day_Label =  tkinter.Label(Frame, text = "Day")
-Day_Exercises_Planning_Day_Option = tkinter.OptionMenu(Frame, week_opvar, *week_days) # command = select_category_action
-Day_Exercises_Planning_Exercises_Label = tkinter.Label(Frame, text = "Exercise")
-Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, Frame, bd = 2, width=30)
-Day_Exercises_Planning_Submit_Button = tkinter.Button(Frame, text="Submit", command=add_exercises_to_weekly_plan)
+	Day_Exercises_Planning_Day_Label =  tkinter.Label(This_Week_Exercise_Form, text = "Day")
+	Day_Exercises_Planning_Day_Option = tkinter.OptionMenu(This_Week_Exercise_Form, week_opvar, *week_days) # command = select_category_action
+	Day_Exercises_Planning_Exercises_Label = tkinter.Label(This_Week_Exercise_Form, text = "Exercise")
+	Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, This_Week_Exercise_Form, bd = 2, width=30)
+	Day_Exercises_Planning_Submit_Button = tkinter.Button(This_Week_Exercise_Form, text="Submit", command=add_exercises_to_weekly_plan)
 
-Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
-Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
-Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
-Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
-Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
+	Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
+	Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
+	Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
+	Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
+	Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
 
 
 

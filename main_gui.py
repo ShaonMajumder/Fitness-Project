@@ -656,10 +656,59 @@ def Record_Todays_Exercise_Form():
 	New_Exercise_Submit_And_Add_Another_Button.pack()
 
 
+def This_Week_Exercise_Form():
+	def add_exercises_to_weekly_plan():
+		import datetime
+		Day_Exercises = Day_Exercises_Planning_Exercises_Entry.get()
+		Day_Choice = week_opvar.get()
+
+		#todays_day = datetime.datetime.now()
+		#todays_day = todays_day.strftime("%a")
+		
+		results = mydb.select(['day_exercises'],"`day`='"+Day_Choice+"'","day_exercise_planning")
+		if results == ():
+			mydb.insert(['day','day_exercises'],[Day_Choice,Day_Exercises],'day_exercise_planning')
+		else:
+			result = results[0]
+			day_exercises = result['day_exercises']
+			day_exercises_li = day_exercises.split(',')
+			if Day_Exercises in day_exercises_li:
+				pass
+			else:
+				day_exercises = day_exercises + "," + Day_Exercises
+				mydb.edit(['day_exercises'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
 
 
+	This_Week_Exercise_Form = tkinter.Toplevel(Exercise_Section_Frame)
+	This_Week_Exercise_Form.geometry("600x400")
+	This_Week_Exercise_Form.title("Plan Meal")
+
+	ex_results = mydb.select(['name'],"","workout_moves_data")
+	ex_list_ = [result['name'] for result in ex_results]
+	week_opvar = tkinter.StringVar()
+	week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
+	week_opvar.set(week_days[0])
+
+	Day_Exercises_Planning_Day_Label =  tkinter.Label(This_Week_Exercise_Form, text = "Day")
+	Day_Exercises_Planning_Day_Option = tkinter.OptionMenu(This_Week_Exercise_Form, week_opvar, *week_days) # command = select_category_action
+	Day_Exercises_Planning_Exercises_Label = tkinter.Label(This_Week_Exercise_Form, text = "Exercise")
+	Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, This_Week_Exercise_Form, bd = 2, width=30)
+	Day_Exercises_Planning_Submit_Button = tkinter.Button(This_Week_Exercise_Form, text="Submit", command=add_exercises_to_weekly_plan)
+
+	Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
+	Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
+	Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
+	Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
+	Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
+
+
+
+
+	
 Todays_Exercise_Record_Button = tkinter.Button(Exercise_Section_Frame, text="Record Todays Exercise", command = Record_Todays_Exercise_Form)
 Exercise_Add_New_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Add New Exercise", command = New_Exercise_Entry_Form)
+Plan_This_Week_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Plan This Week", command = This_Week_Exercise_Form)
+
 
 def nutrition_form():
 	# Main - f0f0f0
@@ -854,7 +903,7 @@ Exercise_Section_Frame.grid(sticky="W", row = 2, column = 1)
 Exercise_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
 Todays_Exercise_Record_Button.grid(sticky="W", row = 1, column = 2, padx=5)
 Exercise_Add_New_Exercise_Button.grid(sticky="W", row = 1, column = 3)
-
+Plan_This_Week_Exercise_Button.grid(sticky="W", row = 1, column = 4)
 
 Nutrition_Section_Frame.grid(sticky="W", row = 2, column = 2)
 Nutrition_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
