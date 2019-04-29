@@ -53,6 +53,8 @@
 	### Exercise Module
 	
 	### Coming
+	Immergency: Export Sleep Time, Recovery Sleep Permited, Food Inventory, Nutrition Deficit
+	
 	User Profile Input, User Profile Loading and Calculate Daily nutrition deficit according to user profile goal
 	Daily Nutrition deficit calculator with macro and micro, and give food list recommendation to recover from deficit by eating
 

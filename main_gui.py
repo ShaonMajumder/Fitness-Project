@@ -678,7 +678,6 @@ def This_Week_Exercise_Form():
 			if exercise_id in day_exercises_li:
 				pass
 			else:
-				print(Day_Exercises)
 				day_exercises = day_exercises + "," + exercise_id
 				mydb.edit(['day_exercises_ids'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
 
@@ -746,7 +745,6 @@ def nutrition_form():
 			
 			#add previous
 			result = mydb.select(['id','food_name','number','unit'],"`date` = '"+str(today)+"' and `food_name`='"+food_name+"'",'nutrition_record')
-			print(result)
 			if result == ():
 				mydb.insert(['date','food_name','number','unit'],[today,food_name,number,unit],'nutrition_record')
 			else:
