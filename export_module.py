@@ -1,3 +1,20 @@
+from utilities.mysql_database import *
+from utilities.utility import *
+import configparser
+import codecs
+
+config = configparser.ConfigParser()
+config.readfp(codecs.open("safe_directory/config.ini", "r", "utf8"))
+
+host=config['DATABASE']['host']
+user=config['DATABASE']['user']
+password=config['DATABASE']['password']
+db=config['DATABASE']['db']
+charset=config['DATABASE']['charset']
+cursorclass=config['DATABASE']['cursorclass']
+
+mydb = mysql_db(host, user, password, db, charset, cursorclass)
+
 #8 digit activity_code of any activity of apps
 fasting = True
 activity_id = "324jkhs2"
@@ -17,47 +34,39 @@ if(fasting): fasting_time = "12:00AM-6:00PM"
 else: fasting_time = "No" # try not print if fasting is not needed
 bath = "Soap/Water Only/Shampoo/Soap and Shampoo"
 
-ex_days = ['cardio','legs','triceps','abs','lower back','biceps','shoulders','fore arms','chest','back']
+ex_days = ['cardio','legs','triceps','abs','lower back','biceps','shoulders','fore arms','chest','glutes','back']
 #unique Id will help in case of name change
-columns = ['workout_id', 'name', 'synonyms', 'sets', 'reps', 'weight', 'duration', 'bodypart_day']
-exercises = [\
-	['1sef2e','roman situps','','3','10','','','abs'],\
-	['a22f2e','twisting roman situps','','3','10','','','abs'],\
-	['1s3f2e','ground abs crunches','lying situps','3','10','5kg','','abs'],\
-	['ase42e','lying leg raise','','3','10','','','abs'],\
-	['asef5e','windsheild wiper','obliques leg twist', '3', '10', '', '','abs'],\
-	['asef26','hollow body hold','','3','10','','25seconds','abs'],\
-	['asef7e','plank walk pushup','','3','10','','','abs'],\
-	['ase82e','wood chooper','obliques pull','3','10','','','abs'],\
-	#['as9f2e','hyper extension','','1','10','','','lower back'],\
-	['a0ef2e','paralel bar hanging push down','','3','6','','','triceps'],\
-	['11ef2e','back angle bar pushup','','3','8','','','triceps'],\
-	['as222e','close grip bar pushup','','3','10','','','triceps'],\
-	['asef33','tricep overhead extension','','3','10','5kg,7.5kg,10kg','','triceps'],\
-	['as442e','cable stress overhead extension','','3','10','3bar','','triceps'],\
-	['55ef2e','skull crusher','','3','6','5kg','','triceps'],\
-	['as662e','seated dumbell kickback','','3','10','5kg','','triceps'],\
-	['asef77','leg extension','','3','10','4bar','','legs'],\
-	['as882e','hack squat','','3','10','40kg,55kg,65kg','','legs'],\
-	['99ef2e','leg press','','3','10','85kg,95kg,105kg','','legs'],\
-	['as002e','hill press','metatarsal press','3','25','','','legs'],\
-	['ase111','hyper extension','','2','10','','','lower back'],\
-	['222f2e','skipping','','1','1000','','','cardio'],\
 
-	['','','','','','','']
-]
-
+columns = mydb.get_columns('workout_moves_data')
 
 #if day == "" , import from saved plan
 #all exercise should be in lower case
 ex_strings = ""
-for exercise in exercises:
-	ex_id,ex_name,ex_synonyms,ex_sets,ex_reps,ex_weight,ex_duration,ex_part_day = exercise
+count = 0
+results = mydb.select('*',"","workout_moves_data")
+
+for result in results:
+	count = count + 1
 	
-	ex_string = ex_name + " - "+ex_sets+"sets "+"x "+ex_reps+"reps"
-	if(ex_weight): ex_string = ex_string + " x "+ex_weight
-	if(ex_duration): ex_string = ex_string + " x "+ex_duration
-	#if(ex_target): count total target muscles and their exercise hit number
+	id_=result['id']
+	workout_id=result['workout_id']
+	name=result['name']
+	synonyms=result['synonyms']
+	type_=result['type']
+	instrument=result['instrument']
+	sets=result['sets']
+	reps=result['reps']
+	weight=result['weight']
+	duration=result['duration']
+	bodypart_day=result['bodypart_day']
+	target_area=result['target_area']
+	demo=result['demo']
+	comment=result['comment']
+	
+	ex_string = str(count) + ". " + name + " - "+sets+"sets "+"x "+reps+"reps"
+	if(weight): ex_string = ex_string + " x "+weight
+	if(duration): ex_string = ex_string + " x "+duration
+	#if(target_area): count total target muscles and their exercise hit number
 	ex_strings = ex_strings + ex_string + "\n"
 
 ex_strings = "Targets:Abs,Triceps,Legs\nTotal Intensitiy: 2000rem\n" + ex_strings

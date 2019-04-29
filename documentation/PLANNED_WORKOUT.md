@@ -201,7 +201,7 @@ Bicep -
 	Preacher Curl
 
 	Long Head
-	Behind the body Cable curl
+	Behind the back Cable curl
 	Incline DB Curl
 	Close grip barbell curl(plane and outer wave brabell)
 
