@@ -45,6 +45,7 @@ ex_strings = ""
 count = 0
 results = mydb.select('*',"","workout_moves_data")
 
+
 for result in results:
 	count = count + 1
 	
@@ -107,3 +108,43 @@ Hygene Instructions:
 #print(stri.format(**locals()))
 print(stri)
 ##save the text file after print
+
+
+ex_results = mydb.select(['name'],"","workout_moves_data")
+ex_list_ = [result['name'] for result in ex_results]
+week_opvar = tkinter.StringVar()
+week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
+week_opvar.set(week_days[0])
+
+Day_Exercises_Planning_Day_Label =  tkinter.Label(Frame, text = "Day")
+Day_Exercises_Planning_Day_Option = tkinter.OptionMenu(Frame, week_opvar, *week_days) # command = select_category_action
+Day_Exercises_Planning_Exercises_Label = tkinter.Label(Frame, text = "Exercise")
+Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, Frame, bd = 2, width=30)
+Day_Exercises_Planning_Submit_Button = tkinter.Button(Frame, text="Submit", command=add_exercises_to_weekly_plan)
+
+Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
+Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
+Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
+Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
+Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
+
+
+
+
+def add_exercises_to_weekly_plan():
+	import datetime
+	Day_Exercises = week_opvar.get()
+	todays_day = datetime.datetime.now()
+	
+	results = mydb.select(['day_exercises'],"`day`='"+todays_day+"'","day_exercise_planning")
+	if results == ():
+		pass
+	else:
+		result = results[0]
+		day_exercises = result['day_exercises']
+		day_exercises_li = day_exercises.split(',')
+		if Day_Exercises in day_exercises_li:
+			pass
+		else:
+			day_exercises = day_exercises + "," + Day_Exercises
+			mydb.edit(['day_exercises'],[day_exercises],"`day` = '"+todays_day+"'","day_exercise_planning")
