@@ -1,5 +1,15 @@
 from tkinter import *
 import re
+import random
+import string
+
+def randomString(stringLength=10):
+    """Generate a random string of fixed length """
+    letters = string.ascii_lowercase
+    for c in range(10):
+        letters = letters + str(c)
+
+    return ''.join(random.choice(letters) for i in range(stringLength))
 
 def get_html(url):
     """Returns HTML beautiful soup 4 object"""

@@ -31,6 +31,8 @@ Muscles = ['Deltoids','Triceps','Biceps','Forearm','Trapezius','Middle Back','La
 from imports import *
 datetime_ = datetime.now().strftime("%d/%m/%y")
 
+def create_new_profile():
+	print(randomString(stringLength=8))
 
 config = configparser.ConfigParser()
 config.readfp(codecs.open("safe_directory/config.ini", "r", "utf8"))
