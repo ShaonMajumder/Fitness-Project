@@ -105,7 +105,7 @@ Weight: {weight}
 Blood Pressure: {blood_pressure}
 Body Fat Percentage: {body_fat_percentage}
 Sleep Hours: {sleep_hours}
-Recovery Sleep Permitted: {recovery_sleep_permitted}
+You can sleep more: {recovery_sleep_permitted}
 ----
 Preworkout:
 Gym Time Max: 2hours30minutes

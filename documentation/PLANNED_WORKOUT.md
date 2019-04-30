@@ -76,6 +76,10 @@
 	ElIf short head is lagging:
 		Concentration Curl (with supination): 3 sets of 6-10 reps
 		Spider curl (with supination): 3 sets of 6-10 reps
+
+## Glutes Workout
+	Hip Thrust
+		Hip flexion, lateral flexion, thoracic rotation,
 ______________________________________________________________________
 
 ## My Section

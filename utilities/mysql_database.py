@@ -1,5 +1,16 @@
+from __future__ import print_function
 import pymysql
 import pandas as pd
+
+
+import pickle
+import os.path
+
+import pandas as pd
+
+
+
+
 
 """
 Examples :
@@ -37,12 +48,19 @@ class mysql_db():
         return self.execute(query)
     def delete_table(self,table):
         #check if exist then drop table
-        query = "DROP TABLE "+table
-        return self.execute(query)
+        query = "SHOW TABLES LIKE '"+table+"'"
+        result = self.execute(query)
+        
+        if result == ():
+            print("Table "+table+" does not exists")
+        else:
+            query = "DROP TABLE "+table
+            return self.execute(query)
+
 
     def import_from_xlsx(self,xlsx_filename,table):
         db = pd.read_excel(xlsx_filename, encoding='utf-8')
-        rows = db.shape[0]
+        
         columns = list(db.columns)
         self.create_table(columns,table)
         data2d = []
@@ -100,3 +118,66 @@ class mysql_db():
             connection.close()
 
         return results
+
+    def import_list_from_google_sheet(self,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
+
+        from googleapiclient.discovery import build
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        from google.auth.transport.requests import Request
+
+
+
+        # If modifying these scopes, delete the file token.pickle.
+        SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+
+        # The ID and range of a sample spreadsheet.
+        """
+        google_sheet_client_id = config['GOOGLE_SHEET']['google_sheet_client_id']
+        google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret']
+
+        google_sheet_id = config['GOOGLE_SHEET']['spreadsheet_id']
+        google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
+        """
+        
+
+        """Shows basic usage of the Sheets API.
+        Prints values from a sample spreadsheet.
+        """
+        creds = None
+        # The file token.pickle stores the user's access and refresh tokens, and is
+        # created automatically when the authorization flow completes for the first
+        # time.
+        if os.path.exists('token.pickle'):
+            with open('token.pickle', 'rb') as token:
+                creds = pickle.load(token)
+        # If there are no (valid) credentials available, let the user log in.
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(
+                    'safe_directory/credentials.json', SCOPES)
+                creds = flow.run_local_server()
+            # Save the credentials for the next run
+            with open('token.pickle', 'wb') as token:
+                pickle.dump(creds, token)
+
+        service = build('sheets', 'v4', credentials=creds)
+
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                    range=SAMPLE_RANGE_NAME).execute()
+        values = result.get('values', [])
+
+        if not values:
+            print('No data found.')
+        else:
+            return values
+    def import_table_from_google_sheet(self,google_sheet_id,google_sheet_range,db_table):
+        values = self.import_list_from_google_sheet(google_sheet_id,google_sheet_range,db_table)
+        header = values.pop(0)
+        df = pd.DataFrame(values, columns=header)
+        df.to_excel("safe_directory/nutrition_values.xlsx")
+        self.delete_table(db_table)
+        self.import_from_xlsx('safe_directory/nutrition_values.xlsx',db_table)
