@@ -30,7 +30,8 @@
 	6. Hollow Body Hold - 
 	7. Plank Walk Pushup -
 	8. Wood Chooper | Obliques Pull -
-	9. Hyper Extension - 2setsx10reps [Perform 1 set after leg, if leg days]
+	9. Stomach Vacum
+	10. Hyper Extension - 2setsx10reps [Perform 1 set after leg, if leg days]
 
 ## Shoulders Workout
 	Warmups : 

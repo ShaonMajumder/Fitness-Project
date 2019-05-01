@@ -112,6 +112,10 @@ Gym Time Max: 2hours30minutes
 {ex_strings}
 Postworkout:
 ----
+Inventory Empty: Banana, Chicken
+----
+You have loaded too much carb.
+So today only 50grams of carb, and other ratio the same.
 Fasting: {fasting_time}
 Meal1:
 Meal2:
@@ -127,12 +131,23 @@ Hygene Instructions:
 #print(stri.format(**locals()))
 print(stri)
 
+strings = []
+for c in range(39):
+	while(True):
+		rands = randomString(stringLength=8)
+		if rands in strings:
+			pass
+		else:
+			break
+	strings.append(rands)
 
 
-
+for c in strings:
+	print(c)
 
 write_file('TestFile.txt', stri,mode="w")
 
 ##save the text file after print
 import os
 os.startfile("TestFile.txt", "print")
+
