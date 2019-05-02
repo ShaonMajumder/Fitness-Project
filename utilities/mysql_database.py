@@ -173,6 +173,7 @@ class mysql_db():
             print('No data found.')
         else:
             return values
+
     def import_table_from_google_sheet(self,CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table):
         values = self.import_list_from_google_sheet(CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table)
         header = values.pop(0)
@@ -182,3 +183,7 @@ class mysql_db():
         self.delete_table(db_table)
         self.import_from_xlsx(temp_file,db_table)
         os.remove(temp_file)
+
+    def remove_temp(self):
+        #remove token file which saves google spreadsheet access
+        os.remove('token.pickle')
