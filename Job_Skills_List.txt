@@ -1,0 +1,30 @@
+Senior DBA (SQL Server)
+Job Responsibilities
+
+§ Installing/Upgrading SQL Server, including SSRS, SSIS, SSAS in failover clusters environment
+
+§ SQL Server Security configurations, including encryption, data synchronization
+
+§ Configuring and maintaining SQL database Log Shipping, maintenance and Optimization
+
+§ Database Performance tuning and manage parameters in order to provide fast responses to front-end users
+
+§ Review database sizes, growth settings, and capacity planning.
+
+§ Hands-on experience on database table partitioning and indexing
+
+§ Write database documentation, including data standards, procedures and definitions for the data dictionary (metadata)
+
+§ Ensure that storage and archiving procedures are functioning correctly
+
+§ Communicate regularly with technical, applications and operational staff to ensure database integrity and security
+
+§ Establish Data migration plan, procedure and Execute data migration on different version of databases
+
+§ Able to work with different version of multiple databases
+
+§ Defining, configuring, documenting and testing disaster recovery plans
+
+§ Experience with 3rd party monitoring tools
+
+§ Sound knowledge of Windows and SQL Utilities

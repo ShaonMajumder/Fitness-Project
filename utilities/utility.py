@@ -3,6 +3,12 @@ import re
 import random
 import string
 
+
+def read_config_ini(filename):
+    config = configparser.ConfigParser()
+    config.readfp(codecs.open(filename, "r", "utf8"))
+    return config
+
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
