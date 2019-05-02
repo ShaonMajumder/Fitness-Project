@@ -1,9 +1,8 @@
-from utilities.mysql_database import *
-import configparser
-import codecs
+from mysql_database import *
+from utility import *
 
-config = configparser.ConfigParser()
-config.readfp(codecs.open("safe_directory/config.ini", "r", "utf8"))
+utilization_directory = '../safe_directory/'
+config = read_config_ini(utilization_directory+"config.ini")
 
 host=config['DATABASE']['host']
 user=config['DATABASE']['user']
@@ -20,4 +19,6 @@ google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret'
 
 google_sheet_id = config['GOOGLE_SHEET']['spreadsheet_id']
 google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
-mydb.import_table_from_google_sheet(google_sheet_id,google_sheet_range,'nutrition_values')
+mydb.import_table_from_google_sheet(utilization_directory+'credentials.json',google_sheet_id,google_sheet_range,'nutrition_values')
+
+print("Done...")

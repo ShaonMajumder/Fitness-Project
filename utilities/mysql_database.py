@@ -1,7 +1,7 @@
 from __future__ import print_function
 import pymysql
 import pandas as pd
-
+import os
 
 import pickle
 import os.path
@@ -17,7 +17,7 @@ Examples :
 #mydb.insert(['title','resource_url'],['v1','v2'],'data')
 #result = mydb.select(['name', 'value', 'id'],"`name` = 'mean_required_sleep_time'","constants")
 #mydb.edit(['name','value'],['n1','v1'],"`id` = 5","constants")
-#mydb.import_from_xlsx('safe_directory/nutrition_values.xlsx','nutrition_values')
+#mydb.import_from_xlsx('filename.xlsx','nutrition_values')
 #mydb.delete_table('nutrition_values')
 #mydb.help()
 #columns = mydb.get_columns('workout_moves_data')
@@ -119,7 +119,7 @@ class mysql_db():
 
         return results
 
-    def import_list_from_google_sheet(self,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
+    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
 
         from googleapiclient.discovery import build
         from google_auth_oauthlib.flow import InstalledAppFlow
@@ -155,8 +155,7 @@ class mysql_db():
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'safe_directory/credentials.json', SCOPES)
+                flow = InstalledAppFlow.from_client_secrets_file(CREDENTIAL_FILE, SCOPES)
                 creds = flow.run_local_server()
             # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:
@@ -174,10 +173,12 @@ class mysql_db():
             print('No data found.')
         else:
             return values
-    def import_table_from_google_sheet(self,google_sheet_id,google_sheet_range,db_table):
-        values = self.import_list_from_google_sheet(google_sheet_id,google_sheet_range,db_table)
+    def import_table_from_google_sheet(self,CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table):
+        values = self.import_list_from_google_sheet(CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table)
         header = values.pop(0)
         df = pd.DataFrame(values, columns=header)
-        df.to_excel("safe_directory/nutrition_values.xlsx")
+        temp_file = "temp.xlsx"
+        df.to_excel(temp_file)
         self.delete_table(db_table)
-        self.import_from_xlsx('safe_directory/nutrition_values.xlsx',db_table)
+        self.import_from_xlsx(temp_file,db_table)
+        os.remove(temp_file)

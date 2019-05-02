@@ -2,7 +2,8 @@ from tkinter import *
 import re
 import random
 import string
-
+import configparser
+import codecs
 
 def read_config_ini(filename):
     config = configparser.ConfigParser()
