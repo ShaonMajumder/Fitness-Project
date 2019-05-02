@@ -21,6 +21,11 @@ Examples :
 #mydb.delete_table('nutrition_values')
 #mydb.help()
 #columns = mydb.get_columns('workout_moves_data')
+#mydb.shift_down_one_row_space('id','4','workout_moves_data')
+#mydb.shift_up_one_row_space('id','4','workout_moves_data')
+#mydb.create_row_space_at('id',4,'workout_moves_data')
+#mydb.remove_row_space_at('id',4,'workout_moves_data')
+#mydb.rearrange_ids('id','day_exercise_planning')
 """
 
 class mysql_db():
@@ -34,71 +39,7 @@ class mysql_db():
             self.cursorclass = eval(cursorclass)
         else:
             self.cursorclass = cursorclass
-    def help(self):
-        custom_methods = [dir_name for dir_name in dir(mysql_db) if not '__' in dir_name]
-        print("Class Methods -> " + str(custom_methods))
-    def get_columns(self,table_name):
-        results = self.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+self.db+"' AND TABLE_NAME = '"+table_name+"'");
-        columns = [result['COLUMN_NAME'] for result in results]
-        return columns
-
-    def create_table(self,column_names,table):
-        stri = " VARCHAR(100), ".join(column_names) + " VARCHAR(100)"
-        query = "CREATE TABLE "+table+ " ( "+stri+" )"
-        return self.execute(query)
-    def delete_table(self,table):
-        #check if exist then drop table
-        query = "SHOW TABLES LIKE '"+table+"'"
-        result = self.execute(query)
-        
-        if result == ():
-            print("Table "+table+" does not exists")
-        else:
-            query = "DROP TABLE "+table
-            return self.execute(query)
-
-
-    def import_from_xlsx(self,xlsx_filename,table):
-        db = pd.read_excel(xlsx_filename, encoding='utf-8')
-        
-        columns = list(db.columns)
-        self.create_table(columns,table)
-        data2d = []
-        for row in db.iterrows():
-            index, data = row
-            data2d.append(data.tolist())
-
-        for row_li in data2d:
-            self.insert(columns,row_li,table)
-
-
-    def insert(self,keys,values,table):
-        key_str = '`' + '`,`'.join(keys) + '`'
-        value_str = "'" + "','".join(str(v) for v in values) + "'"
-        
-        query = "INSERT INTO `"+table+"` ("+key_str+") VALUES ("+value_str+")"
-        return self.execute(query)
-
-    def select(self,keys,condition_str,table):
-        if keys == '*':
-            key_str = '*'
-        else:
-            key_str = '`' + '`,`'.join(keys) + '`'
-        if condition_str == "":
-            condition_str = "True"
-
-        query = "SELECT "+key_str+" FROM `"+table+"` where "+condition_str
-        return self.execute(query)
-
-    def edit(self,keys,values,condition,table):
-        key_val_str = ""
-        for key,value in zip(keys,values):
-            key_val_str = key_val_str + "`"+key+"` = '"+value+"',"
-        
-        key_val_str = key_val_str[:-1]
-        query = "UPDATE `"+table+"` SET "+key_val_str+" where "+condition
-        return self.execute(query)
-
+    
     def execute(self,query):
         # Connect to the database
         connection = pymysql.connect(host=self.host, user=self.user, password=self.password, db=self.db, charset=self.charset, cursorclass=self.cursorclass)
@@ -119,13 +60,100 @@ class mysql_db():
 
         return results
 
-    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
+    def help(self):
+        custom_methods = [dir_name for dir_name in dir(mysql_db) if not '__' in dir_name]
+        print("Class Methods -> " + str(custom_methods))
 
+    def select(self,keys,condition_str,table):
+        if keys == '*':
+            key_str = '*'
+        else:
+            key_str = '`' + '`,`'.join(keys) + '`'
+        if condition_str == "":
+            condition_str = "True"
+
+        query = "SELECT "+key_str+" FROM `"+table+"` where "+condition_str
+        return self.execute(query)
+
+    def insert(self,keys,values,table):
+        key_str = '`' + '`,`'.join(keys) + '`'
+        value_str = "'" + "','".join(str(v) for v in values) + "'"
+        
+        query = "INSERT INTO `"+table+"` ("+key_str+") VALUES ("+value_str+")"
+        return self.execute(query)
+
+    def edit(self,keys,values,condition,table):
+        key_val_str = ""
+        for key,value in zip(keys,values):
+            key_val_str = key_val_str + "`"+key+"` = '"+value+"',"
+        
+        key_val_str = key_val_str[:-1]
+        query = "UPDATE `"+table+"` SET "+key_val_str+" where "+condition
+        return self.execute(query)
+
+    def get_columns(self,table_name):
+        results = self.execute("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '"+self.db+"' AND TABLE_NAME = '"+table_name+"'");
+        columns = [result['COLUMN_NAME'] for result in results]
+        return columns
+
+    def create_table(self,column_names,table):
+        stri = " VARCHAR(100), ".join(column_names) + " VARCHAR(100)"
+        query = "CREATE TABLE "+table+ " ( "+stri+" )"
+        return self.execute(query)
+
+    def delete_table(self,table):
+        #check if exist then drop table
+        query = "SHOW TABLES LIKE '"+table+"'"
+        result = self.execute(query)
+        
+        if result == ():
+            print("Table "+table+" does not exists")
+        else:
+            query = "DROP TABLE "+table
+            return self.execute(query)
+
+    def create_row_space_at(self,primary_key,new_row,db_table):
+        #Making space in middle
+        after_row = new_row - 1
+        self.shift_down_one_row_space(primary_key,after_row,db_table)
+
+    def remove_row_space_at(self,primary_key,blank_row,db_table):
+        #Making space in middle
+        self.shift_up_one_row_space(primary_key,blank_row,db_table)
+
+    def shift_down_one_row_space(self,primary_key,after_row,db_table):
+        query = f"""UPDATE `{db_table}` SET {primary_key} = {primary_key} + 1 WHERE id > {after_row} ORDER BY {primary_key} DESC"""
+        self.execute(query)
+
+    def shift_up_one_row_space(self,primary_key,after_row,db_table):
+        query = f"""UPDATE `{db_table}` SET {primary_key} = {primary_key} - 1 WHERE id > {after_row} ORDER BY {primary_key} ASC"""
+        self.execute(query)
+
+    def reset_autoincrement_from(self,from_,db_table):
+        query = f"""ALTER TABLE `{db_table}` AUTO_INCREMENT = {from_}"""
+        self.execute(query)
+
+    def rearrange_ids(self,primary_key,db_table):
+        query = f"""update `{db_table}` cross join (select @cur:=0) as init set `{db_table}`.`{primary_key}`=@cur:=@cur+1"""
+        self.execute(query)
+
+    def import_from_xlsx(self,xlsx_filename,table):
+        db = pd.read_excel(xlsx_filename, encoding='utf-8')
+        
+        columns = list(db.columns)
+        self.create_table(columns,table)
+        data2d = []
+        for row in db.iterrows():
+            index, data = row
+            data2d.append(data.tolist())
+
+        for row_li in data2d:
+            self.insert(columns,row_li,table)
+
+    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
         from googleapiclient.discovery import build
         from google_auth_oauthlib.flow import InstalledAppFlow
         from google.auth.transport.requests import Request
-
-
 
         # If modifying these scopes, delete the file token.pickle.
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
