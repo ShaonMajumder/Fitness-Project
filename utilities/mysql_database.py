@@ -134,8 +134,12 @@ class mysql_db():
         self.execute(query)
 
     def rearrange_ids(self,primary_key,db_table):
-        query = f"""update `{db_table}` cross join (select @cur:=0) as init set `{db_table}`.`{primary_key}`=@cur:=@cur+1"""
+        #SET @count = 0;
+        #UPDATE `table_name` SET `table_name`.`id` = @count:= @count + 1;
+
+        query = f"""UPDATE `{db_table}` cross join (select @count:=0) as init SET `{db_table}`.`{primary_key}`=@count:=@count+1"""
         self.execute(query)
+        self.reset_autoincrement_from(1,db_table)
 
     def import_from_xlsx(self,xlsx_filename,table):
         db = pd.read_excel(xlsx_filename, encoding='utf-8')
