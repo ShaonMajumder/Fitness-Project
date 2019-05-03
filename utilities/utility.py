@@ -4,6 +4,21 @@ import random
 import string
 import configparser
 import codecs
+import os
+import win32print
+
+def get_today_day():
+    import datetime
+    week_days = ['monday', 'tuesday', 'wednesday', 'thursday',  'friday', 'saturday', 'sunday']
+    week_day = datetime.datetime.today().weekday()
+    day = week_days[week_day]
+    return day
+
+
+def printer_file(filename):
+    printer_name = "Canon LBP6030/6040/6018L"
+    win32print.SetDefaultPrinter(printer_name)
+    os.startfile(filename, "print")
 
 def read_config_ini(filename):
     config = configparser.ConfigParser()

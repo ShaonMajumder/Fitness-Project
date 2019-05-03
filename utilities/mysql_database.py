@@ -7,7 +7,7 @@ import pickle
 import os.path
 
 import pandas as pd
-
+import numpy as np
 
 
 
@@ -26,6 +26,7 @@ Examples :
 #mydb.create_row_space_at('id',4,'workout_moves_data')
 #mydb.remove_row_space_at('id',4,'workout_moves_data')
 #mydb.rearrange_ids('id','day_exercise_planning')
+#mydb.export_column('Food_Id','nutrition_values')
 """
 
 class mysql_db():
@@ -142,7 +143,7 @@ class mysql_db():
         self.reset_autoincrement_from(1,db_table)
 
     def import_from_xlsx(self,xlsx_filename,table):
-        db = pd.read_excel(xlsx_filename, encoding='utf-8')
+        db = pd.read_excel(xlsx_filename, na_filter=False, encoding='utf-8')
         
         columns = list(db.columns)
         self.create_table(columns,table)
@@ -215,6 +216,11 @@ class mysql_db():
         self.delete_table(db_table)
         self.import_from_xlsx(temp_file,db_table)
         os.remove(temp_file)
+
+    def export_column(self,target,db_table):
+        results = self.select([target],"",db_table)
+        for row in results:
+            print(row[target])
 
     def remove_temp(self):
         #remove token file which saves google spreadsheet access

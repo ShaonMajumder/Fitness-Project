@@ -8,10 +8,8 @@
 ### Body fat% for 6 pack calculation - https://www.youtube.com/watch?v=j4zOuCYYCcs
 
 from utilities.science import *
+from utilities.utility import *
 import argparse
-import configparser
-import codecs
-import tkinter
 
 def cli_input_sequence():
 	parser = argparse.ArgumentParser()
@@ -62,27 +60,22 @@ def cli_input_sequence():
 			args.change_protein_grams_per_body_pound = input("Change protein bodyweight "+str(protein_grams_per_body_pound)+"g?. <::")
 
 	elif args.inputsource == 'file':
-		config = configparser.ConfigParser()
-		config.readfp(codecs.open("Goal.data", "r", "utf8"))
+		config =read_config_ini("Goal.data")
 
-		bodyweight = config['PHYSIQUE']['bodyweight']
 		gender = config['PHYSIQUE']['gender']
 		age = config['PHYSIQUE']['age']
 		height = config['PHYSIQUE']['height']
-		fitness_goal = config['GOAL']['goal']
-		#calorie_intake = config['CALORIE']['calorie_intake']
+		bodyweight = config['PHYSIQUE']['bodyweight']
+		activity_level = config['ROUTINE']['activity_level']
 		protein_grams_per_body_pound = config['CALORIE']['protein_grams_per_body_pound']
 		mealnumber = config['ROUTINE']['mealnumber']
-		activity_level = config['ROUTINE']['activity_level']
+		fitness_goal = config['GOAL']['goal']
+		#calorie_intake = config['CALORIE']['calorie_intake']
+		
 		args.change_protein_grams_per_body_pound = config['CALORIE']['change_protein_grams_per_body_pound']
 
 	else:
 		raise ValueError('Invalid choice.')
-
-	if gender == 'male' or gender == 'female':
-		pass
-	else:
-		raise ValueError(gender+" is invalid gender. Sex can be 'male' or 'female'.")
 
 	if args.change_protein_grams_per_body_pound == 'yes':
 		protein_grams_per_body_pound = input("Protein per body weight in grams. for muscle gain 0.5 - 1.8. For beginner 0.5. For intermediate 1. <<:")
@@ -116,7 +109,10 @@ def main():
 	calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g = result
 	"""Calculation Ends"""
 
-	result_stri = f"""Result,\n  Your Daily CALORIE intake: {calorie_intake} Kcal\n  Your Daily Macros - {round(protein_requirement_g,2)}g Protein|{round(fat_requirement_g,2)}g Fat|{round(carbohydrate_requirement_g,2)}g Carbohydrate\n  Your need to eat per meal - {round(per_meal_protein_requirement_g,2)}g Protein|{round(per_meal_fat_requirement_g,2)}g Fat|{round(per_meal_carbohydrate_requirement_g,2)}g Carbohydrate"""
+	result_stri = f"""Result,
+  Your Daily CALORIE intake: {calorie_intake} Kcal
+  Your Daily Macros - {round(protein_requirement_g,2)}g Protein|{round(fat_requirement_g,2)}g Fat|{round(carbohydrate_requirement_g,2)}g Carbohydrate
+  Your need to eat per meal - {round(per_meal_protein_requirement_g,2)}g Protein|{round(per_meal_fat_requirement_g,2)}g Fat|{round(per_meal_carbohydrate_requirement_g,2)}g Carbohydrate"""
 	print(result_stri)
 
 	

@@ -230,27 +230,45 @@ def filter_activity_level(activity_level):
 
 def filter_protein_grams_per_body_pound(protein_grams_per_body_pound):
 	protein_grams_per_body_pound = float(protein_grams_per_body_pound)
-	if( protein_grams_per_body_pound > 1.5 ):
+	if( protein_grams_per_body_pound > 1.8 ):
 		raise ValueError("You are consuming too much protein for per body pound !!!")
 	elif(protein_grams_per_body_pound < 0.5 ):
 		raise ValueError("You are consuming too less protein for per body pound !!!")
 	return protein_grams_per_body_pound
 
+def filter_gender(gender):
+	if gender in ['male','female']:
+		return gender
+	else:
+		raise ValueError(gender+" is invalid gender. Sex can be 'male' or 'female'.")
+
+def filter_fitness_goal(fitness_goal):
+	if fitness_goal in ['maintain','gain','Lean_Bulking','loose','extra_loose']:
+		return fitness_goal
+	else:
+		raise ValueError("Fitness Goal = '" + fitness_goal + "' is not valid")		
+
 def nutrition_calculator(gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal,debug=False):
 	activity_level_sentences = ['Basal Metabolic Rate','Little/No exercise','3 times/week','4 times/week','5 times/week','Daily','5 times/week(Intense)','Daily(Intense) or Twice Daily','Daily exercise + Physical Job']
 	
-	body_weight_digit,body_weight_unit = filter_bodyweight(bodyweight)
-	#calorie_intake_digit,calorie_unit = filter_calorie(calorie_intake)
+	""" filtering """
+	gender = filter_gender(gender)
 	age_yrs,age_unit = filter_age(age)
-	mealnumber = filter_mealnumber(mealnumber)
 	feet_digit,inch_digit = filter_height_feet_inch(height)
 	height_cm = feet_to_cm(feet_digit) + inch_to_cm(inch_digit)
+	body_weight_digit,body_weight_unit = filter_bodyweight(bodyweight)
 	activity_level = filter_activity_level(activity_level)
 	protein_grams_per_body_pound = filter_protein_grams_per_body_pound(protein_grams_per_body_pound)
-
+	mealnumber = filter_mealnumber(mealnumber)
+	fitness_goal = filter_fitness_goal(fitness_goal)
+	#calorie_intake_digit,calorie_unit = filter_calorie(calorie_intake)
+	
+	""" Debug """
 	print_stri = f"""Given yours,\n  Goal: {fitness_goal}\n  Gender: {gender}\n  Age: {age_yrs} years\n  Height: {feet_digit} feet {inch_digit} inch\n  Bodyweight = {body_weight_digit} {body_weight_unit}\n  Daily Mealnumber: {mealnumber}\n  Daily Activity Level: {activity_level_sentences[activity_level]}\n  According to goal,\n  Daily Protein requirement per body pound: {protein_grams_per_body_pound} grams"""
 	if(debug): print(print_stri)
 	
+
+	""" Calculation """
 	if body_weight_unit == 'kgs':
 		body_weight_digit = kgs_to_lbs(body_weight_digit)
 		body_weight_unit = 'lbs'
@@ -275,7 +293,6 @@ def nutrition_calculator(gender,age,height,bodyweight,activity_level,protein_gra
 		calorie_intake = cutting_calorie_intake
 	elif args.goal == 'extra_loose':
 		calorie_intake = cutting_calorie_intake
-		
 
 	fat_percentage_relative_to_protein = 0.4
 

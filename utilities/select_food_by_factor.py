@@ -55,6 +55,23 @@ def sort_by_inventory_availability():
 	pass
 
 
-adjust_structure_nutrition_value()
+#adjust_structure_nutrition_value()
 #sort_by_nutrition('Total_Carbohydrate_grams')
 sort_by_nutrition('Protien_grams')
+sort_by_inventory_availability()
+# Food Choose For Daily Diet Plan
+# Combine heavy nutrition and more availability to pick a food
+# Then Consider Price at last to sort to pick a food or you can escape
+
+# Buy list for inventory
+# Combine heavy nutrition and more availability in market pick a food
+# Then Consider Price at last to sort to pick a food
+
+# Then Consider health factors on heavy nutrition, which can rise other nutrients excessively
+
+sort_by_price(price = ['cheap','costly'])
+
+#combine 3 factor in food pick
+#Egg Full = 34*.16 + 66*.11 = 12.7
+#Wheigh the average raw egg shell, minus that from total weigh of a raw egg
+#Whenever you weigh a egg, always minus the egg shell weight
