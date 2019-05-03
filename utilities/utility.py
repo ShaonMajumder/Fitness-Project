@@ -7,6 +7,13 @@ import codecs
 import os
 import win32print
 
+def unique_items(li):
+    dic = {}
+    for key in li:
+        dic[key] = ''
+    unique_keys = [key for key in dic]
+    return unique_keys
+    
 def get_today_day():
     import datetime
     week_days = ['monday', 'tuesday', 'wednesday', 'thursday',  'friday', 'saturday', 'sunday']

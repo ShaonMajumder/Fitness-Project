@@ -2,6 +2,9 @@ unit_kg_to_pounds = 2.20462
 unit_feet_to_centimeters = 30.48
 unit_feet_to_inches = 12
 unit_inch_to_centimeters = 2.54
+unit_kg_to_gram = 1000
+unit_hali_to_piece = 4
+unit_dozen_to_piece = 12
 
 def One_Rep_Max(Regular_Rep,Regular_Weight):
 	return Regular_Weight/0.75
@@ -10,6 +13,18 @@ def One_Rep_Max(Regular_Rep,Regular_Weight):
 	Volume = Regular_Rep * Regular_Weight 
 	Rep_Max = Regular_Weight + (Volume * .033)
 	return Rep_Max
+
+def gram_to_kg(grams):
+	return grams/unit_kg_to_gram
+
+def hali_to_piece(halis):
+	return halis*unit_hali_to_piece
+
+def dozen_to_piece(dozens):
+	return dozens*unit_dozen_to_piece
+
+def kg_to_gram(kgs):
+	return kgs*unit_kg_to_gram
 
 def feet_to_cm(feet):
 	return unit_feet_to_centimeters*feet

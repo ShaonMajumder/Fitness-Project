@@ -24,7 +24,7 @@ Hygene_Section_Frame       Grooming_Section_Frame
 Social_Section_Frame
 
 """
-
+from utilities.science import *
 
 Muscles = ['Deltoids','Triceps','Biceps','Forearm','Trapezius','Middle Back','Latissimus Dorsi','Lower Back','Quadriceps','Calves','Hamstring','Upper Abs','Lower Abs','Obliques']
 
@@ -35,7 +35,7 @@ def create_new_profile():
 	print(randomString(stringLength=8))
 
 config = configparser.ConfigParser()
-config.readfp(codecs.open("safe_directory/config.ini", "r", "utf8"))
+config.readfp(codecs.open("safe_directory/dbconfig.ini", "r", "utf8"))
 
 u_config = configparser.ConfigParser()
 u_config.readfp(codecs.open("youtube_config.ini", "r", "utf8"))
@@ -173,6 +173,43 @@ def repair_data_file():
 	write_file(Get_utube_video_title_Input_File_Name, stri, mode )
 	messagebox.showinfo( "Hello Python", "Data File repaired.")
 
+
+def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_unit):
+	"""
+	Converting Purchasing_Unit
+	kg,grams = kg,grams_to_kg
+	piece,hali,dozen = piece,hali_to_piece,dozen_to_piece
+	bundle = bundle
+	litre = litre
+	OPTIONS_Food_Unit = ['kg','gram','piece','hali','dozen','bundle','litre']
+	#unique = kg,bundle,litre,piece
+	"""				
+
+	if food_quantity_unit == 'gram':
+		food_quantity_digit = gram_to_kg(food_quantity_digit)
+		food_quantity_unit = 'kg'
+	elif food_quantity_unit == 'hali':
+		food_quantity_digit = hali_to_piece(food_quantity_digit)
+		food_quantity_unit = 'piece'
+	elif food_quantity_unit == 'dozen':
+		food_quantity_digit = dozen_to_piece(food_quantity_digit)
+		food_quantity_unit = 'piece'
+	
+	results = mydb.select(['Food_Id','Purchasing_Unit'], f"""`Name`='{food_name}'""" ,'nutrition_values')
+	Food_Id = results[0]['Food_Id']
+	Purchasing_Unit = results[0]['Purchasing_Unit']
+
+	results = mydb.select(['Food_Id','quantity','unit'],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
+	if results == ():
+		mydb.insert(['Food_Id','food_name','quantity','unit'],[Food_Id,food_name,food_quantity_digit,food_quantity_unit],'food_inventory')
+	else:
+		#add the quantity
+		row = results[0]
+		quantity = float(row['quantity'])
+
+		if row['unit'] == food_quantity_unit:
+			quantity = food_quantity_digit + quantity
+			mydb.edit(['quantity'],[quantity],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
 
 def New_Exercise_Entry_Form():
 	New_Exercise_Form = tkinter.Toplevel(top_frame)
@@ -734,6 +771,37 @@ def nutrition_form():
 		Food_Quantity_Label.grid(sticky="W", row=3, column=2)
 
 
+	def manage_inventory_form():
+		def add_to_inventory():
+			food_name = MANAGE_INVENTORY_Food_Name_Entry.get()
+			food_quantity_digit = float(MANAGE_INVENTORY_Food_Consumed_Quantity_Entry.get())
+			food_quantity_unit = OptionsVar_Food_Unit.get()
+			add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_unit)
+
+		MANAGE_INVENTORY_FORM = tkinter.Toplevel(top_frame)
+		MANAGE_INVENTORY_FORM.geometry("600x400")
+		MANAGE_INVENTORY_FORM.title("Manage Inventory")
+		MANAGE_INVENTORY_Food_Name_Label = tkinter.Label(MANAGE_INVENTORY_FORM, text="Food Name", bg="white")
+
+		result= mydb.select(['Name','Bangla_Name'],"","nutrition_values")
+		Food_list = [line['Name'] for line in result]
+		MANAGE_INVENTORY_Food_Name_Entry = AutocompleteEntry(Food_list, MANAGE_INVENTORY_FORM, bd = 2, width=30)	
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Label = tkinter.Label(MANAGE_INVENTORY_FORM, text="Quantity", bg="white")
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Entry = tkinter.Entry(MANAGE_INVENTORY_FORM,width=12)
+
+		OptionsVar_Food_Unit = tkinter.StringVar(MANAGE_INVENTORY_FORM)
+		OPTIONS_Food_Unit = ['kg','gram','piece','hali','dozen','bundle','litre']
+		OptionsVar_Food_Unit.set(OPTIONS_Food_Unit[0])
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Option = tkinter.OptionMenu(MANAGE_INVENTORY_FORM, OptionsVar_Food_Unit, *OPTIONS_Food_Unit)
+		MANAGE_INVENTORY_ADD_TO_INVENTORY_Button = tkinter.Button(MANAGE_INVENTORY_FORM, text = "Add to Inventory", bg='white', command=add_to_inventory)
+
+		MANAGE_INVENTORY_Food_Name_Label.grid(sticky="w",row=1,column=1)
+		MANAGE_INVENTORY_Food_Name_Entry.grid(sticky="w",row=1,column=2)
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Label.grid(sticky="w",row=1,column=3)
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Entry.grid(sticky="w",row=1,column=4)
+		MANAGE_INVENTORY_Food_Consumed_Quantity_Option.grid(sticky="w",row=1,column=5)
+		MANAGE_INVENTORY_ADD_TO_INVENTORY_Button.grid(sticky="w",row=2,column=1)
+
 	def record_unplanned_meal_form():
 		def record_unplanned_meal_submit_add_new():
 			record_unplanned_meal_submit(True)
@@ -802,7 +870,7 @@ def nutrition_form():
 	Nutrition_Form_Label_Color = 'white'
 	Nutrition_Section_Record_Unplanned_Meal_Label = tkinter.Button(Nutrition_Registry_Form, text = "Record Unplanned Meal", bg=Nutrition_Form_Label_Color, command=record_unplanned_meal_form)
 	Nutrition_Section_Plan_Meal_Label = tkinter.Button(Nutrition_Registry_Form, text = "Plan Meal", bg=Nutrition_Form_Label_Color, command=plan_meal_form)
-	Nutrition_Section_Manage_Inventory_Label = tkinter.Button(Nutrition_Registry_Form, text = "Manage Inventory", bg=Nutrition_Form_Label_Color)
+	Nutrition_Section_Manage_Inventory_Label = tkinter.Button(Nutrition_Registry_Form, text = "Manage Inventory", bg=Nutrition_Form_Label_Color, command=manage_inventory_form)
 	Nutrition_Section_Add_New_Food_Label = tkinter.Button(Nutrition_Registry_Form, text = "Record New Food", bg=Nutrition_Form_Label_Color)
 
 	Nutrition_Section_Form_Label.grid(sticky="w",row=1,column=1)
