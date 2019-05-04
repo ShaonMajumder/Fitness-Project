@@ -209,6 +209,7 @@ def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_u
 
 		if row['unit'] == food_quantity_unit:
 			quantity = food_quantity_digit + quantity
+			quantity = str(quantity)
 			mydb.edit(['quantity'],[quantity],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
 
 def New_Exercise_Entry_Form():
@@ -777,6 +778,7 @@ def nutrition_form():
 			food_quantity_digit = float(MANAGE_INVENTORY_Food_Consumed_Quantity_Entry.get())
 			food_quantity_unit = OptionsVar_Food_Unit.get()
 			add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_unit)
+			MANAGE_INVENTORY_FORM.destroy()
 
 		MANAGE_INVENTORY_FORM = tkinter.Toplevel(top_frame)
 		MANAGE_INVENTORY_FORM.geometry("600x400")
