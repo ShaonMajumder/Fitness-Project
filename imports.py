@@ -3,6 +3,7 @@ from requests.exceptions import ConnectTimeout,ReadTimeout,ConnectionError
 from tkinter import messagebox
 from datetime import datetime,timedelta,date
 from utilities.utility import *
+from utilities.science import *
 from utilities.mysql_database import *
 from tkinter import font
 

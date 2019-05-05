@@ -24,21 +24,18 @@ Hygene_Section_Frame       Grooming_Section_Frame
 Social_Section_Frame
 
 """
-from utilities.science import *
+from imports import *
 
 Muscles = ['Deltoids','Triceps','Biceps','Forearm','Trapezius','Middle Back','Latissimus Dorsi','Lower Back','Quadriceps','Calves','Hamstring','Upper Abs','Lower Abs','Obliques']
 
-from imports import *
+
 datetime_ = datetime.now().strftime("%d/%m/%y")
 
 def create_new_profile():
 	print(randomString(stringLength=8))
 
-config = configparser.ConfigParser()
-config.readfp(codecs.open("safe_directory/dbconfig.ini", "r", "utf8"))
-
-u_config = configparser.ConfigParser()
-u_config.readfp(codecs.open("youtube_config.ini", "r", "utf8"))
+config = read_config_ini("safe_directory/dbconfig.ini")
+u_config = read_config_ini("youtube_config.ini")
 
 host=config['DATABASE']['host']
 user=config['DATABASE']['user']
@@ -65,6 +62,7 @@ utube_title_seperating_flag = utube_title_seperating_flag.replace('\'','')
 
 time_units = ['years','months','days','hours','minutes','seconds']
 time_quan = {'seconds':60, 'minutes':60, 'hours':24, 'days':30, 'months':12, 'years':1}
+
 
 def get_site_title(url):
 	page = get_html(url)
@@ -174,6 +172,9 @@ def repair_data_file():
 	messagebox.showinfo( "Hello Python", "Data File repaired.")
 
 
+"""
+Nutrition Functions
+"""
 def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_unit):
 	"""
 	Converting Purchasing_Unit
@@ -211,6 +212,8 @@ def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_u
 			quantity = food_quantity_digit + quantity
 			quantity = str(quantity)
 			mydb.edit(['quantity'],[quantity],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
+
+
 
 def New_Exercise_Entry_Form():
 	New_Exercise_Form = tkinter.Toplevel(top_frame)

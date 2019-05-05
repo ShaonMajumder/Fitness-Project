@@ -1,4 +1,5 @@
 from __future__ import print_function
+from gsheet import *
 import pymysql
 import pandas as pd
 import os
@@ -150,52 +151,9 @@ class mysql_db():
         for row_li in data2d:
             self.insert(columns,row_li,table)
 
-    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SAMPLE_SPREADSHEET_ID,SAMPLE_RANGE_NAME,db_table):
-        from googleapiclient.discovery import build
-        from google_auth_oauthlib.flow import InstalledAppFlow
-        from google.auth.transport.requests import Request
-
-        # If modifying these scopes, delete the file token.pickle.
-        SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-
-        # The ID and range of a sample spreadsheet.
-        """
-        google_sheet_client_id = config['GOOGLE_SHEET']['google_sheet_client_id']
-        google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret']
-
-        google_sheet_id = config['GOOGLE_SHEET']['spreadsheet_id']
-        google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
-        """
-        
-
-        """Shows basic usage of the Sheets API.
-        Prints values from a sample spreadsheet.
-        """
-        creds = None
-        # The file token.pickle stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
-                creds = pickle.load(token)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(CREDENTIAL_FILE, SCOPES)
-                creds = flow.run_local_server()
-            # Save the credentials for the next run
-            with open('token.pickle', 'wb') as token:
-                pickle.dump(creds, token)
-
-        service = build('sheets', 'v4', credentials=creds)
-
-        # Call the Sheets API
-        sheet = service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                    range=SAMPLE_RANGE_NAME).execute()
-        values = result.get('values', [])
+    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SPREADSHEET_ID,FINDAREA_RANGE_NAME,db_table):
+        gsheet = Gsheet(CREDENTIAL_FILE,SPREADSHEET_ID)
+        values = gsheet.get_values(FINDAREA_RANGE_NAME)
 
         if not values:
             print('No data found.')

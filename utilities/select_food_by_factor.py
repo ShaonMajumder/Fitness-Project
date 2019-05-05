@@ -107,9 +107,24 @@ print(purchasing_units)
 Flow list
 ---------
 []
-Then calculate from their your meal plan.
-Then calculate a way with micronutrients also.
-google sheet updater for food id update
-food nutrition value wikipedia parser
+1. drink 5 litre water and eat at least after every 2 hour
+1. complete inventory
+name,purchase_digit,purchase_unit,
+ginger,kg,.1,
+garlic,kg,.1,
+onion,kg,2,
+green chilly,kg,.1,
+coriander leaf,kg,.1,
+tomato,kg,1
+full egg,piece,6
+banana,piece,8
+peanut,kg,.5
+chickpeas,kg,.5
+chicken,kg,1.5
+cucumber,
+carrot,
 
+2. Then calculate from their your meal plan.
+3. Then calculate a way with micronutrients also.
+4. food nutrition value wikipedia parser
 """
