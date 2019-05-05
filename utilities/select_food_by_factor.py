@@ -101,3 +101,15 @@ results = mydb.select('*',"",'nutrition_values')
 purchasing_units = unique_items([row['Purchasing_Unit'] for row in results])
 print(purchasing_units)
 
+
+
+"""
+Flow list
+---------
+[]
+Then calculate from their your meal plan.
+Then calculate a way with micronutrients also.
+google sheet updater for food id update
+food nutrition value wikipedia parser
+
+"""

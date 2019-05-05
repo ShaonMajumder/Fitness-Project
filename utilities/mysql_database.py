@@ -2,15 +2,10 @@ from __future__ import print_function
 import pymysql
 import pandas as pd
 import os
-
 import pickle
 import os.path
-
 import pandas as pd
 import numpy as np
-
-
-
 
 """
 Examples :

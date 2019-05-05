@@ -19,6 +19,7 @@ google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret'
 
 google_sheet_id = config['GOOGLE_SHEET']['spreadsheet_id']
 google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
+print("1")
 mydb.import_table_from_google_sheet(utilization_directory+'credentials.json',google_sheet_id,google_sheet_range,'nutrition_values')
 #mydb.remove_temp()
 
