@@ -3,7 +3,7 @@
 goal = Lean_Bulking
 
 [CALORIE]
-protein_grams_per_body_pound = 1
+protein_grams_per_body_pound = 0.5
 change_protein_grams_per_body_pound = no
 
 [PHYSIQUE]

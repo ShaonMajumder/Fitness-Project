@@ -4,7 +4,7 @@ from tkinter import messagebox
 from datetime import datetime,timedelta,date
 from utilities.utility import *
 from utilities.science import *
-from utilities.mysql_database import *
+from utilities.mysql_database import mysql_db
 from tkinter import font
 
 import os
