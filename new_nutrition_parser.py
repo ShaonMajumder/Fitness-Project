@@ -39,6 +39,7 @@ def parse_nutrition(string):
 	wiki_ = driver.find_element_by_xpath('//div[@class="SALvLe farUxc mJ2Mod"]')
 
 	nutritients = {}
+	nutritients['Name'] = string
 	#Macro Nutrients
 	res_key = ['Amount Per','Calories','Total Fat','Cholesterol','Sodium','Potassium','Total Carbohydrate','Protein','Caffeine']
 	for element in driver.find_elements_by_xpath('//span[@class="V6Ytv"]'):
@@ -94,4 +95,28 @@ def parse_nutrition(string):
 	driver.quit()
 	return nutritients
 
-print(parse_nutrition('rice'))
+from utilities.gsheet import *
+from utilities.utility import *
+utilization_directory = 'safe_directory/'
+config = read_config_ini(utilization_directory+"dbconfig.ini")
+cred_json_file = utilization_directory+'sheet_credentials.json'
+
+
+google_sheet_client_id = config['GOOGLE_SHEET']['google_sheet_client_id']
+google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret']
+
+SPREADSHEET_ID = config['GOOGLE_SHEET']['spreadsheet_id']
+google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
+gsheet = Gsheet(cred_json_file,SPREADSHEET_ID)
+
+new_row = len(gsheet.get_values('Sheet1'))+1
+nutrients = parse_nutrition('rice')
+nutrients['id'] = new_row - 1
+for nut in nutrients:
+	sheet_name = 'Sheet1'
+	range_letter = gsheet.get_rangename_from_column_name(SPREADSHEET_ID,'Sheet1',nut)
+	update_cell_range = sheet_name+"!"+range_letter+str(new_row)
+	update_area_range = update_cell_range #AG44'
+	gsheet.update_cell(update_area_range,update_cell_range,nutrients[nut])
+
+

@@ -1,7 +1,7 @@
 from __future__ import print_function
 from pprint import pprint
 from googleapiclient import discovery
-from utility import *
+
 
 import pickle
 import os.path
