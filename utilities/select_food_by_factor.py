@@ -280,9 +280,7 @@ Flow list
 []
 1. drink 5 litre water and eat at least after every 2 hour
 1. complete inventory
-
 2. Then calculate from their your meal plan.
 3. Then calculate a way with micronutrients also.
-4. food nutrition value wikipedia parser
-5. Save purchase history of food with date and price
+4. Save purchase history of food with date and price
 """
