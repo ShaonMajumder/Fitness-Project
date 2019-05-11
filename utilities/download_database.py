@@ -53,7 +53,7 @@ def update_food_id_at_google_sheet():
 
 def adjust_structure_nutrition_value():
 	create_food_id()
-	grams_columns = ['Amount_grams', 'Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protien_grams', 'Total_Fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
+	grams_columns = ['Amount_Per_grams', 'Calories', 'Total_Carbohydrate_grams', 'Dietary_fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_fat_grams', 'Polyunsaturated_fat_grams', 'Monounsaturated_fat_grams', 'Trans_fat_grams', 'Cholesterol_grams','Sodium_grams','Potassium_grams']
 	for column in grams_columns:
 		query = f"""ALTER TABLE `nutrition_values` CHANGE `{column}` `{column}` float"""
 		mydb.execute(query)

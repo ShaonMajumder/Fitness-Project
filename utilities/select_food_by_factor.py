@@ -30,7 +30,7 @@ def create_food_id():
 
 def adjust_structure_nutrition_value():
 	create_food_id()
-	grams_columns = ['Amount_grams', 'Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protien_grams', 'Total_Fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
+	grams_columns = ['Amount_grams', 'Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
 	for column in grams_columns:
 		query = f"""ALTER TABLE `nutrition_values` CHANGE `{column}` `{column}` float"""
 		mydb.execute(query)
@@ -40,7 +40,7 @@ def adjust_structure_nutrition_value():
 
 def sort_by_nutrition_old(target_nutrition,ORDER='DESC'):
 	#sort by target nutrition
-	#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protien_grams', 'Total_Fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
+	#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
 	query = f"""SELECT * FROM `nutrition_values` ORDER BY {target_nutrition} {ORDER}"""
 	results = mydb.execute(query)
 	food_ids = []
@@ -50,7 +50,7 @@ def sort_by_nutrition_old(target_nutrition,ORDER='DESC'):
 
 def sort_by_nutrition(food_ids,target_nutrition,ORDER='DESC'):
 	#sort by target nutrition
-	#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protien_grams', 'Total_Fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
+	#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
 	food_ids_str = "('" + "','".join(food_ids) + "')"
 	query = f"""SELECT * FROM `nutrition_values` WHERE `Food_Id` IN {food_ids_str} ORDER BY {target_nutrition} {ORDER}"""
 	results = mydb.execute(query)
@@ -116,7 +116,7 @@ def get_the_meal_plan(debug=False):
 
 #adjust_structure_nutrition_value()
 
-#protein_food_ids = sort_by_nutrition('Protien_grams',ORDER='DESC')
+#protein_food_ids = sort_by_nutrition('Protein_grams',ORDER='DESC')
 #sort_by_price(protein_food_ids, price = 'cheap')
 
 ## Combine heavy nutrition and more availability to pick a food
@@ -220,11 +220,11 @@ results = _
 C = 0
 P = 0
 F = 0
-results = calculate_portion(results,'Protien_grams',protein_requirement_g,threshold_level=4)
+results = calculate_portion(results,'Protein_grams',protein_requirement_g,threshold_level=4)
 for row in results:
 	C = C + (row['Total_Carbohydrate_grams']/100) * row['quantity_']
-	F = F + (row['Total_Fat_grams']/100) * row['quantity_']
-	P = P + (row['Protien_grams']/100) * row['quantity_']
+	F = F + (row['Total_fat_grams']/100) * row['quantity_']
+	P = P + (row['Protein_grams']/100) * row['quantity_']
 print(f"""Protein = {P}\nCarb = {C}\nFat = {F}""")
 
 carbohydrate_requirement_g_ = carbohydrate_requirement_g - C
@@ -235,9 +235,9 @@ if(carbohydrate_requirement_g_ > 0):
 	C = 0
 	results = calculate_portion(results,'Total_Carbohydrate_grams',carbohydrate_requirement_g_,threshold_level=17)
 	for row in results:
-		F = F + (row['Total_Fat_grams']/100) * row['quantity_']
+		F = F + (row['Total_fat_grams']/100) * row['quantity_']
 		C = C + (row['Total_Carbohydrate_grams']/100) * row['quantity_']
-		P = P + (row['Protien_grams']/100) * row['quantity_']
+		P = P + (row['Protein_grams']/100) * row['quantity_']
 	print(f"""Protein = {P}\nCarb = {C}\nFat = {F}""")
 
 
@@ -246,11 +246,11 @@ if(fat_requirement_g_ > 0):
 	P=0
 	C=0
 	F=0
-	results = calculate_portion(results,'Total_Fat_grams',fat_requirement_g_,threshold_level=7)
+	results = calculate_portion(results,'Total_fat_grams',fat_requirement_g_,threshold_level=7)
 	for row in results:
-		F = F + (row['Total_Fat_grams']/100) * row['quantity_']
+		F = F + (row['Total_fat_grams']/100) * row['quantity_']
 		C = C + (row['Total_Carbohydrate_grams']/100) * row['quantity_']
-		P = P + (row['Protien_grams']/100) * row['quantity_']
+		P = P + (row['Protein_grams']/100) * row['quantity_']
 	print(f"""Protein = {P}\nCarb = {C}\nFat = {F}""")
 
 
@@ -266,7 +266,7 @@ Note: Add this quantity to tomorrow's
 print(resu)
 #selection of carb is bad , choose from less fat, less protein source like rice and later fuse together with new idea like dietary fiber
 
-#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protien_grams', 'Total_Fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
+#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
 #Find the protein foods
 #	then sort them according to macro
 #	then check if enough macro is there
