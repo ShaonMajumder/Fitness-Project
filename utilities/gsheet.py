@@ -60,6 +60,12 @@ class Gsheet:
 		values = result.get('values', [])
 		return values
 
+	def get_size(self,FINDAREA_RANGE_NAME):
+		result = self.sheet.values().get(spreadsheetId=self.SPREADSHEET_ID,
+	                            range=FINDAREA_RANGE_NAME).execute()
+		values = result.get('values', [])
+		return len(values),len(values[0])
+
 	def get_rangename_from_column_name(self,SPREADSHEET_ID,FINDAREA_RANGE_NAME,colnum_name):
 		values = self.get_values(FINDAREA_RANGE_NAME)
 		row_num = values[0].index(colnum_name)

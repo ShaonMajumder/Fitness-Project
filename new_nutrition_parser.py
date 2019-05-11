@@ -109,14 +109,15 @@ SPREADSHEET_ID = config['GOOGLE_SHEET']['spreadsheet_id']
 google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
 gsheet = Gsheet(cred_json_file,SPREADSHEET_ID)
 
-new_row = len(gsheet.get_values('Sheet1'))+1
+r,c = gsheet.get_size('Sheet1')
+new_row = r + 1
 nutrients = parse_nutrition('rice')
 nutrients['id'] = new_row - 1
 for nut in nutrients:
 	sheet_name = 'Sheet1'
 	range_letter = gsheet.get_rangename_from_column_name(SPREADSHEET_ID,'Sheet1',nut)
 	update_cell_range = sheet_name+"!"+range_letter+str(new_row)
-	update_area_range = update_cell_range #AG44'
+	update_area_range = update_cell_range
 	gsheet.update_cell(update_area_range,update_cell_range,nutrients[nut])
 
 
