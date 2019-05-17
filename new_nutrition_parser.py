@@ -33,9 +33,11 @@ def filter_value(value):
 	return value
 
 def parse_nutrition(string):
+	string = string.replace(" ","+")
 	driver = webdriver.Chrome('driver/chromedriver.exe')
 	driver.set_window_size(1920, 1040)
 	driver.get('https://www.google.com/search?q='+string+'+nutrition+value')
+	string = string.replace("+"," ")
 	wiki_ = driver.find_element_by_xpath('//div[@class="SALvLe farUxc mJ2Mod"]')
 
 	nutritients = {}
@@ -111,7 +113,7 @@ gsheet = Gsheet(cred_json_file,SPREADSHEET_ID)
 
 r,c = gsheet.get_size('Sheet1')
 new_row = r + 1
-nutrients = parse_nutrition('rice')
+nutrients = parse_nutrition('white rice')
 nutrients['id'] = new_row - 1
 for nut in nutrients:
 	sheet_name = 'Sheet1'
