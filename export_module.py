@@ -1,9 +1,10 @@
 from utilities.mysql_database import *
 from utilities.utility import *
 from utilities.science import *
+from utilities.select_food_by_factor import *
 import datetime
 
-dbconfig = read_config_ini("safe_directory/config.ini")
+dbconfig = read_config_ini("safe_directory/dbconfig.ini")
 host=dbconfig['DATABASE']['host']
 user=dbconfig['DATABASE']['user']
 password=dbconfig['DATABASE']['password']
@@ -109,49 +110,20 @@ Take Postworkout Meal Box after workout
 Summary {part_count_dic}
 Total Intensitiy:{Target_Intensity}"""
 
-
-
 """ Nutrition Calculation """
 fasting = True
 if(fasting): fasting_time = "12:00AM-6:00PM"
 else: fasting_time = "No" # try not print if fasting is not needed
-
-
-Calconfig = read_config_ini("Goal.data")
-gender =Calconfig['PHYSIQUE']['gender']
-age =Calconfig['PHYSIQUE']['age']
-height =Calconfig['PHYSIQUE']['height']
-bodyweight =Calconfig['PHYSIQUE']['bodyweight']
-activity_level =Calconfig['ROUTINE']['activity_level']
-protein_grams_per_body_pound =Calconfig['CALORIE']['protein_grams_per_body_pound']
-mealnumber =Calconfig['ROUTINE']['mealnumber']
-fitness_goal =Calconfig['GOAL']['goal']
-#calorie_intake =Calconfig['CALORIE']['calorie_intake']
-
-result = nutrition_calculator(gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal,debug=True)
-calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g = result
+calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g,food_list = generate_food_list()
 
 #pick by price and availability in inventory
 NUTRITION_STRING = f"""------------------------ Nutrition ------------------------
-Fasting: {fasting_time}
 Target CALORIE: {calorie_intake} Kcal | Meal Number: {mealnumber}
 Macros - {round(protein_requirement_g,2)}g Protein|{round(fat_requirement_g,2)}g Fat|{round(carbohydrate_requirement_g,2)}g Carb
 Per meal - {round(per_meal_protein_requirement_g,2)}g Protein|{round(per_meal_fat_requirement_g,2)}g Fat|{round(per_meal_carbohydrate_requirement_g,2)}g Carb
 
-Mix Bowl>
-Carbs:Rice(3spoon)-60g,Sweat Potato(2piece)-80g,Banana-1,
-Proteins:Pulse(2bowl)-30g,
-Spieces:Lemon(1/2)-50g,Cinemon(4)-20g,Ginger-20g,Garlic(1)-20g,Onion(1/2)-20g,Chilly(4)-40g,Corainder Leafs(1palm)-30g
-Veges:Cucumber-80g,Carrot-80g,Tomato-80g,Pumpkin-20g,Okra-20g,Korola-20g,Papaya-20g
-
-Meal Box 1: Egg Full-1,Chicken(1p)-30g,<Mix-Bowl>/4,Water-1Litre
-Meal Box 2: Egg Full-1,Chicken(1p)-30g,<Mix-Bowl>/4,Water-1Litre
-Meal Box 3: Egg Full-1,<Mix-Bowl>/4,Water-1Litre
-Meal Box 4: Egg Full-1,Fish(1p)-30g,<Mix-Bowl>/4,Water-1Litre
-Preworkout Meal Box: Chola(1.5palm)-30g, Banana(2pieace)-100g
-Postworkout Meal Box: Take Adjacent Meal according to hour
-
-Caution: Previously, You have loaded too much carb;so only 50grams of carb allowed and other ratio the same."""
+Mix Bowl>> {food_list}
+"""
 
 PHYSIOLOGICAL_STRING = f"""------------------ Todays Physiological Parameters ------------------
 Sleep Hours: {sleep_hours}  | You can sleep more: {recovery_sleep_permitted}

@@ -178,7 +178,7 @@ Nutrition Functions
 def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_unit):
 	"""
 	Converting Purchasing_Unit
-	kg,grams = kg,grams_to_kg
+	kg,grams = kg,grams_to_kg #Actual_unit_weight_grams in grams after peeling and cleaning
 	piece,hali,dozen = piece,hali_to_piece,dozen_to_piece
 	bundle = bundle
 	litre = litre
@@ -196,13 +196,21 @@ def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_u
 		food_quantity_digit = dozen_to_piece(food_quantity_digit)
 		food_quantity_unit = 'piece'
 	
-	results = mydb.select(['Food_Id','Purchasing_Unit'], f"""`Name`='{food_name}'""" ,'nutrition_values')
+
+
+	results = mydb.select(['Food_Id','Purchasing_Unit','Actual_unit_weight_grams'], f"""`Name`='{food_name}'""" ,'nutrition_values')
 	Food_Id = results[0]['Food_Id']
 	Purchasing_Unit = results[0]['Purchasing_Unit']
+	
+	if food_quantity_unit == 'piece':
+		actual_Unit_weight = results[0]['Actual_unit_weight_grams']
+	if food_quantity_unit == 'kg':
+		actual_Unit_weight = results[0]['Actual_unit_weight_grams']
+	weight = float(actual_Unit_weight)*food_quantity_digit
 
 	results = mydb.select(['Food_Id','quantity','unit'],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
 	if results == ():
-		mydb.insert(['Food_Id','food_name','quantity','unit'],[Food_Id,food_name,food_quantity_digit,food_quantity_unit],'food_inventory')
+		mydb.insert(['Food_Id','food_name','quantity','unit','weight'],[Food_Id,food_name,food_quantity_digit,food_quantity_unit,weight],'food_inventory')
 	else:
 		#add the quantity
 		row = results[0]
@@ -210,10 +218,10 @@ def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_u
 
 		if row['unit'] == food_quantity_unit:
 			quantity = food_quantity_digit + quantity
+			weight = float(actual_Unit_weight)*quantity
 			quantity = str(quantity)
-			mydb.edit(['quantity'],[quantity],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
-
-
+			
+			mydb.edit(['quantity','weight'],[quantity,weight],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
 
 def New_Exercise_Entry_Form():
 	New_Exercise_Form = tkinter.Toplevel(top_frame)

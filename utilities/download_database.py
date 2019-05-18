@@ -65,4 +65,3 @@ adjust_structure_nutrition_value()
 update_food_id_at_google_sheet()
 
 print("Done...")
-		

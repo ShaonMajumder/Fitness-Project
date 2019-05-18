@@ -1,10 +1,21 @@
-from mysql_database import *
-from utility import *
-from science import *
+try:
+	from utilities.mysql_database import *
+except:
+	from mysql_database import *
+try:
+	from utilities.utility import *
+except:
+	from utility import *
+try:
+	from utilities.science import *
+except:
+	from science import *
 
-utilization_directory = '../safe_directory/'
+utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
+goal_config =read_config_ini("Goal.data")
 
+##database config
 host=config['DATABASE']['host']
 user=config['DATABASE']['user']
 password=config['DATABASE']['password']
@@ -13,30 +24,20 @@ charset=config['DATABASE']['charset']
 cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
+###database config
 
+##meal goal config
+gender = goal_config['PHYSIQUE']['gender']
+age = goal_config['PHYSIQUE']['age']
+height = goal_config['PHYSIQUE']['height']
+bodyweight = goal_config['PHYSIQUE']['bodyweight']
+activity_level = goal_config['ROUTINE']['activity_level']
+protein_grams_per_body_pound = goal_config['CALORIE']['protein_grams_per_body_pound']
+mealnumber = goal_config['ROUTINE']['mealnumber']
+fitness_goal = goal_config['GOAL']['goal']
+## params: gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal
+###meal goal config
 
-def create_food_id():
-	results = mydb.select("*","`Food_Id` = ''","nutrition_values")
-	for row in results:
-		id_ = row['id']
-		while(True):
-			random_key = randomString(stringLength=8)
-			result = mydb.select("*",f"""`Food_Id` = '{random_key}'""","nutrition_values")
-			if result != ():
-				pass
-			else:
-				break
-		mydb.edit(['Food_Id'],[random_key],f"""`id`={id_}""","nutrition_values")
-
-def adjust_structure_nutrition_value():
-	create_food_id()
-	grams_columns = ['Amount_grams', 'Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
-	for column in grams_columns:
-		query = f"""ALTER TABLE `nutrition_values` CHANGE `{column}` `{column}` float"""
-		mydb.execute(query)
-
-	query = f"""ALTER TABLE `nutrition_values` CHANGE `id` `id` int"""
-	mydb.execute(query)
 
 def sort_by_nutrition_old(target_nutrition,ORDER='DESC'):
 	#sort by target nutrition
@@ -79,34 +80,6 @@ def sort_by_price(ids,price = 'cheap'):
 def sort_by_inventory_availability():
 	pass
 
-def get_the_meal_plan(debug=False):
-	config =read_config_ini("../Goal.data")
-
-	gender = config['PHYSIQUE']['gender']
-	age = config['PHYSIQUE']['age']
-	height = config['PHYSIQUE']['height']
-	bodyweight = config['PHYSIQUE']['bodyweight']
-	activity_level = config['ROUTINE']['activity_level']
-	protein_grams_per_body_pound = config['CALORIE']['protein_grams_per_body_pound']
-	mealnumber = config['ROUTINE']['mealnumber']
-	fitness_goal = config['GOAL']['goal']
-	#calorie_intake = config['CALORIE']['calorie_intake']
-
-	#args.change_protein_grams_per_body_pound = config['CALORIE']['change_protein_grams_per_body_pound']
-	## params: gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal
-
-	"""Calculation Starts"""
-	result = nutrition_calculator(gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal,debug)
-	calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g = result
-	"""Calculation Ends"""
-
-	result_stri = f"""Result,
-	Your Daily CALORIE intake: {calorie_intake} Kcal
-	Your Daily Macros - {round(protein_requirement_g,2)}g Protein|{round(fat_requirement_g,2)}g Fat|{round(carbohydrate_requirement_g,2)}g Carbohydrate
-	Your need to eat per meal - {round(per_meal_protein_requirement_g,2)}g Protein|{round(per_meal_fat_requirement_g,2)}g Fat|{round(per_meal_carbohydrate_requirement_g,2)}g Carbohydrate"""
-	if(debug): print(result_stri)
-
-	return protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g
 
 #create the meal plan
 #findout the macro need
@@ -114,7 +87,7 @@ def get_the_meal_plan(debug=False):
 #	find the macro and sort the inventory according to their availability & quantity & price
 #	if less food then create buy list according to price
 
-#adjust_structure_nutrition_value()
+
 
 #protein_food_ids = sort_by_nutrition('Protein_grams',ORDER='DESC')
 #sort_by_price(protein_food_ids, price = 'cheap')
@@ -144,9 +117,9 @@ def get_the_meal_plan(debug=False):
 #Wheigh the average raw egg shell, minus that from total weigh of a raw egg
 #Whenever you weigh a egg, always minus the egg shell weight
 
-results = mydb.select('*',"",'nutrition_values')
-purchasing_units = unique_items([row['Purchasing_Unit'] for row in results])
-print(purchasing_units)
+#results = mydb.select('*',"",'nutrition_values')
+#purchasing_units = unique_items([row['Purchasing_Unit'] for row in results])
+#print(purchasing_units)
 
 
 
@@ -249,47 +222,9 @@ def calculate_portion(results, target_macro,requirement_g,threshold_level,sort=F
 		
 	return results
 
-
-
-
-
-foods_in_inventory = mydb.select('*','','food_inventory')
-inventory_food_ids = [row['Food_Id'] for row in foods_in_inventory]
-query = f"""SELECT * FROM `nutrition_values` WHERE `Food_Id` IN {"('" + "','".join(inventory_food_ids) + "')"}"""
-results = mydb.execute(query)
-
-# getting the invetory weight
-_ = []
-for row in results:
-	for row2 in foods_in_inventory:
-		if row['Food_Id'] == row2['Food_Id']:
-			row['weight'] = row2['weight']
-			break
-	_.append(row)
-results = _
-
-protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g = get_the_meal_plan()
-
-requirement_g = {
-	'Protein_grams' : protein_requirement_g,
-	'Total_Carbohydrate_grams' : carbohydrate_requirement_g,
-	'Total_fat_grams' : fat_requirement_g
-}
-
-#arranging higher macro value to lower
-def func(row):
-	return requirement_g[row]
-r = sorted(requirement_g, key = func)
-macro_li = r[::-1]
-
-threshold_level_dic = {
-	'Total_Carbohydrate_grams': 17,
-	'Protein_grams': 4,
-	'Total_fat_grams': 7
-}
-def calN(results,macro_li,requirement_g,threshold_level_dic,debug=False):
+def calculate_food_list(results,macro_li,requirement_g,threshold_level_dic,debug=False):
 	P = F = C = 0
-	results = calculate_portion(results, macro_li[0],carbohydrate_requirement_g,threshold_level=threshold_level_dic[macro_li[0]])
+	results = calculate_portion(results, macro_li[0],requirement_g[macro_li[0]],threshold_level=threshold_level_dic[macro_li[0]])
 	for row in results:
 		F = F + (row['Total_fat_grams']/100) * row['quantity_']
 		C = C + (row['Total_Carbohydrate_grams']/100) * row['quantity_']
@@ -330,44 +265,121 @@ def calN(results,macro_li,requirement_g,threshold_level_dic,debug=False):
 
 	return results,P,C,F
 
-results,P,C,F = calN(results,macro_li,requirement_g,threshold_level_dic)
-resu = f"""
-Requirement P|C|F = {protein_requirement_g} , {carbohydrate_requirement_g} , {fat_requirement_g}
-Todays Deficit
-Protein = {protein_requirement_g - P}
-Carbohydrate = {carbohydrate_requirement_g - C}
-Fat = {fat_requirement_g - F}
-Note: Add this quantity to tomorrow's
-"""
-print(resu)
+def printable_unit_conversion(results):
+	_ = []
+	for row in results:
+		if row['unit'] == 'piece':
+			piece = float(row['quantity_'])/float(row['Actual_unit_weight_grams'])
+			piece_ = round(piece)
+			#print(row['Name'],piece,round(piece_))
+			row['print_digit'] = piece_
+			row['print_unit'] = 'pieces'
+		else:
+			row['print_digit'] = row['quantity_']
+			row['print_unit'] = 'grams'
+		_.append(row)
+	return _
 
 
-print("Food List")
-P=C=F=0
-for row in results:
-	print(row['Name'],row['quantity_'])
-	F = F + (row['Total_fat_grams']/100)*row['quantity_']
-	C = C + (row['Total_Carbohydrate_grams']/100)*row['quantity_']
-	P = P + (row['Protein_grams']/100)*row['quantity_']
-print("\nDouble Check Total Macro from food\nP|C|F=",P,C,F)
+def return_food_string(results):
+	food_list = printable_unit_conversion(results)
+	P=C=F=0
+	string = []
+	for row in food_list:
+		string.append(f"""{row['Name']} {row['print_digit']:.2f} {row['print_unit']}""")
+		F = F + (row['Total_fat_grams']/100)*row['quantity_']
+		C = C + (row['Total_Carbohydrate_grams']/100)*row['quantity_']
+		P = P + (row['Protein_grams']/100)*row['quantity_']
+	return ','.join(string)
+
+def check_macro_result(results):
+	P=C=F=0
+	for row in results:
+		F = F + (row['Total_fat_grams']/100)*row['quantity_']
+		C = C + (row['Total_Carbohydrate_grams']/100)*row['quantity_']
+		P = P + (row['Protein_grams']/100)*row['quantity_']
+
+	print("Double Check Total Macro from food\nP|C|F=",P,C,F)
+
+
+
+def generate_food_list():
+	#Algorithm Starts
+	foods_in_inventory = mydb.select('*','','food_inventory')
+	inventory_food_ids = [row['Food_Id'] for row in foods_in_inventory]
+	query = f"""SELECT * FROM `nutrition_values` WHERE `Food_Id` IN {"('" + "','".join(inventory_food_ids) + "')"}"""
+	results = mydb.execute(query)
+
+	# getting the food_id and invetory weight
+	_ = []
+	for row in results:
+		for row2 in foods_in_inventory:
+			if row['Food_Id'] == row2['Food_Id']:
+				row['weight'] = row2['weight']
+				row['unit'] = row2['unit']
+				break
+		_.append(row)
+	results = _
+
+	##Calculate Macro Need
+	result_macro = nutrition_calculator(gender,age,height,bodyweight,activity_level,protein_grams_per_body_pound,mealnumber,fitness_goal,debug=False)
+	calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g = result_macro
+	result_stri = f"""Result,
+		Your Daily CALORIE intake: {calorie_intake} Kcal
+		Your Daily Macros - {round(protein_requirement_g,2)}g Protein|{round(fat_requirement_g,2)}g Fat|{round(carbohydrate_requirement_g,2)}g Carbohydrate
+		Your need to eat per meal - {round(per_meal_protein_requirement_g,2)}g Protein|{round(per_meal_fat_requirement_g,2)}g Fat|{round(per_meal_carbohydrate_requirement_g,2)}g Carbohydrate"""
+	#print(result_stri)
+
+
+	requirement_g = {
+		'Protein_grams' : protein_requirement_g,
+		'Total_Carbohydrate_grams' : carbohydrate_requirement_g,
+		'Total_fat_grams' : fat_requirement_g
+	}
+
+	#arranging higher macro value to lower
+	def func(row):
+		return requirement_g[row]
+	r = sorted(requirement_g, key = func)
+	macro_li = r[::-1]
+
+	threshold_level_dic = {
+		'Total_Carbohydrate_grams': 17,
+		'Protein_grams': 4,
+		'Total_fat_grams': 7
+	}
+
+	results,P,C,F = calculate_food_list(results,macro_li,requirement_g,threshold_level_dic)
+	resu = f"""Todays Deficit
+	Protein = {protein_requirement_g - P}
+	Carbohydrate = {carbohydrate_requirement_g - C}
+	Fat = {fat_requirement_g - F}
+	Note: Add this quantity to tomorrow's"""
+	#print(resu)
+
+	return calorie_intake,protein_requirement_g,carbohydrate_requirement_g,fat_requirement_g,per_meal_protein_requirement_g,per_meal_carbohydrate_requirement_g,per_meal_fat_requirement_g,return_food_string(results)
 
 #selection of carb is bad , choose from less fat, less protein source like rice and later fuse together with new idea like dietary fiber
-
-#Avaialble Factors ['Calories', 'Total_Carbohydrate_grams', 'Dietary_Fiber_grams', 'Sugar_grams', 'Protein_grams', 'Total_fat_grams', 'Saturated_Fat_grams', 'Polyunsaturated_Fat_grams', 'Monounsaturated_Fat_grams', 'Trans_Fat_grams', 'Cholesterol_grams']
 #Find the protein foods
 #	then sort them according to macro
 #	then check if enough macro is there
 
-
-#sort_by_price(protein_food_ids, price = 'cheap')
-
 """
 Flow list
 ---------
-[]
-1. drink 5 litre water and eat at least after every 2 hour
-1. complete inventory
-2. Then calculate from their your meal plan.
 3. Then calculate a way with micronutrients also.
 4. Save purchase history of food with date and price
+5. How to divide meal box, post and preworkout meal box
+Meal Box 1: Egg Full-1,Chicken(1p)-30g,<Mix-Bowl>/4,Water-1Litre
+Meal Box 2: Egg Full-1,Chicken(1p)-30g,<Mix-Bowl>/4,Water-1Litre
+Meal Box 3: Egg Full-1,<Mix-Bowl>/4,Water-1Litre
+Meal Box 4: Egg Full-1,Fish(1p)-30g,<Mix-Bowl>/4,Water-1Litre
+Preworkout Meal Box: Chola(1.5palm)-30g, Banana(2pieace)-100g
+Postworkout Meal Box: Take Adjacent Meal according to hour
+6. Fasting Calculator
+	Fasting: 12:00AM-6:00PM
+7. Caution for deficit or surplus from previous or overall goal calorie till a date
+	Caution: Previously, You have loaded too much carb;so only 50grams of carb allowed and other ratio the same.
+
+Must Dos: drink 5 litre water and eat at least after every 2 hour
 """

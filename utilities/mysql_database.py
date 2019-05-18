@@ -1,5 +1,9 @@
 from __future__ import print_function
-from gsheet import *
+try:
+    from utilities.gsheet import *
+except:
+    from gsheet import *
+
 import pymysql
 import pandas as pd
 import os
