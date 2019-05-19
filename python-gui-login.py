@@ -11,6 +11,14 @@ login_state = False
 global session_data
 session_data = {}
 
+def set_session(profile_id):
+    login_state = True
+    session_data['profile_id'] = profile_id
+
+def destroy_session():
+    login_state = False
+    session_data = {}
+
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
 
@@ -93,6 +101,7 @@ def login():
     Button(login_screen, text="Login", width=10, height=1, command = login_verify).pack()
  
 def save_profile_data():
+    profile_id = session_data['profile_id']
     fullname_info = fullname.get()
     gender_info = gender.get()
     age_info = age.get()
@@ -103,8 +112,6 @@ def save_profile_data():
     meal_number_info = meal_number.get()
     activity_level_info = activity_level.get()
 
-
-    profile_id = session_data['profile_id']
     result = mydb.select('*',"`profile_id`='"+profile_id+"'","biodata")
     if result != ():
         mydb.edit(['fullname','gender','age','birthdate','protein_grams_per_body_pound','height','bodyweight','meal_number','activity_level'],[fullname_info,gender_info,age_info,birthdate_info,protein_grams_per_body_pound_info,height_info,bodyweight_info,meal_number_info,activity_level_info],"`profile_id`='"+profile_id+"'","biodata")
@@ -238,18 +245,16 @@ def login_verify():
         password_result = mydb.select('*',f"""`password`='{password1}'""","profiles")
         if password_result != ():
             profile_id = password_result[0]['profile_id']
-            login_sucess(profile_id)
+            set_session(profile_id)
+            login_sucess_form(profile_id)
         else:
             password_not_recognised()
     else:
         user_not_found()
 
 # Designing popup for login success
- 
-def login_sucess(profile_id):
-    login_state = True
-    session_data['profile_id'] = profile_id
 
+def login_sucess_form(profile_id):
     global login_success_screen
     login_success_screen = Toplevel(login_screen)
     login_success_screen.title("Success")
@@ -257,7 +262,7 @@ def login_sucess(profile_id):
     Label(login_success_screen, text="Login Success").pack()
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
  
-def user_profile():
+def user_profile_form():
     global user_profile_screen
     user_profile_screen = Toplevel(main_screen)
     user_profile_screen.title("User Details")
@@ -293,7 +298,7 @@ def user_not_found():
 def delete_login_success():
     login_success_screen.destroy()
     login_screen.destroy()
-    user_profile()
+    user_profile_form()
 
  
 def delete_password_not_recognised():
