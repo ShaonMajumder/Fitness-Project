@@ -111,12 +111,6 @@ def register_user():
     elif(result_username != ()):
         print("Username already taken.")
     
-    """
-    file = open(username_info, "w")
-    file.write(username_info + "\n")
-    file.write(password_info)
-    file.close()
-    """
 
     username_entry.delete(0, END)
     email_entry.delete(0, END)
@@ -144,20 +138,6 @@ def login_verify():
             password_not_recognised()
     else:
         user_not_found()
-    
-    """                   
-    list_of_files = os.listdir()
-    if username1 in list_of_files:
-        file1 = open(username1, "r")
-        verify = file1.read().splitlines()
-        if password1 in verify:
-            login_sucess()
-        else:
-            password_not_recognised()
- 
-    else:
-        user_not_found()
-    """
 
 # Designing popup for login success
  
@@ -220,3 +200,8 @@ def main_account_screen():
  
  
 main_account_screen()
+
+"""
+Flow list
+1. Activate email and verify
+"""
