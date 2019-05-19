@@ -155,7 +155,6 @@ class mysql_db():
         for row_li in data2d:
             self.insert(columns,row_li,table)
 
-
     def import_table_from_2D_List(self,values,db_table):
         header = values.pop(0)
         df = pd.DataFrame(values, columns=header)
