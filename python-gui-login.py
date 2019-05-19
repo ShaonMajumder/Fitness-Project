@@ -246,6 +246,8 @@ def login_verify():
         if password_result != ():
             profile_id = password_result[0]['profile_id']
             set_session(profile_id)
+            main_screen.withdraw()
+            #main_screen.deiconify()
             login_sucess_form(profile_id)
         else:
             password_not_recognised()

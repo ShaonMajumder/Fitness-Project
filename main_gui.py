@@ -91,41 +91,27 @@ def add_shopping_list_to_inventory(food_name,food_quantity_digit,food_quantity_u
 			
 			mydb.edit(['quantity','weight'],[quantity,weight],f"""`Food_Id` = '{Food_Id}'""","food_inventory")
 
-def New_Exercise_Entry_Form():
-	New_Exercise_Form = tkinter.Toplevel(top_frame)
-	New_Exercise_Form.geometry("400x400")
-	New_Exercise_Name_Label = tkinter.Label(New_Exercise_Form, text="Exercise Name")
-	New_Exercise_Name_Label.pack()
-	New_Exercise_Name_Entry = tkinter.Entry(New_Exercise_Form)
-	New_Exercise_Name_Entry.pack(padx=5)
-	New_Exercise_Target_Label = tkinter.Label(New_Exercise_Form, text="Target Bodypart")
-	New_Exercise_Target_Label.pack()
-	#query = "Select * From `human_anatomy`"
-	result = mydb.select('*',"","human_anatomy")
-	list_ = [line['body_part_name'] + " - " + line['part_synonyms'] for line in result]
-	New_Exercise_Target_Entry = AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30)
-	New_Exercise_Target_Entry.pack(padx=5)
-	## Solution for multiple target:
-	## Place A ListBox and Button("Add to Target List") to show Entered multiple Target Muscle
-	## Each Time user type a word or select from suggestion in Entry and press Button("Add to Target List"), Entry will be cleared and the previous word will be added into listbox.
-	## This process will be repeated for every muscle group user want to enter
-	## All the entered muscle group will be in ListBox, take all the muscle group name from listbox and add them with ',' into a string. This will be the final target of that exercise.
-	New_Exercise_Type_Label = tkinter.Label(New_Exercise_Form, text="Type-")
-	New_Exercise_Type_Label.pack()
-	New_Exercise_Type_Entry = AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15)
-	New_Exercise_Type_Entry.pack(padx=5)
-	New_Exercise_Instrument_Label = tkinter.Label(New_Exercise_Form, text="Instrument-")
-	New_Exercise_Instrument_Label.pack()
-	#query = "Select * From `exercise_instruments`"
-	result = mydb.select("*","","exercise_instruments")
-	New_Exercise_Instrument_Entry = AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15)
-	New_Exercise_Instrument_Entry.pack(padx=5)
-	New_Exercise_Comment_Label = tkinter.Label(New_Exercise_Form, text="Comment")
-	New_Exercise_Comment_Label.pack()
-	New_Exercise_Comment_Entry = tkinter.Entry(New_Exercise_Form)
-	New_Exercise_Comment_Entry.pack(padx=5)
+class MyDialog:
+    def __init__(self, parent):
 
-	def ok():
+        top = self.top = tkinter.Toplevel(parent)
+
+        tkinter.Label(top, text="Value").pack()
+
+        self.e = tkinter.Entry(top)
+        self.e.pack(padx=5)
+        self.e.focus_set()
+        self.e.bind('<Return>', self.ok)
+
+        b = tkinter.Button(top, text="OK", command=self.ok)
+        b.pack(pady=5)        
+
+    def ok(self,event):
+        self.value = self.e.get()
+        self.top.destroy()
+
+
+def New_Exercise_Entry_Form_ok():
 		Name = New_Exercise_Name_Entry.get()
 		Target = New_Exercise_Target_Entry.get()
 		if '-' in Target: Target = Target.split('-')[1].strip()
@@ -148,46 +134,56 @@ def New_Exercise_Entry_Form():
 		
 		New_Exercise_Form.destroy()
 
-	New_Exercise_Submit_Button = tkinter.Button(New_Exercise_Form, text="Submit", command=ok)
+def New_Exercise_Entry_Form():
+	New_Exercise_Form = tkinter.Toplevel(top_frame)
+	New_Exercise_Form.geometry("400x400")
+	tkinter.Label(New_Exercise_Form, text="Exercise Name").pack()
+	global New_Exercise_Name_Entry
+	New_Exercise_Name_Entry = tkinter.Entry(New_Exercise_Form)
+	New_Exercise_Name_Entry.pack(padx=5)
+	tkinter.Label(New_Exercise_Form, text="Target Bodypart").pack()
+	#query = "Select * From `human_anatomy`"
+	result = mydb.select('*',"","human_anatomy")
+	list_ = [line['body_part_name'] + " - " + line['part_synonyms'] for line in result]
+	global New_Exercise_Target_Entry
+	New_Exercise_Target_Entry = AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30)
+	New_Exercise_Target_Entry.pack(padx=5)
+	## Solution for multiple target:
+	## Place A ListBox and Button("Add to Target List") to show Entered multiple Target Muscle
+	## Each Time user type a word or select from suggestion in Entry and press Button("Add to Target List"), Entry will be cleared and the previous word will be added into listbox.
+	## This process will be repeated for every muscle group user want to enter
+	## All the entered muscle group will be in ListBox, take all the muscle group name from listbox and add them with ',' into a string. This will be the final target of that exercise.
+	tkinter.Label(New_Exercise_Form, text="Type-").pack()
+	global New_Exercise_Type_Entry
+	New_Exercise_Type_Entry = AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15)
+	New_Exercise_Type_Entry.pack(padx=5)
+	tkinter.Label(New_Exercise_Form, text="Instrument-").pack()
+	#query = "Select * From `exercise_instruments`"
+	result = mydb.select("*","","exercise_instruments")
+	global New_Exercise_Instrument_Entry
+	New_Exercise_Instrument_Entry = AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15)
+	New_Exercise_Instrument_Entry.pack(padx=5)
+	tkinter.Label(New_Exercise_Form, text="Comment").pack()
+	global New_Exercise_Comment_Entry
+	New_Exercise_Comment_Entry = tkinter.Entry(New_Exercise_Form)
+	New_Exercise_Comment_Entry.pack(padx=5)
+	New_Exercise_Submit_Button = tkinter.Button(New_Exercise_Form, text="Submit", command=New_Exercise_Entry_Form_ok)
 	New_Exercise_Submit_Button.pack()
 
-class MyDialog:
-    def __init__(self, parent):
-
-        top = self.top = tkinter.Toplevel(parent)
-
-        tkinter.Label(top, text="Value").pack()
-
-        self.e = tkinter.Entry(top)
-        self.e.pack(padx=5)
-        self.e.focus_set()
-        self.e.bind('<Return>', self.ok)
-
-        b = tkinter.Button(top, text="OK", command=self.ok)
-        b.pack(pady=5)        
-
-    def ok(self,event):
-        self.value = self.e.get()
-        self.top.destroy()
 
 
 ## Main 
 
+def top_frame_loop():
+	global top_frame
+	top_frame = tkinter.Tk()
+	top_frame.tk.call('encoding', 'system', 'utf-8')
+	top_frame.title("Project-Super-Human")
+	top_frame.geometry("1000x800")
 
+	draw_app_frames()
+	top_frame.mainloop()
 
-top_frame = tkinter.Tk()
-top_frame.tk.call('encoding', 'system', 'utf-8')
-top_frame.title("Project-Super-Human")
-top_frame.geometry("1000x800")
-
-
-
-
-content_frame = tkinter.Frame(top_frame, bg = 'red', relief=tkinter.RAISED, borderwidth=1)
-content_frame.grid(row = 0, column = 1, pady=10)
-
-Life_Frame = tkinter.Frame(top_frame, bg = 'indigo', relief=tkinter.RAISED, borderwidth=1)
-Life_Frame.grid(sticky = 'W', row = 1, column = 1)
 
 """
 
@@ -247,22 +243,162 @@ PerMeal_Spit.grid(sticky="W", row=6, column=1)
 
 #Date_Label.grid(sticky="W", row=level_row, column=1)
 
-User_Profile_Frame = tkinter.Frame(Life_Frame, bg = '#d37e7e', relief=tkinter.RAISED, borderwidth=1)
-User_Profile_Label_Color = '#e2c3c3'
-User_Profile_Frame_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "User Profile Section")
-Gender_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "Gender")
-Fitness_Goal_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "Fitness Goal")
-Fitness_Goal_OPTIONS = ['Lean Bulking','Maintain','Gain','Cut']
-Fitness_Goal_category = tkinter.StringVar(User_Profile_Frame)
-Fitness_Goal_category.set(Fitness_Goal_OPTIONS[0]) # default value
-Fitness_Goal_D = tkinter.OptionMenu(User_Profile_Frame, Fitness_Goal_category, *Fitness_Goal_OPTIONS)
-Age_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Age")
-Height_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Height")
-Goal_Body_Fat_Percentage_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Goal Body Fat Percentage")
-Bodyweight_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Bodyweight")
-Body_Fat_Percentage_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Body Fat Percentage")
-Blood_Pressure_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Blood Pressure")
+def draw_sleep_section_frame():
+	global Sleep_Section_Frame
+	Sleep_Section_Frame = tkinter.Frame(Life_Frame, bg = 'red', relief=tkinter.RAISED, borderwidth=1)
+	Sleep_Section_Frame_Label = tkinter.Label(Sleep_Section_Frame, text = "Sleep Section-")
+	Sleep_Section_Button = tkinter.Button(Sleep_Section_Frame, text="Open", command=sleep_add_form)
 
+	Sleep_Section_Frame.grid(sticky="W", row = 1, column = 2)
+	Sleep_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
+	Sleep_Section_Button.grid(sticky="W", row = 1, column = 2)
+
+def draw_user_profile_frame():
+	global User_Profile_Frame
+	User_Profile_Frame = tkinter.Frame(Life_Frame, bg = '#d37e7e', relief=tkinter.RAISED, borderwidth=1)
+	User_Profile_Label_Color = '#e2c3c3'
+	User_Profile_Frame_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "User Profile Section")
+	Gender_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "Gender")
+	Fitness_Goal_Label = tkinter.Label(User_Profile_Frame, bg=User_Profile_Label_Color, text = "Fitness Goal")
+	Fitness_Goal_OPTIONS = ['Lean Bulking','Maintain','Gain','Cut']
+	Fitness_Goal_category = tkinter.StringVar(User_Profile_Frame)
+	Fitness_Goal_category.set(Fitness_Goal_OPTIONS[0]) # default value
+	Fitness_Goal_D = tkinter.OptionMenu(User_Profile_Frame, Fitness_Goal_category, *Fitness_Goal_OPTIONS)
+	Age_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Age")
+	Height_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Height")
+	Goal_Body_Fat_Percentage_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Goal Body Fat Percentage")
+	Bodyweight_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Bodyweight")
+	Body_Fat_Percentage_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Body Fat Percentage")
+	Blood_Pressure_Label = tkinter.Label(User_Profile_Frame,bg=User_Profile_Label_Color, text = "Todays Blood Pressure")
+
+	level_row = 3
+	User_Profile_Frame.grid(sticky="W", row = 1, column = 1)
+	User_Profile_Frame_Label.grid(sticky="W", row = 1, column = 1)
+	Gender_Label.grid(sticky="W", row=level_row + 1, column=1)
+	Fitness_Goal_Label.grid(sticky="W", row=level_row + 2, column=1)
+	Fitness_Goal_D.grid(sticky="W", row=level_row + 2, column=2)
+	#Tip: Calculate extra rep set in next day
+	Age_Label.grid(sticky="W", row=level_row + 3, column=1)
+	Height_Label.grid(sticky="W", row=level_row + 4, column=1)
+	Goal_Body_Fat_Percentage_Label.grid(sticky="W", row=level_row + 5, column=1)
+	Bodyweight_Label.grid(sticky="W", row=level_row + 6, column=1)
+	Body_Fat_Percentage_Label.grid(sticky="W", row=level_row + 7, column=1)
+	Blood_Pressure_Label.grid(sticky="W", row=level_row + 8, column=1)
+
+def draw_exercise_section_frame():
+	global Exercise_Section_Frame
+	Exercise_Section_Frame = tkinter.Frame(Life_Frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
+	Exercise_Section_Frame_Label = tkinter.Label(Exercise_Section_Frame, text = "Exercise Section")
+	Exercise_Section_Frame.grid(sticky="W", row = 2, column = 1)
+	Exercise_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
+
+	Todays_Exercise_Record_Button = tkinter.Button(Exercise_Section_Frame, text="Record Todays Exercise", command = Record_Todays_Exercise_Form)
+	Exercise_Add_New_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Add New Exercise", command = New_Exercise_Entry_Form)
+	Plan_This_Week_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Plan This Week", command = This_Week_Exercise_Form)
+
+	Todays_Exercise_Record_Button.grid(sticky="W", row = 1, column = 2, padx=5)
+	Exercise_Add_New_Exercise_Button.grid(sticky="W", row = 1, column = 3)
+	Plan_This_Week_Exercise_Button.grid(sticky="W", row = 1, column = 4)
+
+def draw_nutrition_section_frame():
+	global Nutrition_Section_Frame
+	Nutrition_Section_Frame = tkinter.Frame(Life_Frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
+	Nutrition_Section_Frame_Label = tkinter.Label(Nutrition_Section_Frame, text = "Nutrition Section")
+	Nutrition_Section_Open_Button = tkinter.Button(Nutrition_Section_Frame, text = "Open", command=nutrition_form)
+	Nutrition_Section_Frame.grid(sticky="W", row = 2, column = 2)
+	Nutrition_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
+	Nutrition_Section_Open_Button.grid(sticky="W", row = 1, column = 2)
+
+def draw_hygene_section_frame():
+	global Hygene_Section_Frame
+	Hygene_Section_Frame = tkinter.Frame(Life_Frame, bg = 'yellow', relief=tkinter.RAISED, borderwidth=1)
+	Hygene_Section_Frame_Label = tkinter.Label(Hygene_Section_Frame, text = "Hygene Section")
+	Penis_Hygene_Label = tkinter.Label(Hygene_Section_Frame, text = "Penis Hygene")
+	Unnecessary_Hair_Removal_Label = tkinter.Label(Hygene_Section_Frame, text = "Unnecessary Hair Removal")
+	Bactrial_Smell_Body_Spray_Label = tkinter.Label(Hygene_Section_Frame, text = "Bactrial Smell Body Spray")
+	Hair_Smell_Label = tkinter.Label(Hygene_Section_Frame, text = "Hair Smell Spray")
+	Bath_Label = tkinter.Label(Hygene_Section_Frame, text = "Bath")
+	Teeth_Brush_Label = tkinter.Label(Hygene_Section_Frame, text = "Teeth Brush")
+	Shampoo_Label = tkinter.Label(Hygene_Section_Frame, text = "Shampoo")
+	Hair_Cut_Label = tkinter.Label(Hygene_Section_Frame, text = "Hair Cut")
+	Nail_Cut_Label = tkinter.Label(Hygene_Section_Frame, text = "Nail Cut")
+
+	Hygene_Section_Frame.grid(sticky="W", row = 3, column = 1)
+	Hygene_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
+	Penis_Hygene_Label.grid(sticky="W", row = 2, column = 1)
+	Unnecessary_Hair_Removal_Label.grid(sticky="W", row = 3, column = 1)
+	Bactrial_Smell_Body_Spray_Label.grid(sticky="W", row = 4, column = 1)
+	Hair_Smell_Label.grid(sticky="W", row = 5, column = 1)
+	Bath_Label.grid(sticky="W", row = 6, column = 1)
+	Teeth_Brush_Label.grid(sticky="W", row = 7, column = 1)
+	Shampoo_Label.grid(sticky="W", row = 8, column = 1)
+	Hair_Cut_Label.grid(sticky="W", row = 9, column = 1)
+	Nail_Cut_Label.grid(sticky="W", row = 10, column = 1)
+
+def draw_grooming_section_frame():
+	global Grooming_Section_Frame
+	Grooming_Section_Frame = tkinter.Frame(Life_Frame, bg = 'violet', relief=tkinter.RAISED, borderwidth=1)
+	Grooming_Section_Frame_Label = tkinter.Label(Grooming_Section_Frame, text = "Grooming Section")
+	Grooming_Section_Frame.grid(sticky="W", row = 3, column = 2)
+	Grooming_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
+
+def draw_goal_section_frame():
+	global Goal_Section_Frame
+	Goal_Section_Frame = tkinter.Frame(Corporate_Frame, bg = 'orange', relief=tkinter.RAISED, borderwidth=1)
+	Goal_Section_Frame_Label = tkinter.Label(Goal_Section_Frame, text = "Goal Section")
+	Goal_Section_Frame.grid(sticky="w",row=1,column=1)
+	Goal_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+def draw_day_planning_section_frame():
+	global Day_Planning_Section_Frame
+	Day_Planning_Section_Frame = tkinter.Frame(Corporate_Frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
+	Day_Planning_Section_Frame_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Day Planning Section")
+	Day_Planning_Section_Frame_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Important")
+	Day_Planning_Section_Frame_Not_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Not Important")
+	Day_Planning_Section_Frame_Now_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Now")
+	Day_Planning_Section_Frame_Later_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Later")
+	Day_Planning_Section_First_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+	Day_Planning_Section_Second_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+	Day_Planning_Section_Third_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+	Day_Planning_Section_Fourth_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
+
+	Day_Planning_Section_Frame.grid(sticky="w",row=2,column=1)
+	Day_Planning_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+
+	Day_Planning_Section_First_Grid.grid(sticky="w",row=3,column=2)
+	Day_Planning_Section_Second_Grid.grid(sticky="w",row=3,column=3)
+	Day_Planning_Section_Third_Grid.grid(sticky="w",row=4,column=2)
+	Day_Planning_Section_Fourth_Grid.grid(sticky="w",row=4,column=3)
+
+	Day_Planning_Section_Frame_Important_Label.grid(sticky="w",row=3,column=1)
+	Day_Planning_Section_Frame_Not_Important_Label.grid(sticky="w",row=4,column=1)
+	Day_Planning_Section_Frame_Now_Important_Label.grid(sticky="w",row=2,column=2)
+	Day_Planning_Section_Frame_Later_Important_Label.grid(sticky="w",row=2,column=3)
+
+def draw_social_section_frame():
+	global Social_Section_Frame
+	Social_Section_Frame = tkinter.Frame(Corporate_Frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
+	Social_Section_Frame_Label = tkinter.Label(Social_Section_Frame, text = "Social Section")
+	Social_Section_Frame.grid(sticky="w",row=3,column=1)
+	Social_Section_Frame_Label.grid(sticky="w",row=1,column=1)
+
+def draw_app_frames():
+	global Life_Frame
+	Life_Frame = tkinter.Frame(top_frame, bg = 'indigo', relief=tkinter.RAISED, borderwidth=1)
+	Life_Frame.grid(sticky = 'W', row = 1, column = 1)
+
+	global Corporate_Frame
+	Corporate_Frame = tkinter.Frame(top_frame, bg = 'indigo', relief=tkinter.RAISED, borderwidth=1)
+	Corporate_Frame.grid(sticky = 'W', row = 1, column = 2)
+
+	draw_sleep_section_frame()
+	draw_user_profile_frame()
+	draw_exercise_section_frame()
+	draw_nutrition_section_frame()	
+	draw_hygene_section_frame()
+	draw_grooming_section_frame()
+	draw_goal_section_frame()
+	draw_day_planning_section_frame()
+	draw_social_section_frame()
 
 def sleep_add_form():
 	"""initialize database """
@@ -303,13 +439,13 @@ def sleep_add_form():
 
 		
 
-	Current_Date_Bed_Var = tkinter.StringVar(content_frame)
+	Current_Date_Bed_Var = tkinter.StringVar(Sleep_Section_Frame)
 	Current_Date_Bed_Var.set(bed_time)
-	Current_Date_Awake_Var = tkinter.StringVar(content_frame)
+	Current_Date_Awake_Var = tkinter.StringVar(Sleep_Section_Frame)
 	Current_Date_Awake_Var.set(wakeup_time)
-	Sleep_Required_Minimum_Var = tkinter.StringVar(content_frame)
+	Sleep_Required_Minimum_Var = tkinter.StringVar(Sleep_Section_Frame)
 	Sleep_Required_Minimum_Var.set(min_req_time)
-	Sleep_Deficit_Var = tkinter.StringVar(content_frame)
+	Sleep_Deficit_Var = tkinter.StringVar(Sleep_Section_Frame)
 	Sleep_Deficit_Var.set("Overall Sleep Deficit = "+overall_sleep_excess_or_deficit_time)
 
 	def sleep_form_submit():
@@ -441,13 +577,8 @@ def sleep_add_form():
 	Sleep_Submit_Button.grid(sticky="W", row=7 , column=2 )
 
 
-Sleep_Section_Frame = tkinter.Frame(Life_Frame, bg = 'red', relief=tkinter.RAISED, borderwidth=1)
-Sleep_Section_Frame_Label = tkinter.Label(Sleep_Section_Frame, text = "Sleep Section-")
-Sleep_Section_Button = tkinter.Button(Sleep_Section_Frame, text="Open", command=sleep_add_form)
 
 
-Exercise_Section_Frame = tkinter.Frame(Life_Frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
-Exercise_Section_Frame_Label = tkinter.Label(Exercise_Section_Frame, text = "Exercise Section")
 
 def Record_Todays_Exercise_Form():
 	Todays_Exercise_Record_Form = tkinter.Toplevel(top_frame)
@@ -578,9 +709,6 @@ def This_Week_Exercise_Form():
 
 
 	
-Todays_Exercise_Record_Button = tkinter.Button(Exercise_Section_Frame, text="Record Todays Exercise", command = Record_Todays_Exercise_Form)
-Exercise_Add_New_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Add New Exercise", command = New_Exercise_Entry_Form)
-Plan_This_Week_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Plan This Week", command = This_Week_Exercise_Form)
 
 
 def nutrition_form():
@@ -716,118 +844,7 @@ def nutrition_form():
 
 
 
-Nutrition_Section_Frame = tkinter.Frame(Life_Frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
-Nutrition_Section_Frame_Label = tkinter.Label(Nutrition_Section_Frame, text = "Nutrition Section")
-Nutrition_Section_Open_Button = tkinter.Button(Nutrition_Section_Frame, text = "Open", command=nutrition_form)
-
-
-
-Hygene_Section_Frame = tkinter.Frame(Life_Frame, bg = 'yellow', relief=tkinter.RAISED, borderwidth=1)
-Hygene_Section_Frame_Label = tkinter.Label(Hygene_Section_Frame, text = "Hygene Section")
-Penis_Hygene_Label = tkinter.Label(Hygene_Section_Frame, text = "Penis Hygene")
-Unnecessary_Hair_Removal_Label = tkinter.Label(Hygene_Section_Frame, text = "Unnecessary Hair Removal")
-Bactrial_Smell_Body_Spray_Label = tkinter.Label(Hygene_Section_Frame, text = "Bactrial Smell Body Spray")
-Hair_Smell_Label = tkinter.Label(Hygene_Section_Frame, text = "Hair Smell Spray")
-Bath_Label = tkinter.Label(Hygene_Section_Frame, text = "Bath")
-Teeth_Brush_Label = tkinter.Label(Hygene_Section_Frame, text = "Teeth Brush")
-Shampoo_Label = tkinter.Label(Hygene_Section_Frame, text = "Shampoo")
-Hair_Cut_Label = tkinter.Label(Hygene_Section_Frame, text = "Hair Cut")
-Nail_Cut_Label = tkinter.Label(Hygene_Section_Frame, text = "Nail Cut")
-
-
-Grooming_Section_Frame = tkinter.Frame(Life_Frame, bg = 'violet', relief=tkinter.RAISED, borderwidth=1)
-Grooming_Section_Frame_Label = tkinter.Label(Grooming_Section_Frame, text = "Grooming Section")
-
-
-
-Goal_Section_Frame = tkinter.Frame(top_frame, bg = 'orange', relief=tkinter.RAISED, borderwidth=1)
-Goal_Section_Frame_Label = tkinter.Label(Goal_Section_Frame, text = "Goal Section")
-
-Day_Planning_Section_Frame = tkinter.Frame(top_frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
-Day_Planning_Section_Frame_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Day Planning Section")
-Day_Planning_Section_Frame_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Important")
-Day_Planning_Section_Frame_Not_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Not Important")
-Day_Planning_Section_Frame_Now_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Now")
-Day_Planning_Section_Frame_Later_Important_Label = tkinter.Label(Day_Planning_Section_Frame, text = "Later")
-Day_Planning_Section_First_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
-Day_Planning_Section_Second_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
-Day_Planning_Section_Third_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
-Day_Planning_Section_Fourth_Grid = tkscrolled.ScrolledText(Day_Planning_Section_Frame, width=20, height=10, wrap='word')
-
-
 
 #TKScrollTXT.insert(1.0, 'sdsi')
 
-
-
-Social_Section_Frame = tkinter.Frame(top_frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
-Social_Section_Frame_Label = tkinter.Label(Social_Section_Frame, text = "Social Section")
-
-
-Goal_Section_Frame.grid(sticky="w",row=0,column=2)
-Goal_Section_Frame_Label.grid(sticky="w",row=1,column=1)
-
-Day_Planning_Section_Frame.grid(sticky="w",row=1,column=2)
-Day_Planning_Section_Frame_Label.grid(sticky="w",row=1,column=1)
-
-Day_Planning_Section_First_Grid.grid(sticky="w",row=3,column=2)
-Day_Planning_Section_Second_Grid.grid(sticky="w",row=3,column=3)
-Day_Planning_Section_Third_Grid.grid(sticky="w",row=4,column=2)
-Day_Planning_Section_Fourth_Grid.grid(sticky="w",row=4,column=3)
-
-Day_Planning_Section_Frame_Important_Label.grid(sticky="w",row=3,column=1)
-Day_Planning_Section_Frame_Not_Important_Label.grid(sticky="w",row=4,column=1)
-Day_Planning_Section_Frame_Now_Important_Label.grid(sticky="w",row=2,column=2)
-Day_Planning_Section_Frame_Later_Important_Label.grid(sticky="w",row=2,column=3)
-
-Social_Section_Frame.grid(sticky="w",row=2,column=2)
-Social_Section_Frame_Label.grid(sticky="w",row=1,column=1)
-
-
-level_row = 3
-User_Profile_Frame.grid(sticky="W", row = 1, column = 1)
-User_Profile_Frame_Label.grid(sticky="W", row = 1, column = 1)
-Gender_Label.grid(sticky="W", row=level_row + 1, column=1)
-Fitness_Goal_Label.grid(sticky="W", row=level_row + 2, column=1)
-Fitness_Goal_D.grid(sticky="W", row=level_row + 2, column=2)
-#Tip: Calculate extra rep set in next day
-Age_Label.grid(sticky="W", row=level_row + 3, column=1)
-Height_Label.grid(sticky="W", row=level_row + 4, column=1)
-Goal_Body_Fat_Percentage_Label.grid(sticky="W", row=level_row + 5, column=1)
-Bodyweight_Label.grid(sticky="W", row=level_row + 6, column=1)
-Body_Fat_Percentage_Label.grid(sticky="W", row=level_row + 7, column=1)
-Blood_Pressure_Label.grid(sticky="W", row=level_row + 8, column=1)
-
-Sleep_Section_Frame.grid(sticky="W", row = 1, column = 2)
-Sleep_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-Sleep_Section_Button.grid(sticky="W", row = 1, column = 2)
-
-
-Exercise_Section_Frame.grid(sticky="W", row = 2, column = 1)
-Exercise_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-Todays_Exercise_Record_Button.grid(sticky="W", row = 1, column = 2, padx=5)
-Exercise_Add_New_Exercise_Button.grid(sticky="W", row = 1, column = 3)
-Plan_This_Week_Exercise_Button.grid(sticky="W", row = 1, column = 4)
-
-Nutrition_Section_Frame.grid(sticky="W", row = 2, column = 2)
-Nutrition_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-Nutrition_Section_Open_Button.grid(sticky="W", row = 1, column = 2)
-
-
-Grooming_Section_Frame.grid(sticky="W", row = 3, column = 2)
-Grooming_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-
-Hygene_Section_Frame.grid(sticky="W", row = 3, column = 1)
-Hygene_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-Penis_Hygene_Label.grid(sticky="W", row = 2, column = 1)
-Unnecessary_Hair_Removal_Label.grid(sticky="W", row = 3, column = 1)
-Bactrial_Smell_Body_Spray_Label.grid(sticky="W", row = 4, column = 1)
-Hair_Smell_Label.grid(sticky="W", row = 5, column = 1)
-Bath_Label.grid(sticky="W", row = 6, column = 1)
-Teeth_Brush_Label.grid(sticky="W", row = 7, column = 1)
-Shampoo_Label.grid(sticky="W", row = 8, column = 1)
-Hair_Cut_Label.grid(sticky="W", row = 9, column = 1)
-Nail_Cut_Label.grid(sticky="W", row = 10, column = 1)
-
-
-top_frame.mainloop()
+top_frame_loop()
