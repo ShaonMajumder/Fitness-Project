@@ -121,14 +121,6 @@ def save_profile_data():
 
 def add_profile_details():
     profile_id = session_data['profile_id']
-
-    global add_profile_details_screen
-    add_profile_details_screen = Toplevel(main_screen)
-    add_profile_details_screen.title("Add details")
-    add_profile_details_screen.geometry("300x500")
-    Label(add_profile_details_screen, text="Please enter details below").pack()
-    Label(add_profile_details_screen, text="").pack()
-
     global fullname
     global gender
     global age
@@ -148,6 +140,29 @@ def add_profile_details():
     bodyweight = StringVar()
     meal_number = StringVar()
     activity_level = StringVar()
+
+
+    result = mydb.select('*',"`profile_id`='"+profile_id+"'","biodata")
+    if result != ():
+        row = result[0]
+        fullname.set(row['fullname'])
+        gender.set(row['gender'])
+        age.set(row['age'])
+        birthdate.set(row['birthdate'])
+        protein_grams_per_body_pound.set(row['protein_grams_per_body_pound'])
+        height.set(row['height'])
+        bodyweight.set(row['bodyweight'])
+        meal_number.set(row['meal_number'])
+        activity_level.set(row['activity_level'])
+
+
+
+    global add_profile_details_screen
+    add_profile_details_screen = Toplevel(main_screen)
+    add_profile_details_screen.title("Add/Edit details")
+    add_profile_details_screen.geometry("300x500")
+    Label(add_profile_details_screen, text="Please enter details below").pack()
+    Label(add_profile_details_screen, text="").pack()    
 
     global fullname_entry
     global gender_entry
