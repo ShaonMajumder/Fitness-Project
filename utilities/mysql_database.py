@@ -155,17 +155,8 @@ class mysql_db():
         for row_li in data2d:
             self.insert(columns,row_li,table)
 
-    def import_list_from_google_sheet(self,CREDENTIAL_FILE,SPREADSHEET_ID,FINDAREA_RANGE_NAME,db_table):
-        gsheet = Gsheet(CREDENTIAL_FILE,SPREADSHEET_ID)
-        values = gsheet.get_values(FINDAREA_RANGE_NAME)
 
-        if not values:
-            print('No data found.')
-        else:
-            return values
-
-    def import_table_from_google_sheet(self,CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table):
-        values = self.import_list_from_google_sheet(CREDENTIAL_FILE,google_sheet_id,google_sheet_range,db_table)
+    def import_table_from_2D_List(self,values,db_table):
         header = values.pop(0)
         df = pd.DataFrame(values, columns=header)
         temp_file = "temp.xlsx"

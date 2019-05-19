@@ -15,15 +15,15 @@ cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
 
-
-google_sheet_client_id = config['GOOGLE_SHEET']['google_sheet_client_id']
-google_sheet_client_secret = config['GOOGLE_SHEET']['google_sheet_client_secret']
-
 SPREADSHEET_ID = config['GOOGLE_SHEET']['spreadsheet_id']
 google_sheet_range = config['GOOGLE_SHEET']['spreadsheet_range']
 gsheet = Gsheet(cred_json_file,SPREADSHEET_ID)
 
-mydb.import_table_from_google_sheet(utilization_directory+'credentials.json',SPREADSHEET_ID,google_sheet_range,'nutrition_values')
+
+values = gsheet.get_values(google_sheet_range)
+if not values:
+    print('No data found.')
+mydb.import_table_from_2D_List(values,'nutrition_values')
 #mydb.remove_temp()
 
 def create_food_id():

@@ -141,7 +141,6 @@ def add_profile_details():
     meal_number = StringVar()
     activity_level = StringVar()
 
-
     result = mydb.select('*',"`profile_id`='"+profile_id+"'","biodata")
     if result != ():
         row = result[0]
@@ -154,8 +153,6 @@ def add_profile_details():
         bodyweight.set(row['bodyweight'])
         meal_number.set(row['meal_number'])
         activity_level.set(row['activity_level'])
-
-
 
     global add_profile_details_screen
     add_profile_details_screen = Toplevel(main_screen)
@@ -287,7 +284,7 @@ def user_profile_form():
 
     Label(user_profile_screen,text="User Details", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
     Label(user_profile_screen,text="").pack()
-    Button(user_profile_screen,text="Add details", height="2", width="30", command = add_profile_details).pack()
+    Button(user_profile_screen,text="Add/Edit details", height="2", width="30", command = add_profile_details).pack()
     Label(user_profile_screen,text="").pack()
 
 # Designing popup for login invalid password

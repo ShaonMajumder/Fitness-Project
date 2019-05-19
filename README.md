@@ -60,3 +60,8 @@
 
 	Last Exercise highest rep and weight
 
+## Backup
+	Backup the main mysql database.sql
+	Backup nutrition.xlsx
+	Backup sheet_credentials.json
+	Backup dbconfig.ini
