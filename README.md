@@ -65,3 +65,5 @@
 	Backup nutrition.xlsx
 	Backup sheet_credentials.json
 	Backup dbconfig.ini
+	Keep them in a directory
+	Backup the directory
