@@ -8,21 +8,11 @@
 # Hygene >
 # Identity & Carrier execution >
 # Social health
+
 """
-Sleep_Section_Frame
-Exercise_Section_Frame
-Nutrition_Section_Frame
-Hygene_Section_Frame
-Grooming_Section_Frame
-Social_Section_Frame
-Rolling....
-
-
-User_Profile_Frame         Sleep_Section_Frame       
-Exercise_Section_Frame     Nutrition_Section_Frame
-Hygene_Section_Frame       Grooming_Section_Frame
-Social_Section_Frame
-
+User_Profile_Frame         Sleep_Section_Frame        | Goal Section
+Exercise_Section_Frame     Nutrition_Section_Frame 	  | Day Planning Section
+Hygene_Section_Frame       Grooming_Section_Frame 	  | Social Section
 """
 Muscles = ['Deltoids','Triceps','Biceps','Forearm','Trapezius','Middle Back','Latissimus Dorsi','Lower Back','Quadriceps','Calves','Hamstring','Upper Abs','Lower Abs','Obliques']
 def create_new_profile():
@@ -174,7 +164,7 @@ def New_Exercise_Entry_Form():
 
 ## Main 
 
-def top_frame_loop():
+def app_frame_loop():
 	global top_frame
 	top_frame = tkinter.Tk()
 	top_frame.tk.call('encoding', 'system', 'utf-8')
@@ -842,9 +832,4 @@ def nutrition_form():
 	Nutrition_Section_Add_New_Food_Label.grid(sticky="w",row=5,column=1)
 
 
-
-
-
-#TKScrollTXT.insert(1.0, 'sdsi')
-
-top_frame_loop()
+app_frame_loop()
