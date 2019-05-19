@@ -6,6 +6,11 @@ from utilities.mysql_database import *
 import os
 import hashlib
 
+global login_state
+login_state = False
+global session_data
+session_data = {}
+
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
 
@@ -77,7 +82,7 @@ def login():
     global email_login_entry
     global password_login_entry
  
-    Label(login_screen, text="Username * ").pack()
+    Label(login_screen, text="Email * ").pack()
     email_login_entry = Entry(login_screen, textvariable=email_verify)
     email_login_entry.pack()
     Label(login_screen, text="").pack()
@@ -87,6 +92,95 @@ def login():
     Label(login_screen, text="").pack()
     Button(login_screen, text="Login", width=10, height=1, command = login_verify).pack()
  
+def save_profile_data():
+    fullname_info = fullname.get()
+    gender_info = gender.get()
+    age_info = age.get()
+    birthdate_info = birthdate.get()
+    protein_grams_per_body_pound_info = protein_grams_per_body_pound.get()
+    height_info = height.get()
+    bodyweight_info = bodyweight.get()
+    meal_number_info = meal_number.get()
+    activity_level_info = activity_level.get()
+
+
+    profile_id = session_data['profile_id']
+    result = mydb.select('*',"`profile_id`='"+profile_id+"'","biodata")
+    if result != ():
+        mydb.edit(['fullname','gender','age','birthdate','protein_grams_per_body_pound','height','bodyweight','meal_number','activity_level'],[fullname_info,gender_info,age_info,birthdate_info,protein_grams_per_body_pound_info,height_info,bodyweight_info,meal_number_info,activity_level_info],"`profile_id`='"+profile_id+"'","biodata")
+    else:
+        mydb.insert(['profile_id','fullname','gender','age','birthdate','protein_grams_per_body_pound','height','bodyweight','meal_number','activity_level'],[profile_id,fullname_info,gender_info,age_info,birthdate_info,protein_grams_per_body_pound_info,height_info,bodyweight_info,meal_number_info,activity_level_info],"biodata")
+    
+
+def add_profile_details():
+    profile_id = session_data['profile_id']
+
+    global add_profile_details_screen
+    add_profile_details_screen = Toplevel(main_screen)
+    add_profile_details_screen.title("Add details")
+    add_profile_details_screen.geometry("300x500")
+    Label(add_profile_details_screen, text="Please enter details below").pack()
+    Label(add_profile_details_screen, text="").pack()
+
+    global fullname
+    global gender
+    global age
+    global birthdate
+    global protein_grams_per_body_pound
+    global height
+    global bodyweight
+    global meal_number
+    global activity_level
+
+    fullname = StringVar()
+    gender = StringVar()
+    age = StringVar()
+    birthdate = StringVar()
+    protein_grams_per_body_pound = StringVar()
+    height = StringVar()
+    bodyweight = StringVar()
+    meal_number = StringVar()
+    activity_level = StringVar()
+
+    global fullname_entry
+    global gender_entry
+    global age_entry
+    global birthdate_entry
+    global protein_grams_per_body_pound_entry
+    global height_entry
+    global bodyweight_entry
+    global meal_number_entry
+    global activity_level_entry
+
+    Label(add_profile_details_screen, text="Fullname * ").pack()
+    fullname_entry = Entry(add_profile_details_screen, textvariable=fullname)
+    fullname_entry.pack()
+    Label(add_profile_details_screen, text="Gender * ").pack()
+    gender_entry = Entry(add_profile_details_screen, textvariable=gender)
+    gender_entry.pack()
+    Label(add_profile_details_screen, text="Age * ").pack()
+    age_entry = Entry(add_profile_details_screen, textvariable=age)
+    age_entry.pack()
+    Label(add_profile_details_screen, text="Birthdate * ").pack()
+    birthdate_entry = Entry(add_profile_details_screen, textvariable=birthdate)
+    birthdate_entry.pack()
+    Label(add_profile_details_screen, text="Protein(grams) per bodyweight(pound)").pack()
+    protein_grams_per_body_pound_entry = Entry(add_profile_details_screen, textvariable=protein_grams_per_body_pound)
+    protein_grams_per_body_pound_entry.pack()
+    Label(add_profile_details_screen, text="Height * ").pack()
+    height_entry = Entry(add_profile_details_screen, textvariable=height)
+    height_entry.pack()
+    Label(add_profile_details_screen, text="Bodyweight * ").pack()
+    bodyweight_entry = Entry(add_profile_details_screen, textvariable=bodyweight)
+    bodyweight_entry.pack()
+    Label(add_profile_details_screen, text="Meal Number * ").pack()
+    meal_number_entry = Entry(add_profile_details_screen, textvariable=meal_number)
+    meal_number_entry.pack()
+    Label(add_profile_details_screen, text="Activity Level * ").pack()
+    activity_level_entry = Entry(add_profile_details_screen, textvariable=activity_level)
+    activity_level_entry.pack()
+    Button(add_profile_details_screen, text="Submit", command=save_profile_data).pack()
+
 # Implementing event on register button
  
 def register_user(): 
@@ -143,7 +237,8 @@ def login_verify():
     if username_result != ():
         password_result = mydb.select('*',f"""`password`='{password1}'""","profiles")
         if password_result != ():
-            login_sucess()
+            profile_id = password_result[0]['profile_id']
+            login_sucess(profile_id)
         else:
             password_not_recognised()
     else:
@@ -151,7 +246,10 @@ def login_verify():
 
 # Designing popup for login success
  
-def login_sucess():
+def login_sucess(profile_id):
+    login_state = True
+    session_data['profile_id'] = profile_id
+
     global login_success_screen
     login_success_screen = Toplevel(login_screen)
     login_success_screen.title("Success")
@@ -159,6 +257,17 @@ def login_sucess():
     Label(login_success_screen, text="Login Success").pack()
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
  
+def user_profile():
+    global user_profile_screen
+    user_profile_screen = Toplevel(main_screen)
+    user_profile_screen.title("User Details")
+    user_profile_screen.geometry("350x250")
+
+    Label(user_profile_screen,text="User Details", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(user_profile_screen,text="").pack()
+    Button(user_profile_screen,text="Add details", height="2", width="30", command = add_profile_details).pack()
+    Label(user_profile_screen,text="").pack()
+
 # Designing popup for login invalid password
  
 def password_not_recognised():
@@ -183,7 +292,9 @@ def user_not_found():
  
 def delete_login_success():
     login_success_screen.destroy()
- 
+    login_screen.destroy()
+    user_profile()
+
  
 def delete_password_not_recognised():
     password_not_recog_screen.destroy()
