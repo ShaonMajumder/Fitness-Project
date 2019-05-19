@@ -11,9 +11,9 @@ try:
 except:
 	from science import *
 
+goal_config =read_config_ini("Goal.data")
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
-goal_config =read_config_ini("Goal.data")
 
 ##database config
 host=config['DATABASE']['host']

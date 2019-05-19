@@ -1,4 +1,14 @@
 """
+watch list
+
+https://www.youtube.com/watch?v=s1H8EzGGPLA
+https://www.youtube.com/watch?v=MmKY00znzNE&list=PLfNW_1ECVaTh6m39Ecz6opUsyAfTCPyuS&index=3
+https://www.youtube.com/results?search_query=color+scheme+for+mens+dress
+https://www.youtube.com/watch?v=okaHQL2oVAs
+https://www.youtube.com/watch?v=hw_ie8PUXGI
+https://www.youtube.com/watch?v=-vRKFWxJaU4
+
+
 Need to implement:
 Black and white [white != white] applicable for pant only
 but test for both bottoms and tops can not white == white, at least one have to be different

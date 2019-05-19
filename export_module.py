@@ -20,7 +20,7 @@ activity_id = "324jkhs2"
 print_number = str(1)
 today = datetime.date.today()
 date = today.strftime('%d %b,%Y')
-day = "saturday"#get_today_day()
+day = get_today_day()#"saturday"
 time = "6:00AM"
 person_name = "Shaon Majumder"
 
@@ -108,7 +108,7 @@ Take Preworkout Meal Box before 1 hour
 Take Postworkout Meal Box after workout
 
 Summary {part_count_dic}
-Total Intensitiy:{Target_Intensity}"""
+"""
 
 """ Nutrition Calculation """
 fasting = True
@@ -153,10 +153,6 @@ write_file(output_file, stri,mode="w")
 printer_file(output_file)
 
 """
-3 body part can reduce rest time
-Daily abs training can help abs and cut the vacum slot at sunday
-
-In home exercise:
-6. hollow body hold - 3sets x 10reps x 25seconds
-7. plank walk pushup - 3sets x 10reps
+Flow List
+1. Intensity calculation Total Intensitiy:2000rem
 """
