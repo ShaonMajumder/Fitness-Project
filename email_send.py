@@ -13,23 +13,26 @@ subject = 'Activate Account - ROBIST'
 body = "Hey, thanks for register with Robist account. To activate your account, click here or visit this link - .\n\n- You"
 CC = ''
 
-subject_ = ''.format(subject)
-email_text = f"""Subject: {subject}
-From: {sent_from}
-To: {", ".join(to)}
-CC: {CC}
 
-{body}
-"""
-email_text = subject_ + email_text
-try:  
-    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-    server.ehlo()
-    server.login(gmail_user, gmail_password)
-    server.sendmail(sent_from, to, email_text)
-    server.close()
 
-    print('Email sent!')
+def send_email(subject, body, CC, to, sent_from):
+	email_text = f"""Subject: {subject}
+	From: {sent_from}
+	To: {", ".join(to)}
+	CC: {CC}
 
-except:  
-    print('Something went wrong...')
+	{body}
+	"""
+	try:  
+	    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+	    server.ehlo()
+	    server.login(gmail_user, gmail_password)
+	    server.sendmail(sent_from, to, email_text)
+	    server.close()
+
+	    print('Email sent!')
+
+	except:  
+	    print('Something went wrong...')
+
+send_email(subject, body, CC, to, sent_from)
