@@ -17,12 +17,11 @@ CC = ''
 
 def send_email(subject, body, CC, to, sent_from):
 	email_text = f"""Subject: {subject}
-	From: {sent_from}
-	To: {", ".join(to)}
-	CC: {CC}
+From: {sent_from}
+To: {", ".join(to)}
+CC: {CC}\n
 
-	{body}
-	"""
+{body}"""
 	try:  
 	    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 	    server.ehlo()

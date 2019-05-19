@@ -9,6 +9,9 @@ import hashlib
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
 
+gmail_user = config['GMAIL']['email']
+gmail_password = config['GMAIL']['password']
+
 ##database config
 host=config['DATABASE']['host']
 user=config['DATABASE']['user']
@@ -106,6 +109,13 @@ def register_user():
                 break
 
         mydb.insert(['profile_id','username','email','password'],[random_key,username_info,email_info,password_info],'profiles')
+        sent_from = gmail_user  
+        to = [email_info]
+        subject = 'Activate Account - ROBIST'
+        body = f"""Hey {username_info}, thanks for register with Robist account. To activate your account, click here or visit this link - .\n\n- Robist Automated Reply"""
+        CC = ''
+        send_email(subject, body, CC, to, sent_from, gmail_user, gmail_password)
+
     elif(result_email != ()):
         print("This email is already registered.")
     elif(result_username != ()):

@@ -6,6 +6,26 @@ import configparser
 import codecs
 import os
 import win32print
+import smtplib
+
+def send_email(subject, body, CC, to, sent_from, smtp_user, smtp_password):
+    email_text = f"""Subject: {subject}
+From: {sent_from}
+To: {", ".join(to)}
+CC: {CC}\n
+
+{body}"""
+    try:  
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(smtp_user, smtp_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+
+        print('Email sent!')
+
+    except:  
+        print('Something went wrong...')
 
 def unique_items(li):
     dic = {}
