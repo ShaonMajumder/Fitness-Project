@@ -1,11 +1,19 @@
-#import modules
- 
+#import modules 
+from PIL import ImageTk,Image
+import PIL
 from tkinter import *
 from utilities.utility import *
 from utilities.mysql_database import *
 import os
 import hashlib
 
+"""
+Foreign key data
+SELECT username
+FROM biodata
+INNER JOIN profiles
+ON biodata.profile_id = profiles.profile_id;
+"""
 global login_state
 login_state = False
 global session_data
@@ -258,7 +266,7 @@ def login_verify():
         if password_result != ():
             profile_id = password_result[0]['profile_id']
             set_session(profile_id)
-            main_screen.withdraw()
+            #main_screen.withdraw()
             #main_screen.deiconify()
             login_sucess_form(profile_id)
         else:
@@ -277,16 +285,81 @@ def login_sucess_form(profile_id):
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
  
 def user_profile_form():
+    profile_id = session_data['profile_id']
+    results = mydb.execute(f"""SELECT * FROM biodata INNER JOIN profiles ON biodata.profile_id = profiles.profile_id WHERE profiles.`profile_id` = '{profile_id}'""")
+    row = results[0]
+    fullname = row['fullname']
+    gender = row['gender']
+    age = row['age']
+    height = row['height']
+    bodyweight = row['bodyweight']
+    meal_number = row['meal_number']
+    activity_level = row['activity_level']
+
+    user_details = f"""Name: {fullname}
+Gender: {gender}
+Age: {age}
+Height: {height}
+Body Weight: {bodyweight}
+Meal Number: {meal_number}
+Activity Level: {activity_level}"""
+
     global user_profile_screen
     user_profile_screen = Toplevel(main_screen)
     user_profile_screen.title("User Details")
     user_profile_screen.geometry("350x250")
+    user_profile_screen.columnconfigure(0, weight=350)
 
-    Label(user_profile_screen,text="User Details", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
-    Label(user_profile_screen,text="").pack()
-    Button(user_profile_screen,text="Add/Edit details", height="2", width="30", command = add_profile_details).pack()
-    Label(user_profile_screen,text="").pack()
+    original = PIL.Image.open("imgs/shaon.jpg")
+    size = (100, 100)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+    #display = Canvas(main_screen, bd=0, highlightthickness=0)
+    #display.create_image(0, 0, image=img, anchor=NW, tags="IMG")
+    #display.pack()
+    Label(user_profile_screen,text="User Details", bg="#969ba3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    pro_pic_frame = Frame(user_profile_screen, bg = '#a7abb2', relief=RAISED, borderwidth=1)
+    pro_pic_frame.grid(row=1,sticky="nesw")
+    panel = Label(pro_pic_frame,text=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    panel.image = img
+    panel.grid(rowspan=7,column=0,sticky="nesw")
 
+    fullname = StringVar()
+    gender = StringVar()
+    age = StringVar()
+    height = StringVar()
+    bodyweight = StringVar()
+    meal_number = StringVar()
+    activity_level = StringVar()
+    
+    fullname.set(row['fullname'])
+    gender.set(row['gender'])
+    age.set(row['age'])
+    height.set(row['height'])
+    bodyweight.set(row['bodyweight'])
+    meal_number.set(row['meal_number'])
+    activity_level.set(row['activity_level'])
+    
+    Label(pro_pic_frame,text="Gender :", width=11, anchor="w", bg='#b5aba4').grid(row=1,column=1,sticky="w")
+    Label(pro_pic_frame,text="Age :", width=11, anchor="w", bg='#b5aba4').grid(row=2,column=1,sticky="w")
+    Label(pro_pic_frame,text="Height :", width=11, anchor="w", bg='#b5aba4').grid(row=3,column=1,sticky="w")
+    Label(pro_pic_frame,text="Bodyweight :", width=11, anchor="w", bg='#b5aba4').grid(row=4,column=1,sticky="w")
+    Label(pro_pic_frame,text="Meal Number :", width=11, anchor="w", bg='#b5aba4').grid(row=5,column=1,sticky="w")
+    Label(pro_pic_frame,text="Activity Level :", width=11, anchor="w", bg='#b5aba4').grid(row=6,column=1,sticky="w")
+
+    Label(pro_pic_frame,textvariable=gender, width =5, bg='#c1b3aa').grid(row=1,column=2,sticky="w")
+    Label(pro_pic_frame,textvariable=age, width =5, bg='#c1b3aa').grid(row=2,column=2,sticky="w")
+    Label(pro_pic_frame,textvariable=height, width =5, bg='#c1b3aa').grid(row=3,column=2,sticky="w")
+    Label(pro_pic_frame,textvariable=bodyweight, width =5, bg='#c1b3aa').grid(row=4,column=2,sticky="w")
+    Label(pro_pic_frame,textvariable=meal_number, width =5, bg='#c1b3aa').grid(row=5,column=2,sticky="w")
+    Label(pro_pic_frame,textvariable=activity_level, width =5, bg='#c1b3aa').grid(row=6,column=2,sticky="w")
+
+    #panel2 = Label(pro_pic_frame,text=user_details, bg='red')
+    #panel2.grid(row=1,column=1,sticky="nesw")
+    Button(user_profile_screen,text="Add/Edit details", height="2", width="30", command = add_profile_details).grid(row=2,sticky="nesw")
+    
+
+    
 # Designing popup for login invalid password
  
 def password_not_recognised():
@@ -330,6 +403,8 @@ def main_account_screen():
     main_screen = Tk()
     main_screen.geometry("300x250")
     main_screen.title("Account Login")
+
+
     Label(text="Select Your Choice", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
     Button(text="Login", height="2", width="30", command = login).pack()
