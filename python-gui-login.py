@@ -1,7 +1,9 @@
 #import modules 
 from PIL import ImageTk,Image
 import PIL
+import shutil
 from tkinter import *
+from tkinter.filedialog import askopenfilename
 from utilities.utility import *
 from utilities.mysql_database import *
 import os
@@ -18,6 +20,7 @@ global login_state
 login_state = False
 global session_data
 session_data = {}
+
 
 def set_session(profile_id):
     login_state = True
@@ -42,6 +45,25 @@ charset=config['DATABASE']['charset']
 cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
+
+
+def validate_picture(filename):
+    filename_ = filename.split('/')[-1]
+    filename_ext = filename_.split('.')[1]
+    allowed_filetypes = ['JPG','PNG']
+    for ft in allowed_filetypes:
+        if filename_ext == ft or filename_ext == ft.lower():
+            return filename_
+
+def select_file():
+    profile_id = session_data['profile_id']
+    new_propic_filename = askopenfilename()
+    filename = validate_picture(new_propic_filename)
+    if(filename):
+        newPath = shutil.copy(new_propic_filename, 'imgs/')
+        mydb.edit(['profile_picture'],[filename],"`profile_id`='"+profile_id+"'","profiles")
+    else:
+        print("wrong filetype")
 
 # Designing window for registration
  
@@ -284,6 +306,7 @@ def login_sucess_form(profile_id):
     Label(login_success_screen, text="Login Success").pack()
     Button(login_success_screen, text="OK", command=delete_login_success).pack()
  
+
 def user_profile_form():
     profile_id = session_data['profile_id']
     results = mydb.execute(f"""SELECT * FROM biodata INNER JOIN profiles ON biodata.profile_id = profiles.profile_id WHERE profiles.`profile_id` = '{profile_id}'""")
@@ -295,6 +318,7 @@ def user_profile_form():
     bodyweight = row['bodyweight']
     meal_number = row['meal_number']
     activity_level = row['activity_level']
+    profile_picture = row['profile_picture']
 
     user_details = f"""Name: {fullname}
 Gender: {gender}
@@ -310,8 +334,14 @@ Activity Level: {activity_level}"""
     user_profile_screen.geometry("350x250")
     user_profile_screen.columnconfigure(0, weight=350)
 
-    original = PIL.Image.open("imgs/shaon.jpg")
-    size = (100, 100)
+    profile_picture_folder="imgs/"
+    if profile_picture == "":
+        img_file = "profile_avatar.png"
+    else:
+        img_file = profile_picture
+
+    original = PIL.Image.open(profile_picture_folder + img_file)
+    size = (90, 90)
     resized = original.resize(size,PIL.Image.ANTIALIAS)
     img = PIL.ImageTk.PhotoImage(resized)
     #display = Canvas(main_screen, bd=0, highlightthickness=0)
@@ -320,9 +350,9 @@ Activity Level: {activity_level}"""
     Label(user_profile_screen,text="User Details", bg="#969ba3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     pro_pic_frame = Frame(user_profile_screen, bg = '#a7abb2', relief=RAISED, borderwidth=1)
     pro_pic_frame.grid(row=1,sticky="nesw")
-    panel = Label(pro_pic_frame,text=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    panel = Label(pro_pic_frame, text=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
     panel.image = img
-    panel.grid(rowspan=7,column=0,sticky="nesw")
+    panel.grid(rowspan=5,column=0,sticky="nesw")
 
     fullname = StringVar()
     gender = StringVar()
@@ -354,11 +384,16 @@ Activity Level: {activity_level}"""
     Label(pro_pic_frame,textvariable=meal_number, width =5, bg='#c1b3aa').grid(row=5,column=2,sticky="w")
     Label(pro_pic_frame,textvariable=activity_level, width =5, bg='#c1b3aa').grid(row=6,column=2,sticky="w")
 
+    
+
+
     #panel2 = Label(pro_pic_frame,text=user_details, bg='red')
     #panel2.grid(row=1,column=1,sticky="nesw")
     Button(user_profile_screen,text="Add/Edit details", height="2", width="30", command = add_profile_details).grid(row=2,sticky="nesw")
+    Button(pro_pic_frame,text="Change", command = select_file).grid(row=6,column=0,sticky="w")
+    #Button(pro_pic_frame,text="Change", command = lambda: select_file(new_propic_filename)).grid(row=6,column=0,sticky="w")
     
-
+    
     
 # Designing popup for login invalid password
  
@@ -403,7 +438,6 @@ def main_account_screen():
     main_screen = Tk()
     main_screen.geometry("300x250")
     main_screen.title("Account Login")
-
 
     Label(text="Select Your Choice", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
