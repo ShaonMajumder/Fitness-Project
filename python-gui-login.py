@@ -3,19 +3,13 @@ from PIL import ImageTk,Image
 import PIL
 import shutil
 from tkinter import *
+from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from utilities.utility import *
 from utilities.mysql_database import *
 import os
 import hashlib
 
-"""
-Foreign key data
-SELECT username
-FROM biodata
-INNER JOIN profiles
-ON biodata.profile_id = profiles.profile_id;
-"""
 global login_state
 login_state = False
 global session_data
@@ -54,6 +48,8 @@ def validate_picture(filename):
     for ft in allowed_filetypes:
         if filename_ext == ft or filename_ext == ft.lower():
             return filename_
+        else:
+            print("Not allowed file type.")
 
 def select_file():
     profile_id = session_data['profile_id']
@@ -290,21 +286,13 @@ def login_verify():
             set_session(profile_id)
             #main_screen.withdraw()
             #main_screen.deiconify()
-            login_sucess_form(profile_id)
+            messagebox.showinfo("Fitness-Project", "You are successfully logged in.")
+            login_screen.destroy()
+            user_profile_form()
         else:
-            password_not_recognised()
+            messagebox.showinfo("Fitness-Project", "Password does not match.")
     else:
-        user_not_found()
-
-# Designing popup for login success
-
-def login_sucess_form(profile_id):
-    global login_success_screen
-    login_success_screen = Toplevel(login_screen)
-    login_success_screen.title("Success")
-    login_success_screen.geometry("150x100")
-    Label(login_success_screen, text="Login Success").pack()
-    Button(login_success_screen, text="OK", command=delete_login_success).pack()
+        messagebox.showinfo("Fitness-Project", "This email is not registered with us.\nEnter your correct email.")
  
 
 def user_profile_form():
@@ -392,61 +380,39 @@ Activity Level: {activity_level}"""
     Button(user_profile_screen,text="Add/Edit details", height="2", width="30", command = add_profile_details).grid(row=2,sticky="nesw")
     Button(pro_pic_frame,text="Change", command = select_file).grid(row=6,column=0,sticky="w")
     #Button(pro_pic_frame,text="Change", command = lambda: select_file(new_propic_filename)).grid(row=6,column=0,sticky="w")
-    
-    
-    
-# Designing popup for login invalid password
- 
-def password_not_recognised():
-    global password_not_recog_screen
-    password_not_recog_screen = Toplevel(login_screen)
-    password_not_recog_screen.title("Success")
-    password_not_recog_screen.geometry("150x100")
-    Label(password_not_recog_screen, text="Invalid Password ").pack()
-    Button(password_not_recog_screen, text="OK", command=delete_password_not_recognised).pack()
- 
-# Designing popup for user not found
- 
-def user_not_found():
-    global user_not_found_screen
-    user_not_found_screen = Toplevel(login_screen)
-    user_not_found_screen.title("Success")
-    user_not_found_screen.geometry("150x100")
-    Label(user_not_found_screen, text="User Not Found").pack()
-    Button(user_not_found_screen, text="OK", command=delete_user_not_found_screen).pack()
- 
-# Deleting popups
- 
-def delete_login_success():
-    login_success_screen.destroy()
-    login_screen.destroy()
-    user_profile_form()
 
  
-def delete_password_not_recognised():
-    password_not_recog_screen.destroy()
- 
- 
-def delete_user_not_found_screen():
-    user_not_found_screen.destroy()
- 
- 
+
+
+class Login_Register(object):
+    """docstring for ClassName"""
+    def __init__(self,*args, **kwargs):
+        ## object,iconfile
+        iconfile = kwargs['icon']
+
+        if 'object' in kwargs:
+            #   type(Toplevel(Tk())).__name__ == 'Toplevel'
+            main_screen = Toplevel(object_)
+        else:
+            #  if type(object_).__name__ == 'Tk':
+            main_screen = Tk()
+            main_screen.iconbitmap(iconfile)                   
+        
+        main_screen.geometry("300x250")
+        main_screen.title("Account Login")
+        main_screen.configure(background='#84A45A')
+
+        Label(text="Fitness-Project", bg="#715E4E", fg='white', width="300", height="2", font=("Calibri", 13)).pack()
+        Button(text="Login", bg='#818A6F', fg='white', height="2", width="30", command = login).pack(pady=20)
+        Button(text="Register", bg='#52733B', fg='white', height="2", width="30", command = register).pack()
+        self.frame = main_screen    
+
 # Designing Main(first) window
- 
 def main_account_screen():
     global main_screen
-    main_screen = Tk()
-    main_screen.geometry("300x250")
-    main_screen.title("Account Login")
-
-    Label(text="Select Your Choice", bg="blue", width="300", height="2", font=("Calibri", 13)).pack()
-    Label(text="").pack()
-    Button(text="Login", height="2", width="30", command = login).pack()
-    Label(text="").pack()
-    Button(text="Register", height="2", width="30", command=register).pack()
- 
+    object_ = Login_Register(icon="imgs/robist_apps.ico")
+    main_screen = object_.frame
     main_screen.mainloop()
- 
  
 main_account_screen()
 
