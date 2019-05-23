@@ -11,7 +11,10 @@ from Tkinter.Login_Register import *
 import os
 import hashlib
 
+Section_Height = 250
+Section_Width = 350
 
+profile_picture_folder = 'imgs/'
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
 
@@ -409,7 +412,11 @@ def intialize_sleep_database():
     Sleep_Deficit_Var = StringVar()
     Sleep_Deficit_Var.set(overall_sleep_excess_or_deficit_time)
 
-
+def static_var(varname, value):
+        def decorate(func):
+            setattr(func, varname, value)
+            return func
+        return decorate
 
 def draw_sleep_section_frame():
     global Sleep_Section_Container_Frame
@@ -419,12 +426,50 @@ def draw_sleep_section_frame():
     global Sleep_Required_Minimum_Var
     global Sleep_Deficit_Var
     
-    Sleep_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=350, height=250)
+
+    Sleep_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     Sleep_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 1)
+    
+    
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Sleep_Section_Active_Container_Frame.grid()
+            Sleep_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Sleep_Section_Active_Container_Frame.grid_remove()
+            Sleep_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
 
-    Label(Sleep_Section_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Sleep_Section_Active_Container_Frame = Frame(Sleep_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Sleep_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Sleep_Section_Active_Container_Frame.grid_propagate(False)
+    Sleep_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
 
-    sleep_info_frame = Frame(Sleep_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Sleep_Section_Inactive_Container_Frame = Frame(Sleep_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Sleep_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Sleep_Section_Inactive_Container_Frame.grid_propagate(False)
+    Sleep_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'sleep_section2.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Sleep_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Sleep_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Sleep_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    sleep_info_frame = Frame(Sleep_Section_Active_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
     sleep_info_frame.grid(row=1,sticky="nesw")
     bglabel = "#bbc1d6"
     Label(sleep_info_frame, text = "Bed Time-",width=15,bg=bglabel).grid(sticky="W", row=0 , column=0 )
@@ -442,12 +487,207 @@ def draw_sleep_section_frame():
     Sleep_Deficit_Label = Label(sleep_info_frame, width=27, textvariable = Sleep_Deficit_Var, bg=bglabelentry)
     Sleep_Deficit_Label.grid(sticky="w",row=3,column=1)
         
-    Button(Sleep_Section_Container_Frame, text="Submit", command=sleep_form_submit,height=2,bg="#b1d2e0").grid(sticky="nesw", row=7 )
+    Button(Sleep_Section_Active_Container_Frame, text="Submit", command=sleep_form_submit,height=2,bg="#b1d2e0").grid(sticky="nesw", row=7 )
     
     Recovery_or_Less_Time_Label = Label(sleep_info_frame, text = "Extra Recovery Sleep Time Allowed-")
     Recovery_or_Less_Time_Entry = Entry(sleep_info_frame, bd = 2,width=15)
     
     return Sleep_Section_Container_Frame
+
+
+def draw_exercise_section_frame():
+    global Exercise_Section_Container_Frame
+    Exercise_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Exercise_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 0)
+
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Exercise_Section_Active_Container_Frame.grid()
+            Exercise_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Exercise_Section_Active_Container_Frame.grid_remove()
+            Exercise_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
+
+    Exercise_Section_Active_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Exercise_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Exercise_Section_Active_Container_Frame.grid_propagate(False)
+    Exercise_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Exercise_Section_Inactive_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Exercise_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Exercise_Section_Inactive_Container_Frame.grid_propagate(False)
+    Exercise_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'gym.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Exercise_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Exercise_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    return Exercise_Section_Container_Frame
+
+def exercise_module_frame():
+    return draw_exercise_section_frame()
+
+def draw_nutrition_section_frame():
+    global Nutrition_Section_Container_Frame
+    Nutrition_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Nutrition_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 1)
+
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Nutrition_Section_Active_Container_Frame.grid()
+            Nutrition_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Nutrition_Section_Active_Container_Frame.grid_remove()
+            Nutrition_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
+
+    Nutrition_Section_Active_Container_Frame = Frame(Nutrition_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Nutrition_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Nutrition_Section_Active_Container_Frame.grid_propagate(False)
+    Nutrition_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Nutrition_Section_Inactive_Container_Frame = Frame(Nutrition_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Nutrition_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Nutrition_Section_Inactive_Container_Frame.grid_propagate(False)
+    Nutrition_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'nutrition.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Nutrition_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Nutrition_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Nutrition_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    return Nutrition_Section_Container_Frame
+
+def draw_grooming_section_frame():
+    global Grooming_Section_Container_Frame
+    Grooming_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Grooming_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 2)
+
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Grooming_Section_Active_Container_Frame.grid()
+            Grooming_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Grooming_Section_Active_Container_Frame.grid_remove()
+            Grooming_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
+
+    Grooming_Section_Active_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Grooming_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Grooming_Section_Active_Container_Frame.grid_propagate(False)
+    Grooming_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Grooming_Section_Inactive_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Grooming_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Grooming_Section_Inactive_Container_Frame.grid_propagate(False)
+    Grooming_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'grooming.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Grooming_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Grooming_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Grooming_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    return Grooming_Section_Container_Frame
+
+def draw_hygene_section_frame():
+    global Hygene_Section_Container_Frame
+    Hygene_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Hygene_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 2)
+
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Hygene_Section_Active_Container_Frame.grid()
+            Hygene_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Hygene_Section_Active_Container_Frame.grid_remove()
+            Hygene_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
+
+    Hygene_Section_Active_Container_Frame = Frame(Hygene_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Hygene_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Hygene_Section_Active_Container_Frame.grid_propagate(False)
+    Hygene_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Hygene_Section_Inactive_Container_Frame = Frame(Hygene_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Hygene_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Hygene_Section_Inactive_Container_Frame.grid_propagate(False)
+    Hygene_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'hygene.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Hygene_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Hygene_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Hygene_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    return Hygene_Section_Container_Frame
+
+
+
+def hygene_module_frame():
+    return draw_hygene_section_frame()
+
+def grooming_module_frame():
+    return draw_grooming_section_frame()
+
+def nutrition_module_frame():
+    return draw_nutrition_section_frame()
 
 def sleep_module_frame():
     intialize_sleep_database()
@@ -491,7 +731,7 @@ def profile_information_section_frame():
     activity_level.set(row['activity_level'])
     
     def draw_profile_information_section_frame():
-        profile_information_frame = Frame(application_screen, bg = '#969ba3', relief=RAISED, borderwidth=1, height=250, width=350)
+        profile_information_frame = Frame(application_screen, bg = '#969ba3', relief=RAISED, borderwidth=1, height=Section_Height, width=Section_Width)
         profile_information_frame.grid(sticky="nesw", row=0, column=0)
 
         Label(profile_information_frame,text="User Details", bg="#969ba3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
@@ -541,17 +781,30 @@ def application_form(*args, **kwargs):
         application_screen.iconbitmap(iconfile)                   
 
     application_screen.title("Project - Super-Human")
-    application_screen.geometry("700x250")
-    #application_screen.columnconfigure(0, weight=350)
-    #application_screen.columnconfigure(1, weight=350)
+    application_screen.geometry("1050x500")
+    
+    #application_screen.columnconfigure(0, weight=Section_Width)
+    #application_screen.columnconfigure(1, weight=Section_Width)
 
     profile_information_frame = profile_information_section_frame()
     sleep_section_frame = sleep_module_frame()
-    
+    exercise_section_frame = exercise_module_frame()
+    nutrition_section_frame = nutrition_module_frame()
+    grooming_section_frame = grooming_module_frame()
+    hygene_section_frame = hygene_module_frame()
+
     profile_information_frame.grid_propagate(False)
-    profile_information_frame.columnconfigure(0, weight=350)
+    profile_information_frame.columnconfigure(0, weight=Section_Width)
     sleep_section_frame.grid_propagate(False)
-    sleep_section_frame.columnconfigure(0, weight=350)
+    sleep_section_frame.columnconfigure(0, weight=Section_Width)
+    exercise_section_frame.grid_propagate(False)
+    exercise_section_frame.columnconfigure(0, weight=Section_Width)
+    nutrition_section_frame.grid_propagate(False)
+    nutrition_section_frame.columnconfigure(0, weight=Section_Width)
+    grooming_section_frame.grid_propagate(False)
+    grooming_section_frame.columnconfigure(0, weight=Section_Width)
+    hygene_section_frame.grid_propagate(False)
+    hygene_section_frame.columnconfigure(0, weight=Section_Width)
 
     return application_screen
 
