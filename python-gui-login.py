@@ -110,7 +110,7 @@ def add_profile_details():
         activity_level.set(row['activity_level'])
 
     global add_profile_details_screen
-    add_profile_details_screen = Toplevel(main_screen)
+    add_profile_details_screen = Toplevel(application_screen)
     add_profile_details_screen.title("Add/Edit details")
     add_profile_details_screen.geometry("300x500")
     Label(add_profile_details_screen, text="Please enter details below").pack()
@@ -419,29 +419,30 @@ def draw_sleep_section_frame():
     global Sleep_Required_Minimum_Var
     global Sleep_Deficit_Var
     
-    Sleep_Section_Container_Frame = Frame(application_screen, bg = 'SkyBlue3', relief=RAISED, borderwidth=1, width=350, height=250)
+    Sleep_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=350, height=250)
     Sleep_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 1)
 
     Label(Sleep_Section_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
 
-    sleep_info_frame = Frame(Sleep_Section_Container_Frame, bg = 'SkyBlue3', relief=RAISED, borderwidth=1)
+    sleep_info_frame = Frame(Sleep_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
     sleep_info_frame.grid(row=1,sticky="nesw")
-    Label(sleep_info_frame, text = "Bed Time-").grid(sticky="W", row=0 , column=0 )
-    Label(sleep_info_frame, text = "Gateup Time-").grid(sticky="W", row=1 , column=0 )
-    Label(sleep_info_frame, text = "Min. Required Time-").grid(sticky="W", row=2 , column=0 )
-    Label(sleep_info_frame, text = "Overall Sleep Deficit-").grid(sticky="W", row=3 , column=0 )
+    bglabel = "#bbc1d6"
+    Label(sleep_info_frame, text = "Bed Time-",width=15,bg=bglabel).grid(sticky="W", row=0 , column=0 )
+    Label(sleep_info_frame, text = "Gateup Time-",width=15,bg=bglabel).grid(sticky="W", row=1 , column=0 )
+    Label(sleep_info_frame, text = "Min. Required Time-",width=15,bg=bglabel).grid(sticky="W", row=2 , column=0 )
+    Label(sleep_info_frame, text = "Overall Sleep Deficit-",width=15,bg=bglabel).grid(sticky="W", row=3 , column=0 )
     
-
-    Sleep_Start_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Current_Date_Bed_Var)
+    bglabelentry="#d9ddea"
+    Sleep_Start_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Current_Date_Bed_Var, bg=bglabelentry)
     Sleep_Start_Entry.grid(sticky="w",row=0,column=1)
-    Sleep_Gateup_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Current_Date_Awake_Var)
+    Sleep_Gateup_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Current_Date_Awake_Var, bg=bglabelentry)
     Sleep_Gateup_Entry.grid(sticky="w",row=1,column=1)
-    Sleep_Required_Minimum_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Sleep_Required_Minimum_Var)
+    Sleep_Required_Minimum_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=Sleep_Required_Minimum_Var, bg=bglabelentry)
     Sleep_Required_Minimum_Entry.grid(sticky="w",row=2,column=1)
-    Sleep_Deficit_Label = Label(sleep_info_frame, textvariable = Sleep_Deficit_Var)
-    Sleep_Deficit_Label.grid(sticky="W", row=3 , column=1 )
-    
-    Button(Sleep_Section_Container_Frame, text="Submit", command=sleep_form_submit,height=2).grid(sticky="nesw", row=7 )
+    Sleep_Deficit_Label = Label(sleep_info_frame, width=27, textvariable = Sleep_Deficit_Var, bg=bglabelentry)
+    Sleep_Deficit_Label.grid(sticky="w",row=3,column=1)
+        
+    Button(Sleep_Section_Container_Frame, text="Submit", command=sleep_form_submit,height=2,bg="#b1d2e0").grid(sticky="nesw", row=7 )
     
     Recovery_or_Less_Time_Label = Label(sleep_info_frame, text = "Extra Recovery Sleep Time Allowed-")
     Recovery_or_Less_Time_Entry = Entry(sleep_info_frame, bd = 2,width=15)
@@ -514,10 +515,10 @@ def profile_information_section_frame():
         Label(profile_information_holder,textvariable=bodyweight, width =5, bg='#c1b3aa').grid(row=4,column=2,sticky="w")
         Label(profile_information_holder,textvariable=meal_number, width =5, bg='#c1b3aa').grid(row=5,column=2,sticky="w")
         Label(profile_information_holder,textvariable=activity_level, width =5, bg='#c1b3aa').grid(row=6,column=2,sticky="w")
-        Button(profile_information_holder,text="Change", command = select_file).grid(row=6,column=0,sticky="w")
+        Button(profile_information_holder,text="Change", bg="#b1b5b2", command = select_file).grid(row=6,column=0,sticky="w")
         #Button(profile_information_holder,text="Change", command = lambda: select_file(new_propic_filename)).grid(row=6,column=0,sticky="w")
         
-        Button(profile_information_frame,text="Add/Edit details", height="2", width="30", command = add_profile_details).grid(row=2,sticky="nesw")
+        Button(profile_information_frame,text="Add/Edit details", height="2", width="30", bg="#b1b5b2", command = add_profile_details).grid(row=2,sticky="nesw")
         return profile_information_frame
 
     frame = draw_profile_information_section_frame()
@@ -539,7 +540,7 @@ def application_form(*args, **kwargs):
         application_screen = Tk()
         application_screen.iconbitmap(iconfile)                   
 
-    application_screen.title("User Details")
+    application_screen.title("Project - Super-Human")
     application_screen.geometry("700x250")
     #application_screen.columnconfigure(0, weight=350)
     #application_screen.columnconfigure(1, weight=350)
