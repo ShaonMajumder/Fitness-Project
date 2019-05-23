@@ -497,8 +497,8 @@ def draw_sleep_section_frame():
 
 def draw_exercise_section_frame():
     global Exercise_Section_Container_Frame
-    Exercise_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Exercise_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 0)
+    Exercise_Section_Container_Frame = Frame(application_screen, bg = '#a4d343', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Exercise_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 2)
 
     @static_var("status", 'active')
     def toggle_sleep_section():
@@ -533,7 +533,7 @@ def draw_exercise_section_frame():
     Label(Exercise_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Exercise_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#a4d343", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
     Inactive_Button.image = img
 
@@ -546,7 +546,7 @@ def exercise_module_frame():
 def draw_nutrition_section_frame():
     global Nutrition_Section_Container_Frame
     Nutrition_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Nutrition_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 1)
+    Nutrition_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 2)
 
     @static_var("status", 'active')
     def toggle_sleep_section():
@@ -591,7 +591,7 @@ def draw_nutrition_section_frame():
 def draw_grooming_section_frame():
     global Grooming_Section_Container_Frame
     Grooming_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Grooming_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 2)
+    Grooming_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 1)
 
     @static_var("status", 'active')
     def toggle_sleep_section():
@@ -636,7 +636,7 @@ def draw_grooming_section_frame():
 def draw_hygene_section_frame():
     global Hygene_Section_Container_Frame
     Hygene_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Hygene_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 2)
+    Hygene_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 0)
 
     @static_var("status", 'active')
     def toggle_sleep_section():
@@ -782,7 +782,7 @@ def application_form(*args, **kwargs):
 
     application_screen.title("Project - Super-Human")
     application_screen.geometry("1050x500")
-    
+
     #application_screen.columnconfigure(0, weight=Section_Width)
     #application_screen.columnconfigure(1, weight=Section_Width)
 
