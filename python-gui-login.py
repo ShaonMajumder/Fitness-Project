@@ -12,7 +12,7 @@ import os
 import hashlib
 
 Section_Height = 250
-Section_Width = 350
+Section_Width = 340
 
 profile_picture_folder = 'imgs/'
 utilization_directory = 'safe_directory/'
@@ -51,12 +51,6 @@ def select_file():
         mydb.edit(['profile_picture'],[filename],"`profile_id`='"+profile_id+"'","profiles")
     else:
         print("wrong filetype")
-
-# Designing window for registration
- 
- 
-# Designing window for login 
- 
  
 def save_profile_data():
     profile_id = session_data['profile_id']
@@ -695,6 +689,59 @@ def draw_hygene_section_frame():
 
     return Hygene_Section_Container_Frame
 
+def draw_finance_section_frame():
+    finance_colors = {
+        'primary_hex' : '#accde0',
+        'header_title_hex' : 'LightSkyBlue3',
+    }
+    global Finance_Section_Container_Frame
+    Finance_Section_Container_Frame = Frame(application_screen, bg = finance_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Finance_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 3)
+
+    @static_var("status", 'active')
+    def toggle_sleep_section():
+        if toggle_sleep_section.status == 'hidden':
+            Finance_Section_Active_Container_Frame.grid()
+            Finance_Section_Inactive_Container_Frame.grid_remove()
+            toggle_sleep_section.status = 'active'
+        elif toggle_sleep_section.status == 'active':
+            Finance_Section_Active_Container_Frame.grid_remove()
+            Finance_Section_Inactive_Container_Frame.grid()
+            toggle_sleep_section.status = 'hidden'
+    
+
+    Finance_Section_Active_Container_Frame = Frame(Finance_Section_Container_Frame, bg = finance_colors['primary_hex'], relief=RAISED, borderwidth=1)
+    Finance_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Finance_Section_Active_Container_Frame.grid_propagate(False)
+    Finance_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Finance_Section_Inactive_Container_Frame = Frame(Finance_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Finance_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Finance_Section_Inactive_Container_Frame.grid_propagate(False)
+    Finance_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_sleep_section()
+
+    
+    original = PIL.Image.open(profile_picture_folder + 'finance.png')
+    size = (200, 200)
+    resized = original.resize(size,PIL.Image.ANTIALIAS)
+    img = PIL.ImageTk.PhotoImage(resized)
+
+    Label(Finance_Section_Active_Container_Frame, text="Sleep Section", bg=finance_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Finance_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg=finance_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
+    Inactive_Button = Button(Finance_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg=finance_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+
+    return Finance_Section_Container_Frame
+
+
+
+def finance_module_frame():
+    return draw_finance_section_frame()
 
 
 def hygene_module_frame():
@@ -798,7 +845,7 @@ def application_form(*args, **kwargs):
         application_screen.iconbitmap(iconfile)                   
 
     application_screen.title("Project - Super-Human")
-    application_screen.geometry("1050x500")
+    application_screen.geometry(str(Section_Width*4) + "x" + str(Section_Height*2))
 
     #application_screen.columnconfigure(0, weight=Section_Width)
     #application_screen.columnconfigure(1, weight=Section_Width)
@@ -809,6 +856,7 @@ def application_form(*args, **kwargs):
     nutrition_section_frame = nutrition_module_frame()
     grooming_section_frame = grooming_module_frame()
     hygene_section_frame = hygene_module_frame()
+    finance_section_frame = finance_module_frame()
 
     profile_information_frame.grid_propagate(False)
     profile_information_frame.columnconfigure(0, weight=Section_Width)
@@ -822,6 +870,8 @@ def application_form(*args, **kwargs):
     grooming_section_frame.columnconfigure(0, weight=Section_Width)
     hygene_section_frame.grid_propagate(False)
     hygene_section_frame.columnconfigure(0, weight=Section_Width)
+    finance_section_frame.grid_propagate(False)
+    finance_section_frame.columnconfigure(0, weight=Section_Width)
 
     return application_screen
 
