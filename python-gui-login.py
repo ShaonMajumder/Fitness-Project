@@ -598,8 +598,12 @@ def draw_nutrition_section_frame():
     return Nutrition_Section_Container_Frame
 
 def draw_grooming_section_frame():
+    grooming_colors = {
+        'primary_hex' : '#accde0',
+        'header_title_hex' : 'LightSkyBlue3'
+    }
     global Grooming_Section_Container_Frame
-    Grooming_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Grooming_Section_Container_Frame = Frame(application_screen, bg = grooming_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     Grooming_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 1)
 
     @static_var("status", 'active')
@@ -614,12 +618,12 @@ def draw_grooming_section_frame():
             toggle_sleep_section.status = 'hidden'
     
 
-    Grooming_Section_Active_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Grooming_Section_Active_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = grooming_colors['primary_hex'], relief=RAISED, borderwidth=1)
     Grooming_Section_Active_Container_Frame.grid(sticky="nesw")
     #Grooming_Section_Active_Container_Frame.grid_propagate(False)
     Grooming_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
 
-    Grooming_Section_Inactive_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Grooming_Section_Inactive_Container_Frame = Frame(Grooming_Section_Container_Frame, bg = grooming_colors['primary_hex'], relief=RAISED, borderwidth=1)
     Grooming_Section_Inactive_Container_Frame.grid(sticky="nesw")
     #Grooming_Section_Inactive_Container_Frame.grid_propagate(False)
     Grooming_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
@@ -632,10 +636,10 @@ def draw_grooming_section_frame():
     resized = original.resize(size,PIL.Image.ANTIALIAS)
     img = PIL.ImageTk.PhotoImage(resized)
 
-    Label(Grooming_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
-    Button(Grooming_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Label(Grooming_Section_Active_Container_Frame, text="Sleep Section", bg=grooming_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Grooming_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg=grooming_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-    Inactive_Button = Button(Grooming_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button = Button(Grooming_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg=grooming_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
     Inactive_Button.image = img
 
@@ -643,8 +647,12 @@ def draw_grooming_section_frame():
     return Grooming_Section_Container_Frame
 
 def draw_hygene_section_frame():
+    hygene_colors = {
+        'primary_hex' : '#accde0',
+        'header_title_hex' : 'LightSkyBlue3',
+    }
     global Hygene_Section_Container_Frame
-    Hygene_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Hygene_Section_Container_Frame = Frame(application_screen, bg = hygene_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     Hygene_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 0)
 
     @static_var("status", 'active')
@@ -659,7 +667,7 @@ def draw_hygene_section_frame():
             toggle_sleep_section.status = 'hidden'
     
 
-    Hygene_Section_Active_Container_Frame = Frame(Hygene_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Hygene_Section_Active_Container_Frame = Frame(Hygene_Section_Container_Frame, bg = hygene_colors['primary_hex'], relief=RAISED, borderwidth=1)
     Hygene_Section_Active_Container_Frame.grid(sticky="nesw")
     #Hygene_Section_Active_Container_Frame.grid_propagate(False)
     Hygene_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
@@ -677,10 +685,10 @@ def draw_hygene_section_frame():
     resized = original.resize(size,PIL.Image.ANTIALIAS)
     img = PIL.ImageTk.PhotoImage(resized)
 
-    Label(Hygene_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
-    Button(Hygene_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Label(Hygene_Section_Active_Container_Frame, text="Sleep Section", bg=hygene_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Hygene_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg=hygene_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-    Inactive_Button = Button(Hygene_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button = Button(Hygene_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg=hygene_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
     Inactive_Button.image = img
 
