@@ -496,8 +496,12 @@ def draw_sleep_section_frame():
 
 
 def draw_exercise_section_frame():
+    exercise_colors = {
+        'primary_hex' : '#e49a4b',
+        'header_title_hex' : '#d78b3a',
+    }
     global Exercise_Section_Container_Frame
-    Exercise_Section_Container_Frame = Frame(application_screen, bg = '#a4d343', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Exercise_Section_Container_Frame = Frame(application_screen, bg = exercise_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     Exercise_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 2)
 
     @static_var("status", 'active')
@@ -517,7 +521,7 @@ def draw_exercise_section_frame():
     #Exercise_Section_Active_Container_Frame.grid_propagate(False)
     Exercise_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
 
-    Exercise_Section_Inactive_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Exercise_Section_Inactive_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = exercise_colors['primary_hex'], relief=RAISED, borderwidth=1)
     Exercise_Section_Inactive_Container_Frame.grid(sticky="nesw")
     #Exercise_Section_Inactive_Container_Frame.grid_propagate(False)
     Exercise_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
@@ -531,9 +535,9 @@ def draw_exercise_section_frame():
     img = PIL.ImageTk.PhotoImage(resized)
 
     Label(Exercise_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
-    Button(Exercise_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Exercise_Section_Active_Container_Frame, text="Exercise Section \u25E4 Hide", bg=exercise_colors['header_title_hex'], height=2, font=("Calibri", 13), command=toggle_sleep_section).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#a4d343", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg=exercise_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
     Inactive_Button.image = img
 
@@ -544,8 +548,13 @@ def exercise_module_frame():
     return draw_exercise_section_frame()
 
 def draw_nutrition_section_frame():
+    nutrition_colors = {
+        'primary_hex' : '#a2c950',
+        'header_title_hex' : '#99ba55',
+    }
+
     global Nutrition_Section_Container_Frame
-    Nutrition_Section_Container_Frame = Frame(application_screen, bg = '#accde0', relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    Nutrition_Section_Container_Frame = Frame(application_screen, bg = nutrition_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     Nutrition_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 2)
 
     @static_var("status", 'active')
@@ -565,7 +574,7 @@ def draw_nutrition_section_frame():
     #Nutrition_Section_Active_Container_Frame.grid_propagate(False)
     Nutrition_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
 
-    Nutrition_Section_Inactive_Container_Frame = Frame(Nutrition_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Nutrition_Section_Inactive_Container_Frame = Frame(Nutrition_Section_Container_Frame, bg = nutrition_colors['primary_hex'], relief=RAISED, borderwidth=1)
     Nutrition_Section_Inactive_Container_Frame.grid(sticky="nesw")
     #Nutrition_Section_Inactive_Container_Frame.grid_propagate(False)
     Nutrition_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
@@ -579,9 +588,9 @@ def draw_nutrition_section_frame():
     img = PIL.ImageTk.PhotoImage(resized)
 
     Label(Nutrition_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
-    Button(Nutrition_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg="LightSkyBlue3",font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Nutrition_Section_Active_Container_Frame, text="Nutrition Section \u25E4 Hide", command=toggle_sleep_section, height=2,bg=nutrition_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-    Inactive_Button = Button(Nutrition_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg="#b1d2e0", image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button = Button(Nutrition_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_sleep_section, height=Section_Height, anchor="center", bg=nutrition_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
     Inactive_Button.image = img
 
