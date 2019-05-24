@@ -1,15 +1,19 @@
 #import modules 
-from PIL import ImageTk,Image
-import PIL
-import shutil
 from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 from utilities.utility import *
 from utilities.mysql_database import *
 from Tkinter.Login_Register import *
+from PIL import ImageTk,Image
+import PIL
+import ctypes
+import shutil
 import os
 import hashlib
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+screen_width, screen_height = screensize
 
 Section_Height = 250
 Section_Width = 340
@@ -31,6 +35,13 @@ cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
 
+def tkinter_center(toplevel):
+    toplevel.update_idletasks()
+    width = toplevel.winfo_width()
+    height = toplevel.winfo_height()
+    x = screen_width//2 - width//2
+    y = screen_height//2 - height//2
+    toplevel.geometry('{}x{}+{}+{}'.format(width, height, x, y))
 
 def validate_picture(filename):
     filename_ = filename.split('/')[-1]
@@ -691,7 +702,7 @@ def draw_hygene_section_frame():
 
 def draw_finance_section_frame():
     finance_colors = {
-        'primary_hex' : '#accde0',
+        'primary_hex' : '#FFD700',
         'header_title_hex' : 'LightSkyBlue3',
     }
     global Finance_Section_Container_Frame
@@ -844,8 +855,11 @@ def application_form(*args, **kwargs):
         application_screen = Tk()
         application_screen.iconbitmap(iconfile)                   
 
+    n_columns = int(screen_width / Section_Width)
+    n_rows = int(screen_height / Section_Height)
     application_screen.title("Project - Super-Human")
-    application_screen.geometry(str(Section_Width*4) + "x" + str(Section_Height*2))
+    application_screen.geometry(str(Section_Width*n_columns) + "x" + str(Section_Height*n_rows))
+    tkinter_center(application_screen)
 
     #application_screen.columnconfigure(0, weight=Section_Width)
     #application_screen.columnconfigure(1, weight=Section_Width)
