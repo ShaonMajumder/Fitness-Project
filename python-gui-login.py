@@ -20,6 +20,12 @@ Section_Width = 340
 Section_Title_Height = 2
 Section_Body_Height = Section_Height - Section_Title_Height
 
+allowed_n_columns = int(screen_width / Section_Width)
+allowed_n_rows = int(screen_height / Section_Height)
+
+n_columns = 3
+n_rows = 2
+
 profile_picture_folder = 'imgs/'
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
@@ -438,7 +444,6 @@ def draw_sleep_section_frame():
     
 
     Sleep_Section_Container_Frame = Frame(application_screen, bg = sleep_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Sleep_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 1)
     
     
     @static_var("status", 'active')
@@ -512,7 +517,6 @@ def draw_exercise_section_frame():
     }
     global Exercise_Section_Container_Frame
     Exercise_Section_Container_Frame = Frame(application_screen, bg = exercise_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Exercise_Section_Container_Frame.grid(sticky="nesw", row = 0, column = 2)
 
     @static_var("status", 'active')
     def toggle_section():
@@ -565,7 +569,6 @@ def draw_nutrition_section_frame():
 
     global Nutrition_Section_Container_Frame
     Nutrition_Section_Container_Frame = Frame(application_screen, bg = nutrition_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Nutrition_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 2)
 
     @static_var("status", 'active')
     def toggle_section():
@@ -614,7 +617,6 @@ def draw_grooming_section_frame():
     }
     global Grooming_Section_Container_Frame
     Grooming_Section_Container_Frame = Frame(application_screen, bg = grooming_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Grooming_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 1)
 
     @static_var("status", 'active')
     def toggle_section():
@@ -734,7 +736,6 @@ def draw_finance_section_frame():
     }
     global Finance_Section_Container_Frame
     Finance_Section_Container_Frame = Frame(application_screen, bg = finance_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
-    Finance_Section_Container_Frame.grid(sticky="nesw", row = 1, column = 0)
 
     @static_var("status", 'active')
     def toggle_section():
@@ -833,7 +834,6 @@ def profile_information_section_frame():
     
     def draw_profile_information_section_frame():
         profile_information_frame = Frame(application_screen, bg = '#969ba3', relief=RAISED, borderwidth=1, height=Section_Height, width=Section_Width)
-        profile_information_frame.grid(sticky="nesw", row=0, column=0)
 
         Label(profile_information_frame,text="User Details", bg="#969ba3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
         profile_information_holder = Frame(profile_information_frame, bg = '#a7abb2', relief=RAISED, borderwidth=1)
@@ -881,8 +881,6 @@ def application_form(*args, **kwargs):
         application_screen = Tk()
         application_screen.iconbitmap(iconfile)                   
 
-    n_columns = int(screen_width / Section_Width)
-    n_rows = int(screen_height / Section_Height)
     application_screen.title("Project - Super-Human")
     application_screen.geometry(str(Section_Width*n_columns) + "x" + str(Section_Height*n_rows))
     tkinter_center(application_screen)
@@ -896,6 +894,15 @@ def application_form(*args, **kwargs):
     nutrition_section_frame = nutrition_module_frame()
     grooming_section_frame = grooming_module_frame()
     finance_section_frame = finance_module_frame()
+
+    profile_information_frame.grid(sticky="nesw", row=0, column=0)
+    sleep_section_frame.grid(sticky="nesw", row = 0, column = 1)
+    exercise_section_frame.grid(sticky="nesw", row = 0, column = 2)
+    finance_section_frame.grid(sticky="nesw", row = 1, column = 0)
+    grooming_section_frame.grid(sticky="nesw", row = 1, column = 1)
+    nutrition_section_frame.grid(sticky="nesw", row = 1, column = 2)
+    
+    
 
     profile_information_frame.grid_propagate(False)
     profile_information_frame.columnconfigure(0, weight=Section_Width)
