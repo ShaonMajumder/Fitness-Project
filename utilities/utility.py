@@ -1,4 +1,5 @@
 from tkinter import *
+from datetime import timedelta
 import re
 import random
 import string
@@ -7,6 +8,15 @@ import codecs
 import os
 import win32print
 import smtplib
+
+time_units = ['years','months','days','hours','minutes','seconds']
+time_quan = {'seconds':60, 'minutes':60, 'hours':24, 'days':30, 'months':12, 'years':1}
+
+def static_var(varname, value):
+    def decorate(func):
+        setattr(func, varname, value)
+        return func
+    return decorate
 
 def send_email(subject, body, CC, to, sent_from, smtp_user, smtp_password):
     email_text = f"""Subject: {subject}

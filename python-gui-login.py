@@ -2,18 +2,18 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
+
 from utilities.utility import *
 from utilities.mysql_database import *
 from Tkinter.Login_Register import *
-from PIL import ImageTk,Image
-import PIL
-import ctypes
+from Tkinter.Tkinter_Common import *
+
 import shutil
 import os
 import hashlib
-user32 = ctypes.windll.user32
-screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-screen_width, screen_height = screensize
+import datetime
+
+screen_width, screen_height = get_screen_size()
 
 Section_Height = 250
 Section_Width = 340
@@ -43,13 +43,8 @@ cursorclass=config['DATABASE']['cursorclass']
 
 mydb = mysql_db(host, user, password, db, charset, cursorclass)
 
-def tkinter_center(toplevel):
-    toplevel.update_idletasks()
-    width = toplevel.winfo_width()
-    height = toplevel.winfo_height()
-    x = screen_width//2 - width//2
-    y = screen_height//2 - height//2
-    toplevel.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+#common
+
 
 def validate_picture(filename):
     filename_ = filename.split('/')[-1]
@@ -223,13 +218,12 @@ Activity Level: {activity_level}"""
     else:
         img_file = profile_picture
     
-    original = PIL.Image.open(profile_picture_folder + img_file)
-    size = (90, 90)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
+    img = image_to_tkinter_img(profile_picture_folder + img_file, (90, 90))
+    
     #display = Canvas(main_screen, bd=0, highlightthickness=0)
     #display.create_image(0, 0, image=img, anchor=NW, tags="IMG")
     #display.pack()
+
     Label(user_profile_screen,text="User Details", bg="#969ba3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     profile_information_holder = Frame(user_profile_screen, bg = '#a7abb2', relief=RAISED, borderwidth=1)
     profile_information_holder.grid(row=1,sticky="nesw")
@@ -274,6 +268,7 @@ Activity Level: {activity_level}"""
     return user_profile_screen
 
 def sleep_form_submit():
+    time_show_format = 'd/m/y <h>:<m>AM'
     query = "SELECT * FROM sleep_data WHERE `id` != 1 ORDER BY id DESC LIMIT 1"
     last_result = mydb.execute(query)
 
@@ -286,7 +281,6 @@ def sleep_form_submit():
         overall_sleep_excess_or_deficit_time = '0hours'
         overall_sleep_excess_or_deficit_time = str2deltatime(overall_sleep_excess_or_deficit_time)
 
-
     bedtime = Sleep_Start_Entry.get()
     gateuptime = Sleep_Gateup_Entry.get()
     reqtime_ = Sleep_Required_Minimum_Entry.get()
@@ -294,9 +288,16 @@ def sleep_form_submit():
             
 
     if last_result == ():
-        if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
-            bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-            gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
+        if bedtime != time_show_format and gateuptime != time_show_format:
+            try:
+                bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
+            except ValueError:
+                bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%Y %I:%M%p')
+            try:
+                gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
+            except ValueError:
+                gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%Y %I:%M%p')
+                        
             slept_time_delta = gateuptime_obj - bedtime_obj
             deficit_seconds = (slept_time_delta - reqtime).total_seconds()
             overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
@@ -309,18 +310,18 @@ def sleep_form_submit():
 
             mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
 
-        elif bedtime != 'date/month/year <hour>:<min>AM':
+        elif bedtime != time_show_format:
             bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
             bedtime = str(bedtime_obj)
             mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-        elif gateuptime != 'date/month/year <hour>:<min>AM':
+        elif gateuptime != time_show_format:
             gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
             gateuptime = str(gateuptime_obj)
             mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
 
 
     elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':
-        if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
+        if bedtime != time_show_format and gateuptime != time_show_format:
             bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
             gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
             slept_time_delta = gateuptime_obj - bedtime_obj
@@ -336,19 +337,26 @@ def sleep_form_submit():
             mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
             #if last_result['bed_time'] != '0000-00-00 00:00:00':
 
-        elif bedtime != 'date/month/year <hour>:<min>AM':
+        elif bedtime != time_show_format:
             bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
             bedtime = str(bedtime_obj)
             mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-        elif gateuptime != 'date/month/year <hour>:<min>AM':
+        elif gateuptime != time_show_format:
             gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
             gateuptime = str(gateuptime_obj)
             mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
 
     else:
-        if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
-            bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-            gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
+        if bedtime != time_show_format and gateuptime != time_show_format:
+            try:
+                bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
+            except ValueError:
+                bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%Y %I:%M%p')
+            try:
+                gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
+            except ValueError:
+                gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%Y %I:%M%p')
+            
             slept_time_delta = gateuptime_obj - bedtime_obj
             deficit_seconds = (slept_time_delta - reqtime).total_seconds()
             overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
@@ -361,19 +369,19 @@ def sleep_form_submit():
             
             mydb.edit(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"`id` = "+str(last_result['id']),"sleep_data")
 
-        elif bedtime != 'date/month/year <hour>:<min>AM':
+        elif bedtime != time_show_format:
             bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
             bedtime = str(bedtime_obj)
             mydb.edit(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
-        elif gateuptime != 'date/month/year <hour>:<min>AM':
+        elif gateuptime != time_show_format:
             gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
             gateuptime = str(gateuptime_obj)
             mydb.edit(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
 
-
     Sleep_Section_Container_Frame.destroy()
 
 def intialize_sleep_database():
+    time_show_format = 'd/m/y <h>:<m>AM'
     global Current_Date_Bed_Var
     global Current_Date_Awake_Var
     global Sleep_Required_Minimum_Var
@@ -395,14 +403,14 @@ def intialize_sleep_database():
     if last_result == ():
         min_req_time = '8hours'
         overall_sleep_excess_or_deficit_time = '0hours'
-        bed_time = "D/M/Y <h>:<m>AM"
-        wakeup_time = "D/M/Y <h>:<m>AM"
+        bed_time = time_show_format
+        wakeup_time = time_show_format
     elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':     
         min_req_time = str(last_result['min_required_sleep_time'])
         overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
         if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-        bed_time = "date/month/year <hour>:<min>AM"
-        wakeup_time = "date/month/year <hour>:<min>AM"
+        bed_time = time_show_format
+        wakeup_time = time_show_format
     else:
         min_req_time = str(last_result['min_required_sleep_time'])
         overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
@@ -410,10 +418,10 @@ def intialize_sleep_database():
         
         if last_result['bed_time'] != '0000-00-00 00:00:00':
             bed_time = last_result['bed_time'].strftime("%d/%m/%y %I:%M%p")
-            wakeup_time = "date/month/year <hour>:<min>AM"
+            wakeup_time = time_show_format
         elif last_result['wakeup_time'] != '0000-00-00 00:00:00':
             wakeup_time = last_result['wakeup_time'].strftime("%d/%m/%y %I:%M%p")
-            bed_time = "date/month/year <hour>:<min>AM"
+            bed_time = time_show_format
 
                 
     Current_Date_Bed_Var = StringVar()
@@ -425,11 +433,6 @@ def intialize_sleep_database():
     Sleep_Deficit_Var = StringVar()
     Sleep_Deficit_Var.set(overall_sleep_excess_or_deficit_time)
 
-def static_var(varname, value):
-        def decorate(func):
-            setattr(func, varname, value)
-            return func
-        return decorate
 
 def draw_sleep_section_frame():
     sleep_colors = {
@@ -442,6 +445,9 @@ def draw_sleep_section_frame():
     global Sleep_Required_Minimum_Var
     global Sleep_Deficit_Var
     
+    global Sleep_Start_Entry
+    global Sleep_Gateup_Entry
+    global Sleep_Required_Minimum_Entry
 
     Sleep_Section_Container_Frame = Frame(application_screen, bg = sleep_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
     
@@ -470,12 +476,7 @@ def draw_sleep_section_frame():
     
     toggle_section()
 
-    
-    original = PIL.Image.open(profile_picture_folder + 'sleep_section2.png')
-    size = (200, 200)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
-
+    img = image_to_tkinter_img(profile_picture_folder + 'sleep_section2.png', (200, 200))
     Label(Sleep_Section_Active_Container_Frame, text="Sleep Section", bg=sleep_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Sleep_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_section, height=2,bg=sleep_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
@@ -542,11 +543,7 @@ def draw_exercise_section_frame():
     
     toggle_section()
 
-    
-    original = PIL.Image.open(profile_picture_folder + 'gym.png')
-    size = (200, 200)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
+    img = image_to_tkinter_img(profile_picture_folder + 'gym.png',(200, 200))    
 
     Label(Exercise_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Exercise_Section_Active_Container_Frame, text="Exercise Section \u25E4 Hide", bg=exercise_colors['header_title_hex'], height=2, font=("Calibri", 13), command=toggle_section).grid(row=0,sticky="nesw")
@@ -594,12 +591,8 @@ def draw_nutrition_section_frame():
     
     toggle_section()
 
+    img = image_to_tkinter_img(profile_picture_folder + 'nutrition.png', (200, 200))
     
-    original = PIL.Image.open(profile_picture_folder + 'nutrition.png')
-    size = (200, 200)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
-
     Label(Nutrition_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Nutrition_Section_Active_Container_Frame, text="Nutrition Section \u25E4 Hide", command=toggle_section, height=2,bg=nutrition_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
@@ -644,12 +637,7 @@ def draw_grooming_section_frame():
     
     toggle_section()
     
-
-    
-    original = PIL.Image.open(profile_picture_folder + 'grooming.png')
-    size = (200, 200)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
+    img = image_to_tkinter_img(profile_picture_folder + 'grooming.png', (200, 200))
 
     Label(Grooming_Section_Active_Container_Frame, text="Grooming Section", bg=grooming_colors['header_title_hex'], height=1, font=("Calibri", 13), borderwidth=0).grid(row=0,sticky="nesw")
     Button(Grooming_Section_Active_Container_Frame, text="Grooming Section \u25E4 Hide", command=toggle_section, height=1, bg=grooming_colors['header_title_hex'],font=("Calibri", 13), borderwidth=0).grid(row=0,sticky="nesw")
@@ -668,20 +656,13 @@ def draw_grooming_section_frame():
     Hygene_Section_Container_Frame.grid(sticky="w", row = 1, column = 0)
     Dressing_Section_Container_Frame.grid(sticky="w", row = 1, column = 1)
 
-
-    original_ = PIL.Image.open(profile_picture_folder + 'hygene.png')
-    size_ = (130, 130)
-    resized_ = original_.resize(size_,PIL.Image.ANTIALIAS)
-    img_ = PIL.ImageTk.PhotoImage(resized_)
+    img_ = image_to_tkinter_img(profile_picture_folder + 'hygene.png',(130, 130))
     
     Hygene_ = Button(Hygene_Section_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, anchor="center", bg=grooming_colors['header_title_hex'], image=img_, compound="top", fg="#23617b", font=("Rockwell Extra Bold", 11), height=Section_Body_Height-50, width=Section_Width//2)
     Hygene_.grid(sticky="w")
     Hygene_.image = img_
 
-    original_ = PIL.Image.open(profile_picture_folder + 'dressing.png')
-    size_ = (130, 130)
-    resized_ = original_.resize(size_,PIL.Image.ANTIALIAS)
-    img_ = PIL.ImageTk.PhotoImage(resized_)
+    img_ = image_to_tkinter_img(profile_picture_folder + 'dressing.png', (130, 130))
 
     Dressing_ = Button(Dressing_Section_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, anchor="center", bg=grooming_colors['primary_hex'], image=img_, compound="top", fg="#23617b", font=("Rockwell Extra Bold", 11), height=Section_Body_Height-50, width=Section_Width//2)
     Dressing_.grid(sticky="w")
@@ -761,12 +742,8 @@ def draw_finance_section_frame():
     
     toggle_section()
 
+    img = image_to_tkinter_img(profile_picture_folder + 'finance.png',(200, 200))
     
-    original = PIL.Image.open(profile_picture_folder + 'finance.png')
-    size = (200, 200)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
-
     Label(Finance_Section_Active_Container_Frame, text="Sleep Section", bg=finance_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Finance_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_section, height=2,bg=finance_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
     #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
@@ -808,13 +785,8 @@ def profile_information_section_frame():
     else:
         img_file = profile_picture
     
-    original = PIL.Image.open(profile_picture_folder + img_file)
-    size = (90, 90)
-    resized = original.resize(size,PIL.Image.ANTIALIAS)
-    img = PIL.ImageTk.PhotoImage(resized)
-    #display = Canvas(main_screen, bd=0, highlightthickness=0)
-    #display.create_image(0, 0, image=img, anchor=NW, tags="IMG")
-    #display.pack()    
+    img = image_to_tkinter_img(profile_picture_folder + img_file,(90, 90))
+
 
     fullname = StringVar()
     gender = StringVar()

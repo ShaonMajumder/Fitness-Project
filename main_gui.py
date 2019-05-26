@@ -233,15 +233,6 @@ PerMeal_Spit.grid(sticky="W", row=6, column=1)
 
 #Date_Label.grid(sticky="W", row=level_row, column=1)
 
-def draw_sleep_section_frame():
-	global Sleep_Section_Frame
-	Sleep_Section_Frame = tkinter.Frame(Life_Frame, bg = 'red', relief=tkinter.RAISED, borderwidth=1)
-	Sleep_Section_Frame_Label = tkinter.Label(Sleep_Section_Frame, text = "Sleep Section-")
-	Sleep_Section_Button = tkinter.Button(Sleep_Section_Frame, text="Open", command=sleep_add_form)
-
-	Sleep_Section_Frame.grid(sticky="W", row = 1, column = 2)
-	Sleep_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-	Sleep_Section_Button.grid(sticky="W", row = 1, column = 2)
 
 def draw_user_profile_frame():
 	global User_Profile_Frame
@@ -380,7 +371,6 @@ def draw_app_frames():
 	Corporate_Frame = tkinter.Frame(top_frame, bg = 'indigo', relief=tkinter.RAISED, borderwidth=1)
 	Corporate_Frame.grid(sticky = 'W', row = 1, column = 2)
 
-	draw_sleep_section_frame()
 	draw_user_profile_frame()
 	draw_exercise_section_frame()
 	draw_nutrition_section_frame()	
@@ -389,184 +379,6 @@ def draw_app_frames():
 	draw_goal_section_frame()
 	draw_day_planning_section_frame()
 	draw_social_section_frame()
-
-def sleep_add_form():
-	"""initialize database """
-	if mydb.execute("SELECT * FROM sleep_data") == ():
-		query_ = "INSERT INTO `sleep_data` (`id`,`bed_time`, `wakeup_time`, `todays_slept_time`, `todays_deficit_or_excess_sleep_time`, `overall_sleep_excess_or_deficit_time`, `min_required_sleep_time`) VALUES (1,'', '', '', '0hours', '0hours', '0hours')"
-		result = mydb.execute(query_)
-
-	"""initialize database """
-
-	query = "SELECT * FROM sleep_data WHERE `id` != 1 ORDER BY id DESC LIMIT 1"
-	last_result = mydb.execute(query)
-	
-	if last_result != ():
-		last_result = last_result[0]
-
-	if last_result == ():
-		min_req_time = '8hours'
-		overall_sleep_excess_or_deficit_time = '0hours'
-		bed_time = "date/month/year <hour>:<min>AM"
-		wakeup_time = "date/month/year <hour>:<min>AM"
-	elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':		
-		min_req_time = str(last_result['min_required_sleep_time'])
-		overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-		if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-		bed_time = "date/month/year <hour>:<min>AM"
-		wakeup_time = "date/month/year <hour>:<min>AM"
-	else:
-		min_req_time = str(last_result['min_required_sleep_time'])
-		overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-		if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-		
-		if last_result['bed_time'] != '0000-00-00 00:00:00':
-			bed_time = last_result['bed_time'].strftime("%d/%m/%y %I:%M%p")
-			wakeup_time = "date/month/year <hour>:<min>AM"
-		elif last_result['wakeup_time'] != '0000-00-00 00:00:00':
-			wakeup_time = last_result['wakeup_time'].strftime("%d/%m/%y %I:%M%p")
-			bed_time = "date/month/year <hour>:<min>AM"
-
-		
-
-	Current_Date_Bed_Var = tkinter.StringVar(Sleep_Section_Frame)
-	Current_Date_Bed_Var.set(bed_time)
-	Current_Date_Awake_Var = tkinter.StringVar(Sleep_Section_Frame)
-	Current_Date_Awake_Var.set(wakeup_time)
-	Sleep_Required_Minimum_Var = tkinter.StringVar(Sleep_Section_Frame)
-	Sleep_Required_Minimum_Var.set(min_req_time)
-	Sleep_Deficit_Var = tkinter.StringVar(Sleep_Section_Frame)
-	Sleep_Deficit_Var.set("Overall Sleep Deficit = "+overall_sleep_excess_or_deficit_time)
-
-	def sleep_form_submit():
-		query = "SELECT * FROM sleep_data WHERE `id` != 1 ORDER BY id DESC LIMIT 1"
-		last_result = mydb.execute(query)
-
-		if last_result != ():
-			last_result = last_result[0]
-			overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-			if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-			overall_sleep_excess_or_deficit_time = str2deltatime(overall_sleep_excess_or_deficit_time)
-		else:
-			overall_sleep_excess_or_deficit_time = '0hours'
-			overall_sleep_excess_or_deficit_time = str2deltatime(overall_sleep_excess_or_deficit_time)
-
-
-		bedtime = Sleep_Start_Entry.get()
-		gateuptime = Sleep_Gateup_Entry.get()
-		reqtime_ = Sleep_Required_Minimum_Entry.get()
-		reqtime = str2deltatime(reqtime_)
-				
-
-		if last_result == ():
-			if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				slept_time_delta = gateuptime_obj - bedtime_obj
-				deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-				overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-				overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-				overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-				simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-				bedtime = str(bedtime_obj)
-				gateuptime = str(gateuptime_obj)
-				slept_time = str(slept_time_delta)
-
-				mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
-
-			elif bedtime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				bedtime = str(bedtime_obj)
-				mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-			elif gateuptime != 'date/month/year <hour>:<min>AM':
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				gateuptime = str(gateuptime_obj)
-				mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
-
-
-		elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':
-			if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				slept_time_delta = gateuptime_obj - bedtime_obj
-				deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-				overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-				overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-				overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-				simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-				bedtime = str(bedtime_obj)
-				gateuptime = str(gateuptime_obj)
-				slept_time = str(slept_time_delta)
-
-				mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
-				#if last_result['bed_time'] != '0000-00-00 00:00:00':
-
-			elif bedtime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				bedtime = str(bedtime_obj)
-				mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-			elif gateuptime != 'date/month/year <hour>:<min>AM':
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				gateuptime = str(gateuptime_obj)
-				mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
-
-		else:
-			if bedtime != 'date/month/year <hour>:<min>AM' and gateuptime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				slept_time_delta = gateuptime_obj - bedtime_obj
-				deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-				overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-				overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-				overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-				simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-				bedtime = str(bedtime_obj)
-				gateuptime = str(gateuptime_obj)
-				slept_time = str(slept_time_delta)
-				
-				mydb.edit(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"`id` = "+str(last_result['id']),"sleep_data")
-
-			elif bedtime != 'date/month/year <hour>:<min>AM':
-				bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-				bedtime = str(bedtime_obj)
-				mydb.edit(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
-			elif gateuptime != 'date/month/year <hour>:<min>AM':
-				gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-				gateuptime = str(gateuptime_obj)
-				mydb.edit(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
-
-
-		Sleep_Registry_Form.destroy()
-	
-
-	Sleep_Registry_Form = tkinter.Toplevel(top_frame)
-	Sleep_Registry_Form.geometry("400x400")
-	Sleep_Registry_Form_Label = tkinter.Label(Sleep_Registry_Form, text = "Sleep Section")
-	Sleep_Start_Label = tkinter.Label(Sleep_Registry_Form, text = "Bed Time-")
-	Sleep_Start_Entry = tkinter.Entry(Sleep_Registry_Form, bd = 2,width=32, textvariable=Current_Date_Bed_Var)
-	Sleep_Gateup_Label = tkinter.Label(Sleep_Registry_Form, text = "Gateup Time-")
-	Sleep_Gateup_Entry = tkinter.Entry(Sleep_Registry_Form, bd = 2,width=32, textvariable=Current_Date_Awake_Var)
-	Sleep_Required_Minimum_Label = tkinter.Label(Sleep_Registry_Form, text = "Min. Required Time-")
-	Sleep_Required_Minimum_Entry = tkinter.Entry(Sleep_Registry_Form, bd = 2,width=32, textvariable=Sleep_Required_Minimum_Var)
-	Sleep_Deficit_Label = tkinter.Label(Sleep_Registry_Form, textvariable = Sleep_Deficit_Var)
-	Sleep_Submit_Button = tkinter.Button(Sleep_Registry_Form, text="Submit", command=sleep_form_submit)
-	Recovery_or_Less_Time_Label = tkinter.Label(Sleep_Registry_Form, text = "Extra Recovery Sleep Time Allowed-")
-	Recovery_or_Less_Time_Entry = tkinter.Entry(Sleep_Registry_Form, bd = 2,width=15)
-
-
-	Sleep_Start_Label.grid(sticky="W", row=2 , column=1 )
-	Sleep_Start_Entry.grid(sticky="W", row=2 , column=2 )
-	Sleep_Gateup_Label.grid(sticky="W", row=3 , column=1 )
-	Sleep_Gateup_Entry.grid(sticky="W", row=3 , column=2 )
-	Sleep_Required_Minimum_Label.grid(sticky="W", row=4 , column=1 )
-	Sleep_Required_Minimum_Entry.grid(sticky="W", row=4 , column=2 )
-	Sleep_Deficit_Label.grid(sticky="W", row=5 , column=1 )
-	Recovery_or_Less_Time_Label.grid(sticky="W", row=6 , column=1 )
-	Recovery_or_Less_Time_Entry.grid(sticky="W", row=6 , column=2 )
-	
-	Sleep_Submit_Button.grid(sticky="W", row=7 , column=2 )
-
-
 
 
 
