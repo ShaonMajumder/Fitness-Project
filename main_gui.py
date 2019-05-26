@@ -101,65 +101,6 @@ class MyDialog:
         self.top.destroy()
 
 
-def New_Exercise_Entry_Form_ok():
-		Name = New_Exercise_Name_Entry.get()
-		Target = New_Exercise_Target_Entry.get()
-		if '-' in Target: Target = Target.split('-')[1].strip()
-		Type = New_Exercise_Type_Entry.get()
-		Instrument = New_Exercise_Instrument_Entry.get()
-		#Intrument Suggestions is shown from exercise_intruments database
-		#query = "SELECT * FROM `exercise_instruments` WHERE `name` = '"+Instrument+"'"
-		result = mydb.select("*","`name` = '"+Instrument+"'","exercise_instruments")
-		#if This instrument is not available in exercise_instruments database, then add it their also.
-		if result == ():
-			#query = "INSERT INTO `exercise_instruments` (`name`) VALUES ('"+Instrument+"')"
-			result = mydb.insert(['name'],[Instrument],"exercise_instruments")
-		
-		Comment = New_Exercise_Comment_Entry.get()
-		Comment = Comment.replace("'","\\'")
-		Comment = Comment.replace("\"","\\\"")
-		
-		#query = "INSERT INTO `exercise_data` (`name`,`target`,`type`,`instrument`,`comment`) VALUES ('"+Name+"','"+Target+"','"+Type+"','"+Instrument+"','"+Comment+"')"
-		mydb.insert(['name','target','type','instrument','comment'],[Name,Target,Type,Instrument,Comment],"exercise_data")
-		
-		New_Exercise_Form.destroy()
-
-def New_Exercise_Entry_Form():
-	New_Exercise_Form = tkinter.Toplevel(top_frame)
-	New_Exercise_Form.geometry("400x400")
-	tkinter.Label(New_Exercise_Form, text="Exercise Name").pack()
-	global New_Exercise_Name_Entry
-	New_Exercise_Name_Entry = tkinter.Entry(New_Exercise_Form)
-	New_Exercise_Name_Entry.pack(padx=5)
-	tkinter.Label(New_Exercise_Form, text="Target Bodypart").pack()
-	#query = "Select * From `human_anatomy`"
-	result = mydb.select('*',"","human_anatomy")
-	list_ = [line['body_part_name'] + " - " + line['part_synonyms'] for line in result]
-	global New_Exercise_Target_Entry
-	New_Exercise_Target_Entry = AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30)
-	New_Exercise_Target_Entry.pack(padx=5)
-	## Solution for multiple target:
-	## Place A ListBox and Button("Add to Target List") to show Entered multiple Target Muscle
-	## Each Time user type a word or select from suggestion in Entry and press Button("Add to Target List"), Entry will be cleared and the previous word will be added into listbox.
-	## This process will be repeated for every muscle group user want to enter
-	## All the entered muscle group will be in ListBox, take all the muscle group name from listbox and add them with ',' into a string. This will be the final target of that exercise.
-	tkinter.Label(New_Exercise_Form, text="Type-").pack()
-	global New_Exercise_Type_Entry
-	New_Exercise_Type_Entry = AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15)
-	New_Exercise_Type_Entry.pack(padx=5)
-	tkinter.Label(New_Exercise_Form, text="Instrument-").pack()
-	#query = "Select * From `exercise_instruments`"
-	result = mydb.select("*","","exercise_instruments")
-	global New_Exercise_Instrument_Entry
-	New_Exercise_Instrument_Entry = AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15)
-	New_Exercise_Instrument_Entry.pack(padx=5)
-	tkinter.Label(New_Exercise_Form, text="Comment").pack()
-	global New_Exercise_Comment_Entry
-	New_Exercise_Comment_Entry = tkinter.Entry(New_Exercise_Form)
-	New_Exercise_Comment_Entry.pack(padx=5)
-	New_Exercise_Submit_Button = tkinter.Button(New_Exercise_Form, text="Submit", command=New_Exercise_Entry_Form_ok)
-	New_Exercise_Submit_Button.pack()
-
 
 
 ## Main 
@@ -274,11 +215,11 @@ def draw_exercise_section_frame():
 	Exercise_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
 
 	Todays_Exercise_Record_Button = tkinter.Button(Exercise_Section_Frame, text="Record Todays Exercise", command = Record_Todays_Exercise_Form)
-	Exercise_Add_New_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Add New Exercise", command = New_Exercise_Entry_Form)
+	
 	Plan_This_Week_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Plan This Week", command = This_Week_Exercise_Form)
 
 	Todays_Exercise_Record_Button.grid(sticky="W", row = 1, column = 2, padx=5)
-	Exercise_Add_New_Exercise_Button.grid(sticky="W", row = 1, column = 3)
+	
 	Plan_This_Week_Exercise_Button.grid(sticky="W", row = 1, column = 4)
 
 def draw_nutrition_section_frame():
