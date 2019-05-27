@@ -207,21 +207,6 @@ def draw_user_profile_frame():
 	Body_Fat_Percentage_Label.grid(sticky="W", row=level_row + 7, column=1)
 	Blood_Pressure_Label.grid(sticky="W", row=level_row + 8, column=1)
 
-def draw_exercise_section_frame():
-	global Exercise_Section_Frame
-	Exercise_Section_Frame = tkinter.Frame(Life_Frame, bg = 'green', relief=tkinter.RAISED, borderwidth=1)
-	Exercise_Section_Frame_Label = tkinter.Label(Exercise_Section_Frame, text = "Exercise Section")
-	Exercise_Section_Frame.grid(sticky="W", row = 2, column = 1)
-	Exercise_Section_Frame_Label.grid(sticky="W", row = 1, column = 1)
-
-	Todays_Exercise_Record_Button = tkinter.Button(Exercise_Section_Frame, text="Record Todays Exercise", command = Record_Todays_Exercise_Form)
-	
-	Plan_This_Week_Exercise_Button = tkinter.Button(Exercise_Section_Frame, text="Plan This Week", command = This_Week_Exercise_Form)
-
-	Todays_Exercise_Record_Button.grid(sticky="W", row = 1, column = 2, padx=5)
-	
-	Plan_This_Week_Exercise_Button.grid(sticky="W", row = 1, column = 4)
-
 def draw_nutrition_section_frame():
 	global Nutrition_Section_Frame
 	Nutrition_Section_Frame = tkinter.Frame(Life_Frame, bg = 'blue', relief=tkinter.RAISED, borderwidth=1)
@@ -313,7 +298,7 @@ def draw_app_frames():
 	Corporate_Frame.grid(sticky = 'W', row = 1, column = 2)
 
 	draw_user_profile_frame()
-	draw_exercise_section_frame()
+	
 	draw_nutrition_section_frame()	
 	draw_hygene_section_frame()
 	draw_grooming_section_frame()
@@ -322,131 +307,6 @@ def draw_app_frames():
 	draw_social_section_frame()
 
 
-
-def Record_Todays_Exercise_Form():
-	Todays_Exercise_Record_Form = tkinter.Toplevel(top_frame)
-	Todays_Exercise_Record_Form.geometry("400x400")
-
-	Exercise_Date_Label = tkinter.Label(Todays_Exercise_Record_Form, text="Date")
-	Exercise_Date_Label.pack()
-
-	Exercise_Date_entryText = StringVar()
-	Exercise_Date_Entry = tkinter.Entry(Todays_Exercise_Record_Form,textvariable=Exercise_Date_entryText)
-	Exercise_Date_Entry.pack()
-	Exercise_Date_entryText.set(datetime)
-
-	Exercise_Name_Label = tkinter.Label(Todays_Exercise_Record_Form, text="Exercise Name")
-	Exercise_Name_Label.pack()	
-	
-	#query = "Select * From `exercise_data`"
-	result = mydb.select("*","","exercise_data")
-
-	list_ = [line['name'] for line in result]
-	Exercise_Name_entryText = StringVar()
-	Exercise_Name_Entry =  AutocompleteEntry(list_, Todays_Exercise_Record_Form, bd = 2, width=30)
-	Exercise_Name_Entry.pack(padx=5)
-	
-
-	Exercise_Sets_Label = tkinter.Label(Todays_Exercise_Record_Form, text="Sets")
-	Exercise_Sets_Label.pack()
-	Exercise_Sets_entryText = StringVar()
-	Exercise_Sets_Entry = tkinter.Entry(Todays_Exercise_Record_Form,textvariable=Exercise_Sets_entryText)
-	Exercise_Sets_Entry.pack()
-	Exercise_Reps_Label = tkinter.Label(Todays_Exercise_Record_Form, text="Reps")
-	Exercise_Reps_Label.pack()
-	Exercise_Reps_entryText = StringVar()
-	Exercise_Reps_Entry = tkinter.Entry(Todays_Exercise_Record_Form, textvariable=Exercise_Reps_entryText)
-	Exercise_Reps_Entry.pack()
-	Exercise_Quantity_Label = tkinter.Label(Todays_Exercise_Record_Form, text="Quantity")
-	Exercise_Quantity_Label.pack()
-	Exercise_Quantity_entryText = StringVar()
-	Exercise_Quantity_Entry = tkinter.Entry(Todays_Exercise_Record_Form, textvariable=Exercise_Quantity_entryText)
-	Exercise_Quantity_Entry.pack()
-
-	#query = "Select `value` From `constants` where `name` = 'Exercise_Quantity_Units'"
-	result = mydb.select(['value'],"`name` = 'Exercise_Quantity_Units'","constants")
-
-	OPTIONS = [line['value'] for line in result][0].split(',')
-	Exercise_Units_var = tkinter.StringVar(Todays_Exercise_Record_Form)
-	Exercise_Units_var.set(OPTIONS[0]) # default value
-	Exercise_Quantity_Units_D = tkinter.OptionMenu(Todays_Exercise_Record_Form, Exercise_Units_var, *OPTIONS, command = select_category_action)
-	Exercise_Quantity_Units_D.pack()		
-
-	def ok(destroy = True):
-		Date = Exercise_Date_Entry.get()
-		Name = Exercise_Name_Entry.get()
-		#if exercise is not in the exercise_data then appear a dialog box if user want to add this in database. If press ok, then get Add new exercise form (Pass the exercise name)
-		#Do the same for instrument while adding New exercise
-		Sets = Exercise_Sets_Entry.get()
-		Reps = Exercise_Reps_Entry.get()
-		Quantity = Exercise_Quantity_Entry.get()
-		Unit = Exercise_Units_var.get()
-		#query = "INSERT INTO `daily_exercise_record` (`exercise_date`,`exercise_name`,`exercise_quantity`,`exercise_quantity_unit`,`exercise_sets`,`exercise_reps`) VALUES ('"+Date+"','"+Name+"','"+Quantity+"','"+Unit+"','"+Sets+"','"+Reps+"')"
-		mydb.insert(['exercise_date','exercise_name','exercise_quantity','exercise_quantity_unit','exercise_sets','exercise_reps'],[Date,Name,Quantity,Unit,Sets,Reps],"daily_exercise_record")
-		if(destroy): Todays_Exercise_Record_Form.destroy()
-		else:
-			Exercise_Name_entryText.set('')
-			Exercise_Quantity_entryText.set('')
-			Exercise_Sets_entryText.set('')
-			Exercise_Reps_entryText.set('')
-
-	def ok_a():
-		ok(False)
-
-	New_Exercise_Submit_Button = tkinter.Button(Todays_Exercise_Record_Form, text="Submit", command=ok)
-	New_Exercise_Submit_Button.pack()
-
-	New_Exercise_Submit_And_Add_Another_Button = tkinter.Button(Todays_Exercise_Record_Form, text="Submit And Add Another", command=ok_a)
-	New_Exercise_Submit_And_Add_Another_Button.pack()
-
-
-def This_Week_Exercise_Form():
-	def add_exercises_to_weekly_plan():
-		import datetime
-		Day_Exercises = Day_Exercises_Planning_Exercises_Entry.get()
-		Day_Choice = week_opvar.get()
-		results = mydb.select(['workout_id'],"`name`='"+Day_Exercises+"'","workout_moves_data")
-		result = results[0]
-		exercise_id = result['workout_id']
-
-		#todays_day = datetime.datetime.now()
-		#todays_day = todays_day.strftime("%a")
-		
-		results = mydb.select(['day_exercises_ids'],"`day`='"+Day_Choice+"'","day_exercise_planning")
-		if results == ():
-			mydb.insert(['day','day_exercises_ids'],[Day_Choice,exercise_id],'day_exercise_planning')
-		else:
-			result = results[0]
-			day_exercises = result['day_exercises_ids']
-			day_exercises_li = day_exercises.split(',')
-			if exercise_id in day_exercises_li:
-				pass
-			else:
-				day_exercises = day_exercises + "," + exercise_id
-				mydb.edit(['day_exercises_ids'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
-
-
-	This_Week_Exercise_Form = tkinter.Toplevel(Exercise_Section_Frame)
-	This_Week_Exercise_Form.geometry("600x400")
-	This_Week_Exercise_Form.title("Plan Meal")
-
-	ex_results = mydb.select(['name'],"","workout_moves_data")
-	ex_list_ = [result['name'] for result in ex_results]
-	week_opvar = tkinter.StringVar()
-	week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
-	week_opvar.set(week_days[0])
-
-	Day_Exercises_Planning_Day_Label =  tkinter.Label(This_Week_Exercise_Form, text = "Day")
-	Day_Exercises_Planning_Day_Option = tkinter.OptionMenu(This_Week_Exercise_Form, week_opvar, *week_days) # command = select_category_action
-	Day_Exercises_Planning_Exercises_Label = tkinter.Label(This_Week_Exercise_Form, text = "Exercise")
-	Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, This_Week_Exercise_Form, bd = 2, width=30)
-	Day_Exercises_Planning_Submit_Button = tkinter.Button(This_Week_Exercise_Form, text="Submit", command=add_exercises_to_weekly_plan)
-
-	Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
-	Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
-	Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
-	Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
-	Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
 
 
 

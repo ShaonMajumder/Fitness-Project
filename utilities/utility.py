@@ -274,7 +274,6 @@ def calculate_deficit_or_excess_sleep(bedtime,gateuptime,reqtime):
     simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
     return simplified_deficit_time
 
-
 class AutocompleteEntry(Entry):
     def __init__(self, lista, *args, **kwargs):
         Entry.__init__(self, *args, **kwargs)

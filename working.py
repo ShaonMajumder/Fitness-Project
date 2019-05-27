@@ -13,6 +13,8 @@ import os
 import hashlib
 import datetime
 
+datetime_ = datetime.datetime.now().strftime("%d/%m/%y")
+
 profile_picture_folder = 'imgs/'
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
@@ -38,242 +40,263 @@ n_columns = 3
 n_rows = 2
 
 
-class sleep_section_class:
-    def __init__(self,top_frame):
-        self.top_frame = top_frame
 
-    def first_appearance(self):
-        self.intial_processing()
-        sleep_frame = self.draw()
-        return sleep_frame
+def Record_Todays_Exercise_Form(top_frame):
+    Todays_Exercise_Record_Form = Toplevel(top_frame)
+    Todays_Exercise_Record_Form.geometry("400x400")
 
-    def intial_processing(self):
-        time_show_format = 'd/m/y <h>:<m>AM'
-        self.Current_Date_Bed_Var = StringVar()
-        self.Current_Date_Awake_Var = StringVar()
-        self.Sleep_Required_Minimum_Var = StringVar()
-        self.Sleep_Deficit_Var = StringVar()
-        
-        """initialize database """
-        if mydb.execute("SELECT * FROM sleep_data") == ():
-            query_ = "INSERT INTO `sleep_data` (`id`,`bed_time`, `wakeup_time`, `todays_slept_time`, `todays_deficit_or_excess_sleep_time`, `overall_sleep_excess_or_deficit_time`, `min_required_sleep_time`) VALUES (1,'', '', '', '0hours', '0hours', '0hours')"
-            result = mydb.execute(query_)
+    Exercise_Date_Label = Label(Todays_Exercise_Record_Form, text="Date")
+    Exercise_Date_Label.pack()
 
-        """initialize database """
+    Exercise_Date_entryText = StringVar()
+    Exercise_Date_Entry = Entry(Todays_Exercise_Record_Form,textvariable=Exercise_Date_entryText)
+    Exercise_Date_Entry.pack()
+    Exercise_Date_entryText.set(datetime_)
 
-        query = "SELECT * FROM sleep_data WHERE `id` != 1 ORDER BY id DESC LIMIT 1"
-        last_result = mydb.execute(query)
-        
-        if last_result != ():
-            last_result = last_result[0]
+    Exercise_Name_Label = Label(Todays_Exercise_Record_Form, text="Exercise Name")
+    Exercise_Name_Label.pack()  
+    
+    #query = "Select * From `exercise_data`"
+    result = mydb.select("*","","exercise_data")
 
-        if last_result == ():
-            min_req_time = '8hours'
-            overall_sleep_excess_or_deficit_time = '0hours'
-            bed_time = time_show_format
-            wakeup_time = time_show_format
-        elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':     
-            min_req_time = str(last_result['min_required_sleep_time'])
-            overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-            if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-            bed_time = time_show_format
-            wakeup_time = time_show_format
+    list_ = [line['name'] for line in result]
+    Exercise_Name_entryText = StringVar()
+    Exercise_Name_Entry =  AutocompleteEntry(list_, Todays_Exercise_Record_Form, bd = 2, width=30)
+    Exercise_Name_Entry.pack(padx=5)
+    
+
+    Exercise_Sets_Label = Label(Todays_Exercise_Record_Form, text="Sets")
+    Exercise_Sets_Label.pack()
+    Exercise_Sets_entryText = StringVar()
+    Exercise_Sets_Entry = Entry(Todays_Exercise_Record_Form,textvariable=Exercise_Sets_entryText)
+    Exercise_Sets_Entry.pack()
+    Exercise_Reps_Label = Label(Todays_Exercise_Record_Form, text="Reps")
+    Exercise_Reps_Label.pack()
+    Exercise_Reps_entryText = StringVar()
+    Exercise_Reps_Entry = Entry(Todays_Exercise_Record_Form, textvariable=Exercise_Reps_entryText)
+    Exercise_Reps_Entry.pack()
+    Exercise_Quantity_Label = Label(Todays_Exercise_Record_Form, text="Quantity")
+    Exercise_Quantity_Label.pack()
+    Exercise_Quantity_entryText = StringVar()
+    Exercise_Quantity_Entry = Entry(Todays_Exercise_Record_Form, textvariable=Exercise_Quantity_entryText)
+    Exercise_Quantity_Entry.pack()
+
+    #query = "Select `value` From `constants` where `name` = 'Exercise_Quantity_Units'"
+    result = mydb.select(['value'],"`name` = 'Exercise_Quantity_Units'","constants")
+
+    OPTIONS = [line['value'] for line in result][0].split(',')
+    Exercise_Units_var = StringVar(Todays_Exercise_Record_Form)
+    Exercise_Units_var.set(OPTIONS[0]) # default value
+    Exercise_Quantity_Units_D = OptionMenu(Todays_Exercise_Record_Form, Exercise_Units_var, *OPTIONS, command = select_category_action)
+    Exercise_Quantity_Units_D.pack()        
+
+    def ok(destroy = True):
+        Date = Exercise_Date_Entry.get()
+        Name = Exercise_Name_Entry.get()
+        #if exercise is not in the exercise_data then appear a dialog box if user want to add this in database. If press ok, then get Add new exercise form (Pass the exercise name)
+        #Do the same for instrument while adding New exercise
+        Sets = Exercise_Sets_Entry.get()
+        Reps = Exercise_Reps_Entry.get()
+        Quantity = Exercise_Quantity_Entry.get()
+        Unit = Exercise_Units_var.get()
+        #query = "INSERT INTO `daily_exercise_record` (`exercise_date`,`exercise_name`,`exercise_quantity`,`exercise_quantity_unit`,`exercise_sets`,`exercise_reps`) VALUES ('"+Date+"','"+Name+"','"+Quantity+"','"+Unit+"','"+Sets+"','"+Reps+"')"
+        mydb.insert(['exercise_date','exercise_name','exercise_quantity','exercise_quantity_unit','exercise_sets','exercise_reps'],[Date,Name,Quantity,Unit,Sets,Reps],"daily_exercise_record")
+        if(destroy): Todays_Exercise_Record_Form.destroy()
         else:
-            min_req_time = str(last_result['min_required_sleep_time'])
-            overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-            if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-            
-            if last_result['bed_time'] != '0000-00-00 00:00:00':
-                bed_time = last_result['bed_time'].strftime("%d/%m/%y %I:%M%p")
-                wakeup_time = time_show_format
-            elif last_result['wakeup_time'] != '0000-00-00 00:00:00':
-                wakeup_time = last_result['wakeup_time'].strftime("%d/%m/%y %I:%M%p")
-                bed_time = time_show_format
+            Exercise_Name_entryText.set('')
+            Exercise_Quantity_entryText.set('')
+            Exercise_Sets_entryText.set('')
+            Exercise_Reps_entryText.set('')
 
-        self.Current_Date_Bed_Var.set(bed_time)
-        self.Current_Date_Awake_Var.set(wakeup_time)        
-        self.Sleep_Required_Minimum_Var.set(min_req_time)
-        self.Sleep_Deficit_Var.set(overall_sleep_excess_or_deficit_time)
+    def ok_a():
+        ok(False)
 
-    def draw(self):
-        sleep_colors = {
-            'primary_hex' : '#74909e',#'#9cc1d6'
-            'header_title_hex' : 'LightSkyBlue3',
-        }
+    New_Exercise_Submit_Button = Button(Todays_Exercise_Record_Form, text="Submit", command=ok)
+    New_Exercise_Submit_Button.pack()
 
-        self.Sleep_Section_Container_Frame = Frame(self.top_frame, bg = sleep_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+    New_Exercise_Submit_And_Add_Another_Button = Button(Todays_Exercise_Record_Form, text="Submit And Add Another", command=ok_a)
+    New_Exercise_Submit_And_Add_Another_Button.pack()
 
-        @static_var("status", 'active')
-        def toggle_section():
-            if toggle_section.status == 'hidden':
-                Sleep_Section_Active_Container_Frame.grid()
-                Sleep_Section_Inactive_Container_Frame.grid_remove()
-                toggle_section.status = 'active'
-            elif toggle_section.status == 'active':
-                Sleep_Section_Active_Container_Frame.grid_remove()
-                Sleep_Section_Inactive_Container_Frame.grid()
-                toggle_section.status = 'hidden'
+
+def This_Week_Exercise_Form(top_frame):
+    def add_exercises_to_weekly_plan():
+        import datetime
+        Day_Exercises = Day_Exercises_Planning_Exercises_Entry.get()
+        Day_Choice = week_opvar.get()
+        results = mydb.select(['workout_id'],"`name`='"+Day_Exercises+"'","workout_moves_data")
+        result = results[0]
+        exercise_id = result['workout_id']
+
+        #todays_day = datetime.datetime.now()
+        #todays_day = todays_day.strftime("%a")
         
-
-        Sleep_Section_Active_Container_Frame = Frame(self.Sleep_Section_Container_Frame, bg = sleep_colors['primary_hex'], relief=RAISED, borderwidth=1)
-        Sleep_Section_Active_Container_Frame.grid(sticky="nesw")
-        #Sleep_Section_Active_Container_Frame.grid_propagate(False)
-        Sleep_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
-
-        Sleep_Section_Inactive_Container_Frame = Frame(self.Sleep_Section_Container_Frame, bg = sleep_colors['primary_hex'], relief=RAISED, borderwidth=1)
-        Sleep_Section_Inactive_Container_Frame.grid(sticky="nesw")
-        #Sleep_Section_Inactive_Container_Frame.grid_propagate(False)
-        Sleep_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
-        
-        toggle_section()
-
-        img = image_to_tkinter_img(profile_picture_folder + 'sleep_section2.png', (200, 200))
-        Label(Sleep_Section_Active_Container_Frame, text="Sleep Section", bg=sleep_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
-        Button(Sleep_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_section, height=2,bg=sleep_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
-        #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
-        Inactive_Button = Button(Sleep_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, height=Section_Height, anchor="center", bg=sleep_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
-        Inactive_Button.grid(row=0,sticky="nesw")
-        Inactive_Button.image = img
-
-
-        sleep_info_frame = Frame(Sleep_Section_Active_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
-        sleep_info_frame.grid(row=1,sticky="nesw")
-        bglabel = "#bbc1d6"
-        Label(sleep_info_frame, text = "Bed Time-",width=15,bg=bglabel).grid(sticky="W", row=0 , column=0 )
-        Label(sleep_info_frame, text = "Gateup Time-",width=15,bg=bglabel).grid(sticky="W", row=1 , column=0 )
-        Label(sleep_info_frame, text = "Min. Required Time-",width=15,bg=bglabel).grid(sticky="W", row=2 , column=0 )
-        Label(sleep_info_frame, text = "Overall Sleep Deficit-",width=15,bg=bglabel).grid(sticky="W", row=3 , column=0 )
-        
-        bglabelentry="#d9ddea"
-        self.Sleep_Start_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=self.Current_Date_Bed_Var, bg=bglabelentry)
-        self.Sleep_Start_Entry.grid(sticky="w",row=0,column=1)
-        self.Sleep_Gateup_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=self.Current_Date_Awake_Var, bg=bglabelentry)
-        self.Sleep_Gateup_Entry.grid(sticky="w",row=1,column=1)
-        self.Sleep_Required_Minimum_Entry = Entry(sleep_info_frame, bd = 2,width=32, textvariable=self.Sleep_Required_Minimum_Var, bg=bglabelentry)
-        self.Sleep_Required_Minimum_Entry.grid(sticky="w",row=2,column=1)
-        Sleep_Deficit_Label = Label(sleep_info_frame, width=27, textvariable = self.Sleep_Deficit_Var, bg=bglabelentry)
-        Sleep_Deficit_Label.grid(sticky="w",row=3,column=1)
-            
-        Button(Sleep_Section_Active_Container_Frame, text="Submit", command=self.sleep_form_submit,height=2,bg="#b1d2e0").grid(sticky="nesw", row=7 )
-        
-        Recovery_or_Less_Time_Label = Label(sleep_info_frame, text = "Extra Recovery Sleep Time Allowed-")
-        Recovery_or_Less_Time_Entry = Entry(sleep_info_frame, bd = 2,width=15)
-        
-        return self.Sleep_Section_Container_Frame
-
-    def sleep_form_submit(self):
-        time_show_format = 'd/m/y <h>:<m>AM'
-        query = "SELECT * FROM sleep_data WHERE `id` != 1 ORDER BY id DESC LIMIT 1"
-        last_result = mydb.execute(query)
-
-        if last_result != ():
-            last_result = last_result[0]
-            overall_sleep_excess_or_deficit_time = last_result['overall_sleep_excess_or_deficit_time']
-            if overall_sleep_excess_or_deficit_time == '': overall_sleep_excess_or_deficit_time = '0hours'
-            overall_sleep_excess_or_deficit_time = str2deltatime(overall_sleep_excess_or_deficit_time)
+        results = mydb.select(['day_exercises_ids'],"`day`='"+Day_Choice+"'","day_exercise_planning")
+        if results == ():
+            mydb.insert(['day','day_exercises_ids'],[Day_Choice,exercise_id],'day_exercise_planning')
         else:
-            overall_sleep_excess_or_deficit_time = '0hours'
-            overall_sleep_excess_or_deficit_time = str2deltatime(overall_sleep_excess_or_deficit_time)
-
-        bedtime = self.Sleep_Start_Entry.get()
-        gateuptime = self.Sleep_Gateup_Entry.get()
-        reqtime_ = self.Sleep_Required_Minimum_Entry.get()
-        reqtime = str2deltatime(reqtime_)
-                
-
-        if last_result == ():
-            if bedtime != time_show_format and gateuptime != time_show_format:
-                try:
-                    bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                except ValueError:
-                    bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%Y %I:%M%p')
-                try:
-                    gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                except ValueError:
-                    gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%Y %I:%M%p')
-                            
-                slept_time_delta = gateuptime_obj - bedtime_obj
-                deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-                overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-                overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-                overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-                simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-                bedtime = str(bedtime_obj)
-                gateuptime = str(gateuptime_obj)
-                slept_time = str(slept_time_delta)
-
-                mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
-
-            elif bedtime != time_show_format:
-                bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                bedtime = str(bedtime_obj)
-                mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-            elif gateuptime != time_show_format:
-                gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                gateuptime = str(gateuptime_obj)
-                mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
+            result = results[0]
+            day_exercises = result['day_exercises_ids']
+            day_exercises_li = day_exercises.split(',')
+            if exercise_id in day_exercises_li:
+                pass
+            else:
+                day_exercises = day_exercises + "," + exercise_id
+                mydb.edit(['day_exercises_ids'],[day_exercises],"`day` = '"+Day_Choice+"'","day_exercise_planning")
 
 
-        elif last_result['todays_slept_time'] != '0000-00-00 00:00:00':
-            if bedtime != time_show_format and gateuptime != time_show_format:
-                bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                slept_time_delta = gateuptime_obj - bedtime_obj
-                deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-                overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-                overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-                overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-                simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-                bedtime = str(bedtime_obj)
-                gateuptime = str(gateuptime_obj)
-                slept_time = str(slept_time_delta)
+    This_Week_Exercise_Form = Toplevel(top_frame)
+    This_Week_Exercise_Form.geometry("600x400")
+    This_Week_Exercise_Form.title("Plan Meal")
 
-                mydb.insert(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"sleep_data")
-                #if last_result['bed_time'] != '0000-00-00 00:00:00':
+    ex_results = mydb.select(['name'],"","workout_moves_data")
+    ex_list_ = [result['name'] for result in ex_results]
+    week_opvar = StringVar()
+    week_days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday',  'friday']
+    week_opvar.set(week_days[0])
 
-            elif bedtime != time_show_format:
-                bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                bedtime = str(bedtime_obj)
-                mydb.insert(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"sleep_data")
-            elif gateuptime != time_show_format:
-                gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                gateuptime = str(gateuptime_obj)
-                mydb.insert(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"sleep_data")
+    Day_Exercises_Planning_Day_Label =  Label(This_Week_Exercise_Form, text = "Day")
+    Day_Exercises_Planning_Day_Option = OptionMenu(This_Week_Exercise_Form, week_opvar, *week_days) # command = select_category_action
+    Day_Exercises_Planning_Exercises_Label = Label(This_Week_Exercise_Form, text = "Exercise")
+    Day_Exercises_Planning_Exercises_Entry = AutocompleteEntry(ex_list_, This_Week_Exercise_Form, bd = 2, width=30)
+    Day_Exercises_Planning_Submit_Button = Button(This_Week_Exercise_Form, text="Submit", command=add_exercises_to_weekly_plan)
 
-        else:
-            if bedtime != time_show_format and gateuptime != time_show_format:
-                try:
-                    bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                except ValueError:
-                    bedtime_obj = datetime.datetime.strptime(bedtime, '%d/%m/%Y %I:%M%p')
-                try:
-                    gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                except ValueError:
-                    gateuptime_obj = datetime.datetime.strptime(gateuptime, '%d/%m/%Y %I:%M%p')
-                
-                slept_time_delta = gateuptime_obj - bedtime_obj
-                deficit_seconds = (slept_time_delta - reqtime).total_seconds()
-                overall_sleep_excess_or_deficit_time = overall_sleep_excess_or_deficit_time + (slept_time_delta - reqtime)
-                overall_sleep_excess_or_deficit_time_seconds = overall_sleep_excess_or_deficit_time.total_seconds()
-                overall_simplified_deficit_time = simplify_time(str(overall_sleep_excess_or_deficit_time_seconds)+"seconds")
-                simplified_deficit_time = simplify_time(str(deficit_seconds)+"seconds")
-                bedtime = str(bedtime_obj)
-                gateuptime = str(gateuptime_obj)
-                slept_time = str(slept_time_delta)
-                
-                mydb.edit(['bed_time','wakeup_time','todays_slept_time','min_required_sleep_time','todays_deficit_or_excess_sleep_time','overall_sleep_excess_or_deficit_time'],[bedtime,gateuptime,slept_time, reqtime_, simplified_deficit_time, overall_simplified_deficit_time],"`id` = "+str(last_result['id']),"sleep_data")
+    Day_Exercises_Planning_Day_Label.grid(sticky="w",row=1,column=1)
+    Day_Exercises_Planning_Day_Option.grid(sticky="w",row=1,column=2)
+    Day_Exercises_Planning_Exercises_Label.grid(sticky="w",row=1,column=3)
+    Day_Exercises_Planning_Exercises_Entry.grid(sticky="w",row=1,column=4)
+    Day_Exercises_Planning_Submit_Button.grid(sticky="w",row=2,column=1)
 
-            elif bedtime != time_show_format:
-                bedtime_obj = datetime.strptime(bedtime, '%d/%m/%y %I:%M%p')
-                bedtime = str(bedtime_obj)
-                mydb.edit(['bed_time','min_required_sleep_time'],[bedtime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
-            elif gateuptime != time_show_format:
-                gateuptime_obj = datetime.strptime(gateuptime, '%d/%m/%y %I:%M%p')
-                gateuptime = str(gateuptime_obj)
-                mydb.edit(['wakeup_time','min_required_sleep_time'],[gateuptime,reqtime_],"`id` = "+str(last_result['id']),"sleep_data")
+def New_Exercise_Entry_Form_ok():
+    Name = New_Exercise_Name_Entry.get()
+    Target = New_Exercise_Target_Entry.get()
+    if '-' in Target: Target = Target.split('-')[1].strip()
+    Type = New_Exercise_Type_Entry.get()
+    Instrument = New_Exercise_Instrument_Entry.get()
+    #Intrument Suggestions is shown from exercise_intruments database
+    #query = "SELECT * FROM `exercise_instruments` WHERE `name` = '"+Instrument+"'"
+    result = mydb.select("*","`name` = '"+Instrument+"'","exercise_instruments")
+    #if This instrument is not available in exercise_instruments database, then add it their also.
+    if result == ():
+        #query = "INSERT INTO `exercise_instruments` (`name`) VALUES ('"+Instrument+"')"
+        result = mydb.insert(['name'],[Instrument],"exercise_instruments")
+    
+    Comment = New_Exercise_Comment_Entry.get()
+    Comment = Comment.replace("'","\\'")
+    Comment = Comment.replace("\"","\\\"")
+    
+    #query = "INSERT INTO `exercise_data` (`name`,`target`,`type`,`instrument`,`comment`) VALUES ('"+Name+"','"+Target+"','"+Type+"','"+Instrument+"','"+Comment+"')"
+    mydb.insert(['name','target','type','instrument','comment'],[Name,Target,Type,Instrument,Comment],"exercise_data")
+    
+    New_Exercise_Form.destroy()
 
-        #self.Sleep_Section_Container_Frame.destroy()
-        self.Current_Date_Bed_Var.set('')
-        self.Current_Date_Awake_Var.set('')
-        self.Sleep_Required_Minimum_Var.set('')
-        messagebox.showinfo("Sleep Section","Your sleep recorded.")
+def New_Exercise_Entry_Form(top_frame):
+    global New_Exercise_Name_Entry
+    global New_Exercise_Target_Entry
+    global New_Exercise_Type_Entry
+    global New_Exercise_Instrument_Entry
+    global New_Exercise_Comment_Entry
+    
+    New_Exercise_Form = top_frame
+    
+    #query = "Select * From `human_anatomy`"
+    result = mydb.select('*',"","human_anatomy")
+    list_ = [line['body_part_name'] + " - " + line['part_synonyms'] for line in result]
+
+    
+    Label(New_Exercise_Form, text="New Exercise Entry", bg="#f3af67",anchor="w").grid(row=0,columnspan=4,sticky='nesw')
+    Label(New_Exercise_Form, text="Name",width=8,bg='#f19738').grid(row=1,column=0,sticky='w')
+    New_Exercise_Name_Entry = Entry(New_Exercise_Form,bg='#f6a856')
+    New_Exercise_Name_Entry.grid(row=1,column=1,sticky='w')
+    Label(New_Exercise_Form, text="Bodypart",width=8,bg='#f19738').grid(row=1,column=2,sticky='w')
+    New_Exercise_Target_Entry = AutocompleteEntry(list_, New_Exercise_Form, bd = 2, width=30,bg='#f6a856')
+    New_Exercise_Target_Entry.grid(row=1,column=3,sticky='w')
+    ## Solution for multiple target:
+    ## Place A ListBox and Button("Add to Target List") to show Entered multiple Target Muscle
+    ## Each Time user type a word or select from suggestion in Entry and press Button("Add to Target List"), Entry will be cleared and the previous word will be added into listbox.
+    ## This process will be repeated for every muscle group user want to enter
+    ## All the entered muscle group will be in ListBox, take all the muscle group name from listbox and add them with ',' into a string. This will be the final target of that exercise.
+    Label(New_Exercise_Form, text="Type",width=8,bg='#f19738').grid(row=2,column=0,sticky='w')
+    New_Exercise_Type_Entry = AutocompleteEntry(['isolation','compound','freehand','cardio'], New_Exercise_Form, bd = 2, width=15,bg='#f6a856')
+    New_Exercise_Type_Entry.grid(row=2,column=1,sticky='w')
+    Label(New_Exercise_Form, text="Instrument",width=8,bg='#f19738').grid(row=2,column=2,sticky='w')
+    #query = "Select * From `exercise_instruments`"
+    result = mydb.select("*","","exercise_instruments")
+    New_Exercise_Instrument_Entry = AutocompleteEntry([line['name'] for line in result], New_Exercise_Form, bd = 2, width=15,bg='#f6a856')
+    New_Exercise_Instrument_Entry.grid(row=2,column=3,sticky='w')
+    
+    Label(New_Exercise_Form, text="Comment",width=8,bg='#f19738').grid(row=3,column=0,sticky='w')
+    New_Exercise_Comment_Entry = Entry(New_Exercise_Form,bg='#f6a856')
+    New_Exercise_Comment_Entry.grid(row=3,column=1,sticky='w')
+    Frame_Submit = Frame(New_Exercise_Form)
+    Frame_Submit.columnconfigure(0, weight=Section_Width)
+    Frame_Submit.grid(row=4,columnspan=4,sticky='nesw')
+    New_Exercise_Submit_Button = Button(Frame_Submit, text="Submit", command=New_Exercise_Entry_Form_ok, anchor='center', bg='#e38724')
+    New_Exercise_Submit_Button.grid(row=0,sticky='nesw')
+
+def draw_exercise_section_frame(top_frame):
+    exercise_colors = {
+        'primary_hex' : '#e49a4b',
+        'header_title_hex' : '#d78b3a',
+    }
+    global Exercise_Section_Container_Frame
+    Exercise_Section_Container_Frame = Frame(top_frame, bg = exercise_colors['primary_hex'], relief=RAISED, borderwidth=1, width=Section_Width, height=Section_Height)
+
+    @static_var("status", 'active')
+    def toggle_section():
+        if toggle_section.status == 'hidden':
+            Exercise_Section_Active_Container_Frame.grid()
+            Exercise_Section_Inactive_Container_Frame.grid_remove()
+            toggle_section.status = 'active'
+        elif toggle_section.status == 'active':
+            Exercise_Section_Active_Container_Frame.grid_remove()
+            Exercise_Section_Inactive_Container_Frame.grid()
+            toggle_section.status = 'hidden'
+    
+
+    Exercise_Section_Active_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = '#9cc1d6', relief=RAISED, borderwidth=1)
+    Exercise_Section_Active_Container_Frame.grid(sticky="nesw")
+    #Exercise_Section_Active_Container_Frame.grid_propagate(False)
+    Exercise_Section_Active_Container_Frame.columnconfigure(0, weight=Section_Width)
+
+    Exercise_Section_Inactive_Container_Frame = Frame(Exercise_Section_Container_Frame, bg = exercise_colors['primary_hex'], relief=RAISED, borderwidth=1)
+    Exercise_Section_Inactive_Container_Frame.grid(sticky="nesw")
+    #Exercise_Section_Inactive_Container_Frame.grid_propagate(False)
+    Exercise_Section_Inactive_Container_Frame.columnconfigure(0, weight=Section_Width)
+    
+    toggle_section()
+
+    img = image_to_tkinter_img(profile_picture_folder + 'gym.png',(200, 200))    
+
+    Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, height=Section_Height, anchor="center", bg=exercise_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
+    Inactive_Button.grid(row=0,sticky="nesw")
+    Inactive_Button.image = img
+
+    
+    Label(Exercise_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
+    Button(Exercise_Section_Active_Container_Frame, text="Exercise Section \u25E4 Hide", bg=exercise_colors['header_title_hex'], height=2, font=("Calibri", 13), command=toggle_section).grid(row=0,sticky="nesw")
+
+    Exercise_Buttons_Frame = Frame(Exercise_Section_Active_Container_Frame, bg = exercise_colors['primary_hex'], relief=RAISED)
+    Exercise_Buttons_Frame.grid(row=1,sticky="nesw")
+    Exercise_Sub_Action_Frame = Frame(Exercise_Section_Active_Container_Frame, bg = exercise_colors['primary_hex'], relief=RAISED)
+    Exercise_Sub_Action_Frame.grid(row=2,sticky="nesw")
+
+    img_add_bt = image_to_tkinter_img(profile_picture_folder + 'add-circular-button.png', (20, 20))
+    New_Exercise_Entry_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="New Workout", compound='left', image = img_add_bt, command=lambda: New_Exercise_Entry_Form(Exercise_Sub_Action_Frame) )
+    New_Exercise_Entry_Button.image = img_add_bt
+    New_Exercise_Entry_Button.grid(row=0,column=0,sticky="nesw")
+
+    img_record_bt = image_to_tkinter_img(profile_picture_folder + 'record-button.png', (20, 20))
+    Todays_Exercise_Record_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="Record Todays Workout", compound='left', image = img_record_bt, command=lambda: Record_Todays_Exercise_Form(top_frame) )
+    Todays_Exercise_Record_Button.image = img_record_bt
+    Todays_Exercise_Record_Button.grid(row=0,column=1,sticky="nesw")
+
+    img_record_bt = image_to_tkinter_img(profile_picture_folder + 'week-plan-button.png', (20, 20))
+    Todays_Exercise_Record_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="Plan week", compound='left', image = img_record_bt, command=lambda: This_Week_Exercise_Form(top_frame) )
+    Todays_Exercise_Record_Button.image = img_record_bt
+    Todays_Exercise_Record_Button.grid(row=0,column=2,sticky="nesw")
+
+    return Exercise_Section_Container_Frame
+
+
+def exercise_module_frame(top_frame):
+    return draw_exercise_section_frame(top_frame)
