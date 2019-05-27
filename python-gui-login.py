@@ -668,7 +668,7 @@ def application_form(*args, **kwargs):
         application_screen = Tk()
         application_screen.iconbitmap(iconfile)                   
 
-    application_screen.title("Project - Super-Human")
+    application_screen.title("Project - Fitness-Project")
     application_screen.geometry(str(Section_Width*n_columns) + "x" + str(Section_Height*n_rows))
     tkinter_center(application_screen)
     top_frame = application_screen
