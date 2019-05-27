@@ -89,7 +89,7 @@ class sleep_section_class:
         
         toggle_section()
 
-        img = image_to_tkinter_img(profile_picture_folder + 'sleep_section2.png', (200, 200))
+        img = image_to_tkinter_img(image_folder + 'sleep_section2.png', (200, 200))
         Label(Sleep_Section_Active_Container_Frame, text="Sleep Section", bg=sleep_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
         Button(Sleep_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_section, height=2,bg=sleep_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
         #image_panel = Label(profile_information_holder, textvariable=fullname, compound = 'top',font=("Helvetica", 8), bg='#7e9189', anchor="nw", height = 100, image = img)
@@ -392,6 +392,9 @@ def draw_profile_information_section_frame(top_frame):
     Label(profile_information_holder,textvariable=bodyweight, width =5, bg='#c1b3aa').grid(row=4,column=2,sticky="w")
     Label(profile_information_holder,textvariable=meal_number, width =5, bg='#c1b3aa').grid(row=5,column=2,sticky="w")
     Label(profile_information_holder,textvariable=activity_level, width =5, bg='#c1b3aa').grid(row=6,column=2,sticky="w")
+    Button(profile_information_holder,text='Export Text',bg='#b1b5b2',width=8).grid(row=5,column=3,padx=4,sticky="w")
+    Button(profile_information_holder,text='Print',bg='#b1b5b2',width=8).grid(row=6,column=3,padx=4,sticky="w")
+
     Button(profile_information_holder,text="Change", bg="#b1b5b2", command = select_file).grid(row=6,column=0,sticky="w")
     #Button(profile_information_holder,text="Change", command = lambda: select_file(new_propic_filename)).grid(row=6,column=0,sticky="w")
 
@@ -433,7 +436,7 @@ def draw_nutrition_section_frame(top_frame):
     
     toggle_section()
 
-    img = image_to_tkinter_img(profile_picture_folder + 'nutrition.png', (200, 200))
+    img = image_to_tkinter_img(image_folder + 'nutrition.png', (200, 200))
     
     Label(Nutrition_Section_Active_Container_Frame, text="Sleep Section", bg="LightSkyBlue3", height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Nutrition_Section_Active_Container_Frame, text="Nutrition Section \u25E4 Hide", command=toggle_section, height=2,bg=nutrition_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
@@ -478,7 +481,7 @@ def draw_grooming_section_frame(top_frame):
     
     toggle_section()
     
-    img = image_to_tkinter_img(profile_picture_folder + 'grooming.png', (200, 200))
+    img = image_to_tkinter_img(image_folder + 'grooming.png', (200, 200))
 
     Label(Grooming_Section_Active_Container_Frame, text="Grooming Section", bg=grooming_colors['header_title_hex'], height=1, font=("Calibri", 13), borderwidth=0).grid(row=0,sticky="nesw")
     Button(Grooming_Section_Active_Container_Frame, text="Grooming Section \u25E4 Hide", command=toggle_section, height=1, bg=grooming_colors['header_title_hex'],font=("Calibri", 13), borderwidth=0).grid(row=0,sticky="nesw")
@@ -497,13 +500,13 @@ def draw_grooming_section_frame(top_frame):
     Hygene_Section_Container_Frame.grid(sticky="w", row = 1, column = 0)
     Dressing_Section_Container_Frame.grid(sticky="w", row = 1, column = 1)
 
-    img_ = image_to_tkinter_img(profile_picture_folder + 'hygene.png',(130, 130))
+    img_ = image_to_tkinter_img(image_folder + 'hygene.png',(130, 130))
     
     Hygene_ = Button(Hygene_Section_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, anchor="center", bg=grooming_colors['header_title_hex'], image=img_, compound="top", fg="#23617b", font=("Rockwell Extra Bold", 11), height=Section_Body_Height-50, width=Section_Width//2)
     Hygene_.grid(sticky="w")
     Hygene_.image = img_
 
-    img_ = image_to_tkinter_img(profile_picture_folder + 'dressing.png', (130, 130))
+    img_ = image_to_tkinter_img(image_folder + 'dressing.png', (130, 130))
 
     Dressing_ = Button(Dressing_Section_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, anchor="center", bg=grooming_colors['primary_hex'], image=img_, compound="top", fg="#23617b", font=("Rockwell Extra Bold", 11), height=Section_Body_Height-50, width=Section_Width//2)
     Dressing_.grid(sticky="w")
@@ -583,7 +586,7 @@ def draw_finance_section_frame(top_frame):
     
     toggle_section()
 
-    img = image_to_tkinter_img(profile_picture_folder + 'finance.png',(200, 200))
+    img = image_to_tkinter_img(image_folder + 'finance.png',(200, 200))
     
     Label(Finance_Section_Active_Container_Frame, text="Sleep Section", bg=finance_colors['header_title_hex'], height="2", font=("Calibri", 13)).grid(row=0,sticky="nesw")
     Button(Finance_Section_Active_Container_Frame, text="Sleep Section \u25E4 Hide", command=toggle_section, height=2,bg=finance_colors['header_title_hex'],font=("Calibri", 13)).grid(row=0,sticky="nesw")
@@ -611,13 +614,13 @@ def profile_information_module_frame(top_frame):
     row = results[0]
     profile_picture = row['profile_picture']
 
-    profile_picture_folder="imgs/"
+    image_folder="imgs/"
     if profile_picture == "":
         img_file = "profile_avatar.png"
     else:
         img_file = profile_picture
     
-    profile_img = image_to_tkinter_img(profile_picture_folder + img_file,(90, 90))
+    profile_img = image_to_tkinter_img(image_folder + img_file,(90, 90))
 
     fullname = StringVar()
     gender = StringVar()

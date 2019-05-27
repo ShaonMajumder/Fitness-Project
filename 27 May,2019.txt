@@ -1,0 +1,55 @@
+*** Print after Night Sleep, Right with blue pen
+	activity_id: ohg1palh  | print_number: 0
+	Name: Shaon Majumder  | Date: 27 May,2019  | Day: monday  | Time: 6:00AM
+	------------------ Todays Physiological Parameters ------------------
+	Sleep Hours: 7hours23minutes  | You can sleep more: 30minutes
+	Weight: 58kgs (2-5-19 8:00 AM) | Body Fat Percentage: 15% (Today 8:00 AM)
+	Blood Pressure: 80-120 (2-5-19 8:00 AM) | Goal: Lean_Bulking
+	------------------------ Gym ------------------------
+	Note: Do warmupset of every exercise with light weight or do seperate warmup for 1 group of muscles. Build mind muscle connection in every exercise.
+	*** Take Postworkout Meal box,Gym IDCard,Bandage,Towel in Gym Bag
+
+	Gym Time Max: 2hours30minutes
+	Targets:abs,legs
+
+	Take Preworkout Meal Box before 1 hour
+	1. roman situps - 3sets x 10reps
+2. ground abs crunches - 3sets x 10reps x 5kg
+3. lying leg raise - 3sets x 6reps
+4. hanging leg raises - 3sets x 6reps
+5. windsheild wiper - 3sets x 10reps
+6. wood chooper - 3sets x 10reps
+7. bicep grip pullups - 3sets x 4reps
+8. hammer grip pullups - 3sets x 4reps
+9. lat pullups - 3sets x 4reps
+10. paralel bar hanging push down - 3sets x 8reps
+11. incline bar back pushups - 3sets x 10reps
+12. close grip bar pushups - 3sets x 10reps
+13. normal woodbar pushups - 3sets x 4reps
+14. u bar pushups - 3sets x 4reps
+15. incline bar pushups - 3sets x 4reps
+16. leg extension - 3sets x 6reps x 4bar
+17. hamstring raise - 3sets x 6reps x 1bar
+18. hack squat - 3sets x 6reps x 70kg
+19. leg press - 3sets x 6reps x 100kg,110kg,100kg
+20. calves raise - 3sets x 10reps x 15 bar
+	Take Postworkout Meal Box after workout
+
+	Summary {'abs': 6, 'biceps': 2, 'back': 1, 'triceps': 3, 'chest': 3, 'legs': 5}
+	
+	------------------------ Nutrition ------------------------
+	Target CALORIE: 2399 Kcal | Meal Number: 4
+	Macros - 63.93g Protein|25.57g Fat|478.28g Carb
+	Per meal - 15.98g Protein|6.39g Fat|119.57g Carb
+
+	Mix Bowl>> egg full 1.00 pieces,chicken 0.78 grams,peanut 16.70 grams,chickpeas 138.65 grams,cucumber 0.00 grams,tomato 0.00 grams,okra 0.00 grams,calabash 0.00 pieces,white rice 635.97 grams,ginger 185.08 grams,garlic 158.36 grams,onion 0.00 grams,banana 5.00 pieces
+	
+	------------------------ Inventory ------------------------
+	Inventory Empty: Banana, Chicken
+	--------------- Todays Work ----------------
+	Bath: Soap/Water Only/Shampoo/Soap and Shampoo
+	Nail_Cut: Yes
+	Hair_Cut: Yes,Army Cut
+	Tooth_Brush: 
+	Hygene Instructions:
+	

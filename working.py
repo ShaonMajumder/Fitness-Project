@@ -15,7 +15,7 @@ import datetime
 
 datetime_ = datetime.datetime.now().strftime("%d/%m/%y")
 
-profile_picture_folder = 'imgs/'
+image_folder = 'imgs/'
 utilization_directory = 'safe_directory/'
 config = read_config_ini(utilization_directory+"dbconfig.ini")
 gmail_user = config['GMAIL']['email']
@@ -265,7 +265,7 @@ def draw_exercise_section_frame(top_frame):
     
     toggle_section()
 
-    img = image_to_tkinter_img(profile_picture_folder + 'gym.png',(200, 200))    
+    img = image_to_tkinter_img(image_folder + 'gym.png',(200, 200))    
 
     Inactive_Button = Button(Exercise_Section_Inactive_Container_Frame, text="Click to Expand\u25E2", command=toggle_section, height=Section_Height, anchor="center", bg=exercise_colors['primary_hex'], image=img,compound="top", fg="#23617b", font=("Rockwell Extra Bold", 13))
     Inactive_Button.grid(row=0,sticky="nesw")
@@ -280,17 +280,17 @@ def draw_exercise_section_frame(top_frame):
     Exercise_Sub_Action_Frame = Frame(Exercise_Section_Active_Container_Frame, bg = exercise_colors['primary_hex'], relief=RAISED)
     Exercise_Sub_Action_Frame.grid(row=2,sticky="nesw")
 
-    img_add_bt = image_to_tkinter_img(profile_picture_folder + 'add-circular-button.png', (20, 20))
+    img_add_bt = image_to_tkinter_img(image_folder + 'add-circular-button.png', (20, 20))
     New_Exercise_Entry_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="New Workout", compound='left', image = img_add_bt, command=lambda: New_Exercise_Entry_Form(Exercise_Sub_Action_Frame) )
     New_Exercise_Entry_Button.image = img_add_bt
     New_Exercise_Entry_Button.grid(row=0,column=0,sticky="nesw")
 
-    img_record_bt = image_to_tkinter_img(profile_picture_folder + 'record-button.png', (20, 20))
+    img_record_bt = image_to_tkinter_img(image_folder + 'record-button.png', (20, 20))
     Todays_Exercise_Record_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="Record Todays Workout", compound='left', image = img_record_bt, command=lambda: Record_Todays_Exercise_Form(top_frame) )
     Todays_Exercise_Record_Button.image = img_record_bt
     Todays_Exercise_Record_Button.grid(row=0,column=1,sticky="nesw")
 
-    img_record_bt = image_to_tkinter_img(profile_picture_folder + 'week-plan-button.png', (20, 20))
+    img_record_bt = image_to_tkinter_img(image_folder + 'week-plan-button.png', (20, 20))
     Todays_Exercise_Record_Button = Button(Exercise_Buttons_Frame, bg='#e28c2f', text="Plan week", compound='left', image = img_record_bt, command=lambda: This_Week_Exercise_Form(top_frame) )
     Todays_Exercise_Record_Button.image = img_record_bt
     Todays_Exercise_Record_Button.grid(row=0,column=2,sticky="nesw")

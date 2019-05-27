@@ -1,0 +1,28 @@
+General:
+	Bind Profile Id to every database
+
+export_module.py:
+	1. gmt time according to profile
+	2. sleep_hours calculation in export according to profile
+		bind profile_id
+		adding sleep hour database index 0 initialization system for every profile_id or keep any system in script itself.
+	3. day exercise according to profile
+		bind profile_id with day exercise
+	4. generate_food_list()
+		bind profile_id with inventory
+		calculate food_list according to profile_id
+	5. get mac address of printer to determine how many pages printed from a single printer
+
+python-gui-login.py:
+	1. gui for finance section input and store
+	2. calculations and results, reports for finance section
+	3. sleep_hours calculation in export according to profile
+		bind profile_id
+		adding sleep hour database index 0 initialization system for every profile_id or keep any system in script itself.
+	
+	4. Get grooming section from main_gui.py
+	5. Get hygene section from main_gui.py
+	6. Get day_planning section from main_gui.py
+	7. Get user_profile_section from main_gui.py
+	8. Get nutrition section from main_gui.py , don't forget inventory section input utility function
+	9. check anything left to extract from main_gui.py and delete
